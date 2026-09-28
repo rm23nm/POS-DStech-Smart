@@ -1,0 +1,141 @@
+<div class="right-panel">
+            <div class="right-placeholder" id="rightPlaceholder">
+                <i class="fas fa-hand-pointer"></i>
+                <p style="font-size: 1.2rem; font-weight: 600; color: #999;">Pilih Meja untuk Memulai</p>
+            </div>
+
+            <div class="detail-content" id="detailContent">
+                <div class="detail-name-banner" id="detailNamaTitikLampu">--</div>
+                <div class="detail-status-badge" id="detailStatusBadge" style="background:#9e9e9e;">--</div>
+                <div class="detail-img-wrap"><img id="detailGambar" src="" alt="Meja" /></div>
+                <ul class="detail-info-list">
+                    <li><div class="info-label"><span class="info-icon" style="background:#43a047;"><i class="fas fa-box"></i></span> Paket</div><span class="info-value" id="detailPaket">-</span></li>
+                    <li><div class="info-label"><span class="info-icon" style="background:#1e88e5;"><i class="fas fa-play"></i></span> Mulai</div><span class="info-value" id="detailJamMulai">-</span></li>
+                    <li><div class="info-label"><span class="info-icon" style="background:#fb8c00;"><i class="fas fa-stop"></i></span> Selesai</div><span class="info-value" id="detailJamSelesai">-</span></li>
+                </ul>
+                <div class="detail-actions">
+                    <div class="btn-row">
+                        <button class="btn-action btn-pilih-paket" id="btnPilihPaket" onclick="onPilihPaket()"><i class="fas fa-play"></i><span>SEWA MEJA</span></button>
+                        <button class="btn-action btn-tambah-makan" id="btnTambahMakan" onclick="onTambahMakan()"><i class="fas fa-utensils"></i><span>+ MAKANAN</span></button>
+                        <button class="btn-action btn-tambah-jam" id="btnTambahJam" onclick="onTambahJam()"><i class="fas fa-clock"></i><span>+ DURASI</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+    <div id="modalPilihPaket" class="pp-overlay">
+        <div class="pp-modal">
+            <div class="pp-header">
+                <div class="pp-header-titik" id="modalPaketTitikNama">--</div>
+                <button class="pp-close" onclick="closePilihPaketModal()">&times;</button>
+            </div>
+            <div class="pp-body">
+                <form id="frmPilihPaket" autocomplete="off">
+                    <input type="hidden" id="ppTglTransaksi">
+                    <div class="pp-row pp-row-2">
+                        <div class="pp-field">
+                            <label class="pp-label">Jenis Paket</label>
+                            <select class="pp-input" id="ppJenisPaket" name="JenisPaket" onchange="onJenisPaketChange(this.value)">
+                                <option value="">-- Pilih Jenis --</option>
+                                @if(isset($jenis_paket))
+                                    @foreach($jenis_paket as $jp)
+                                        <option value="{{ $jp->KodeJenisPaket }}">{{ $jp->NamaJenisPaket }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                        <div class="pp-field">
+                            <label class="pp-label">Paket</label>
+                            <select class="pp-input" id="ppPaketId">
+                                <option value="">-- Pilih Paket --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pp-row pp-row-2">
+                        <div class="pp-field">
+                            <label class="pp-label">Harga Satuan</label>
+                            <input type="text" class="pp-input" id="ppHargaNormal" readonly style="background:#f5f5f5;">
+                        </div>
+                        <div class="pp-field">
+                            <label class="pp-label">Durasi</label>
+                            <div class="pp-durasi-wrap">
+                                <button type="button" class="pp-dur-btn" onclick="changeDurasi(-1)">-</button>
+                                <input type="number" class="pp-input pp-dur-input" id="ppDurasi" value="1" oninput="updateJamSelesai()">
+                                <button type="button" class="pp-dur-btn" onclick="changeDurasi(1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pp-row" id="ppRowSlot" style="display:none;">
+                        <label class="pp-label">Pilih Jam (Slot)</label>
+                        <div id="ppSlotContainer" class="slot-container"></div>
+                    </div>
+                    <div class="pp-row pp-row-2" id="ppRowJamMulai">
+                        <div class="pp-field">
+                            <label class="pp-label">Jam Mulai</label>
+                            <input type="text" class="pp-input" id="ppJamMulai" placeholder="HH:mm" oninput="updateJamSelesai()">
+                        </div>
+                        <div class="pp-field">
+                            <label class="pp-label">Perkiraan Selesai</label>
+                            <input type="text" class="pp-input" id="ppJamSelesai" readonly style="background:#f5f5f5;">
+                        </div>
+                    </div>
+                    <div class="pp-row">
+                        <div class="pp-field">
+                            <label class="pp-label">Member / Pelanggan</label>
+                            <input type="text" id="ssRfidSearch" class="pp-input"
+                                placeholder="&#x1F50D; Scan RFID / Ketik No HP lalu Enter..."
+                                style="margin-bottom:6px; font-size:0.85rem; background:#fff;"
+                                title="Scan kartu RFID atau ketik Nomor HP lalu tekan Enter">
+                            <select class="pp-input mt-1" id="ppKodePelanggan" name="KodePelanggan" onchange="calculateTotal()" disabled style="pointer-events:none; background:#f0f0f0; color:#888;">
+                                <option value="">-- Umum / Guest --</option>
+                                @foreach($pelanggan as $plg)
+                                    <option value="{{ $plg->KodePelanggan }}">{{ $plg->NamaPelanggan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- FNB Selection inside Sewa Meja -->
+                    <div class="fnb-selection-area">
+                        <div class="fnb-header">
+                            <span>PESAN MAKANAN & MINUMAN (OPSIONAL)</span>
+                            <span id="fnbTotalCount" class="badge bg-primary" style="font-size: 0.7rem; border-radius: 10px;">0 Item</span>
+                        </div>
+                        <div class="fnb-search-wrap">
+                            <div style="display:flex; gap:10px;">
+                                <select id="ssCategoryFilter1" onchange="filterFnb($('#ssSearchInput1').val(), 'ppFnbList', this.value)" style="display:none !important; flex-shrink:0; padding:8px; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.85rem; outline:none; background:#fff;">
+                                    <option value="FNB">Menu FNB</option>
+                                    <option value="TIKET">Tiket Masuk</option>
+                                    <option value="JASA">Jasa / Sewa</option>
+                                    <option value="ALL">Semua Kategori</option>
+                                </select>
+                                <input type="text" id="ssSearchInput1" class="fnb-search-input" placeholder="Cari Menu..." oninput="filterFnb(this.value, 'ppFnbList', $('#ssCategoryFilter1').val())" style="width:auto; flex:1;">
+                            </div>
+                        </div>
+                        <div class="fnb-list" id="ppFnbList">
+
+@foreach($itemmaster as $item)
+                                <div class="fnb-item" data-name="{{ strtolower($item->NamaItem) }}"
+             @php
+                $cat = $item->KategoriPOS ?? "FNB";
+             @endphp
+             data-category="{{ $cat }}" style="display:{{ $cat == 'FNB' ? 'flex' : 'none' }} !important;">
+                                    <img src="{{ $item->Gambar ? (str_starts_with($item->Gambar, 'http') ? $item->Gambar : asset('assets/img/item/' . $item->Gambar)) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTUwJSIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjYWFhIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Gb29kPC90ZXh0Pjwvc3ZnPg==' }}" 
+                                         class="fnb-item-img" 
+                                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTUwJSIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjYWFhIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Gb29kPC90ZXh0Pjwvc3ZnPg=='">
+                                    <div class="fnb-item-info">
+                                        <div class="fnb-item-name">{{ $item->NamaItem }}</div>
+                                        <div class="fnb-item-price">Rp {{ number_format($item->HargaJual) }}</div>
+                                        <div class="fnb-item-stock">Stok: {{ $item->Stock }}</div>
+                                    </div>
+                                    <div class="fnb-qty-ctrl">
+                                        <button type="button" class="fnb-qty-btn" onclick='addPpFnbToCart(@json($item), -1)'>-</button>
+                                        <span class="fnb-qty-val pp-fnb-qty-val" data-kode="{{ $item->KodeItem }}">0</span>
+                                        <button type="button" class="fnb-qty-btn" onclick='addPpFnbToCart(@json($item), 1)'>+</button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>

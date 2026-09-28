@@ -136,7 +136,8 @@ void LAN_mode()
     Serial.println("Invalid Subnet IP");
   }
   IPAddress dns(8, 8, 8, 8);
-  Ethernet.begin(mac, ip, dns, gateway, subnet);
+  SPI.begin();
+    Ethernet.begin(mac, ip, dns, gateway, subnet);
   //Ethernet.begin(mac, ip, gateway, gateway, subnet);
   //Ethernet.begin(mac, ip);
   delay(1000);

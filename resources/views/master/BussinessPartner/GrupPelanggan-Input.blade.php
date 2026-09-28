@@ -57,7 +57,7 @@
 	                            		<div class="col-md-12">
 	                            			<label  class="text-body">Kode Grup</label>
 	                            			<fieldset class="form-group mb-3">
-	                            				<input type="text" class="form-control" id="KodeGrup" name="KodeGrup" placeholder="Masukan Kode Grup" value="{{ count($gruppelanggan) > 0 ? $gruppelanggan[0]['KodeGrup'] : '' }}" required="" {{ count($gruppelanggan) > 0 ? 'readonly' : '' }} >
+	                            				<input type="text" class="form-control" id="KodeGrup" name="KodeGrup" placeholder="Otomatis" readonly value="{{ count($gruppelanggan) > 0 ? $gruppelanggan[0]['KodeGrup'] : '' }}"  {{ count($gruppelanggan) > 0 ? 'readonly' : '' }} >
 	                            			</fieldset>
 	                            			
 	                            		</div>

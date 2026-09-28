@@ -101,11 +101,19 @@
                             <tr><th>Kode Pelanggan</th><td id="modalKodePelanggan"></td></tr>
                             <tr><th>Nama</th><td id="modalNamaPelanggan"></td></tr>
                             <tr><th>Email</th><td id="modalEmail"></td></tr>
-                            <tr><th>Meja</th><td id="modalMeja"></td></tr>
-                            <tr><th>Tanggal Booking</th><td id="modalTglBooking"></td></tr>
+                            <tr><th>Meja</th>
+                                <td id="tdModalMeja">
+                                    <select id="inputModalMeja" class="form-control">
+                                        @foreach($meja as $m)
+                                            <option value="{{ $m->id }}">{{ $m->NamaTitikLampu }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr><th>Tanggal Booking</th><td><input type="date" id="inputModalTglBooking" class="form-control"></td></tr>
                             <tr><th>Jenis Paket</th><td id="modalJenisPaket"></td></tr>
-                            <tr><th>Jam Mulai</th><td id="modalJamMulai"></td></tr>
-                            <tr><th>Jam Selesai</th><td id="modalJamSelesai"></td></tr>
+                            <tr><th>Jam Mulai</th><td><input type="time" id="inputModalJamMulai" class="form-control"></td></tr>
+                            <tr><th>Jam Selesai</th><td><input type="time" id="inputModalJamSelesai" class="form-control"></td></tr>
                             <tr><th>Status</th><td id="modalStatus"></td></tr>
                             <tr><th>Total Transaksi</th><td id="modalTotalTransaksiBrutto"></td></tr>
                             <tr><th>Total Diskon</th><td id="modalTotalDiskon"></td></tr>
@@ -114,6 +122,9 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="simpanReschedule()">Simpan Reschedule</button>
             </div>
         </div>
     </div>
@@ -405,7 +416,7 @@
                         var LinkAccess = "";
 
                         LinkAccess += "<button title = 'Cetak Document' class='btn btn-outline-success font-weight-bold me-1 mb-1' onclick=\"showDetailModal('" + cellInfo.data.NoTransaksi + "')\"><i class='fas fa-eye'></i></button>";
-                        LinkAccess += "<button title ='Hapus Transaksi' class='btn btn-outline-success font-weight-bold me-1 mb-1' onclick=\"ShowCheckInModal('" + cellInfo.data.NoTransaksi + "')\"><i class='fas fa-check'></i></button>";
+                        LinkAccess += "<button disabled title='Otomatis Aktif Sesuai Jam Booking' class='btn btn-outline-secondary font-weight-bold me-1 mb-1'><i class='fas fa-check'></i></button>";
                         // LinkAccess += "<a href = '#' class='btn btn-outline-danger font-weight-bold me-1 mb-1' id = 'btBayar' >Bayar</a>";
 
                         cellElement.append(LinkAccess);
@@ -438,11 +449,11 @@
                 jQuery("#modalKodePelanggan").text(data.KodePelanggan);
                 jQuery("#modalNamaPelanggan").text(data.NamaPelanggan);
                 jQuery("#modalEmail").text(data.Email);
-                jQuery("#modalMeja").text(data.NamaTitikLampu);
-                jQuery("#modalTglBooking").text(tglBooking);
+                jQuery("#inputModalMeja").val(data.mejaID);
+                jQuery("#inputModalTglBooking").val(tglBooking);
                 jQuery("#modalJenisPaket").text(data.JenisPaket);
-                jQuery("#modalJamMulai").text(data.JamMulai);
-                jQuery("#modalJamSelesai").text(data.JamSelesai);
+                jQuery("#inputModalJamMulai").val(data.JamMulai);
+                jQuery("#inputModalJamSelesai").val(data.JamSelesai);
                 jQuery("#modalStatus").text(data.StatusTransaksi);
                 jQuery("#modalTotalTransaksiBrutto").text(data.TotalTransaksi.toLocaleString("id-ID"));
                 jQuery("#modalTotalDiskon").text(data.TotalDiskon.toLocaleString("id-ID"));
@@ -582,6 +593,51 @@
                 });
             }
         })
+    }
+
+
+    function simpanReschedule() {
+        let noTrans = jQuery('#modalNoTransaksi').text();
+        let meja = jQuery('#inputModalMeja').val();
+        let tgl = jQuery('#inputModalTglBooking').val();
+        let jamMulai = jQuery('#inputModalJamMulai').val();
+        let jamSelesai = jQuery('#inputModalJamSelesai').val();
+        
+        Swal.fire({
+            title: 'Konfirmasi Reschedule',
+            text: 'Apakah Anda yakin ingin mengubah jadwal/meja booking ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/booking/reschedule',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        NoTransaksi: noTrans,
+                        mejaID: meja,
+                        TglBooking: tgl,
+                        JamMulai: jamMulai,
+                        JamSelesai: jamSelesai
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            Swal.fire('Berhasil!', 'Jadwal berhasil diubah.', 'success');
+                            jQuery('#detailModal').modal('hide');
+                            location.reload();
+                        } else {
+                            Swal.fire('Gagal!', res.message, 'error');
+                        }
+                    },
+                    error: function(err) {
+                        Swal.fire('Error!', 'Terjadi kesalahan sistem.', 'error');
+                    }
+                });
+            }
+        });
     }
 
 </script>

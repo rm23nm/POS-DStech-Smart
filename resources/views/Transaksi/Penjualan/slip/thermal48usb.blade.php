@@ -266,9 +266,9 @@
     var oFaktur = [];
     window.onload = function() {
         window.print();
-        setTimeout(function() {
-            window.close(); // Attempts to close the tab
-        }, 1000);
+    }
+    window.onafterprint = function() {
+        window.close();
     }
     jQuery(document).ready(function() {
         oCompany = <?php echo json_encode($company) ?>;

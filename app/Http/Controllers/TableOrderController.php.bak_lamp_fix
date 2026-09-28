@@ -324,6 +324,7 @@ class TableOrderController extends Controller
                                      WHERE t2.tableid = titiklampu.id 
                                      AND t2.RecordOwnerID = titiklampu.RecordOwnerID 
                                      AND t2.DocumentStatus IN ('O', 'D')
+                                     AND DATE(t2.TglTransaksi) >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
                                      ORDER BY CASE WHEN t2.DocumentStatus = 'O' THEN 0 ELSE 1 END ASC, id DESC
                                      LIMIT 1
                                  )");
@@ -378,11 +379,19 @@ class TableOrderController extends Controller
 
         $sales = Sales::Where('RecordOwnerID','=',$roid)
                     ->where('Status','=',1)->get();
-        $sql = "pelanggan.KodePelanggan, pelanggan.NamaPelanggan, pelanggan.NoTlp1, pelanggan.NoTlp2, pelanggan.RecordOwnerID, 
+        $sql = "pelanggan.*, 
                 CONCAT(COALESCE(NoTlp1,''),CASE WHEN COALESCE(NoTlp2,'') != '' THEN ' / ' ELSE '' END , COALESCE(NoTlp2,'')) NoTlpConcat ";
         $pelanggan = Pelanggan::selectRaw($sql)
                     ->where('RecordOwnerID','=',$roid)
                     ->where('Status','=',1)->get();
+        
+        $customerMemberships = DB::table('customer_memberships')
+            ->join('member_packages', 'customer_memberships.KodePaketMember', '=', 'member_packages.KodePaket')
+            ->select('customer_memberships.*', 'member_packages.KelompokLampu', 'member_packages.NamaPaket')
+            ->where('customer_memberships.RecordOwnerID', $roid)
+            ->where('customer_memberships.ValidUntil', '>=', Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'))
+            ->get();
+
         $metodepembayaran = MetodePembayaran::where('RecordOwnerID','=',$roid)->get();
 
         $itemmaster = ItemMaster::selectRaw("itemmaster.KodeItem, itemmaster.NamaItem, itemmaster.HargaJual, itemmaster.Gambar, itemmaster.TypeItem, COALESCE(itemwarehouses.Qty, 0) as Stock")
@@ -393,7 +402,7 @@ class TableOrderController extends Controller
                     })
                     ->where('itemmaster.RecordOwnerID', $roid)
                     ->where('itemmaster.Active', 'Y')
-                    ->where('itemmaster.TypeItem', '<>', 4)
+                    ->whereNotIn('itemmaster.TypeItem', [2, 4])
                     ->orderBy('itemmaster.NamaItem', 'ASC')
                     ->get();
         $midtransdata = MetodePembayaran::where('RecordOwnerID','=',$roid)
@@ -425,7 +434,8 @@ class TableOrderController extends Controller
             'kelompoklampu' => $kelompoklampu,
             'gruppelanggan' => $gruppelanggan,
             'oKodeSales' => Auth::user()->KodeSales,
-            'jenisLangganan' => $jenisLangganan
+            'jenisLangganan' => $jenisLangganan,
+            'customerMemberships' => $customerMemberships
         ]);
     }
 
@@ -612,8 +622,10 @@ class TableOrderController extends Controller
 
             // ATOMIC LOCK: Check table availability
             $table = DB::table('titiklampu')
-                        ->where('id', $request->input('tableid'))
-                        ->where('RecordOwnerID', $roid)
+                        ->leftJoin('tkelompoklampu', 'titiklampu.KelompokLampu', '=', 'tkelompoklampu.id')
+                        ->select('titiklampu.*', 'tkelompoklampu.NamaKelompok')
+                        ->where('titiklampu.id', $request->input('tableid'))
+                        ->where('titiklampu.RecordOwnerID', $roid)
                         ->lockForUpdate()
                         ->first();
 
@@ -632,7 +644,7 @@ class TableOrderController extends Controller
             $model = new TableOrderHeader;
             $model->NoTransaksi = $NoTransaksi;
             $model->DocumentStatus = 'O'; // Default to Open
-            $model->QueueNumber = intval(substr($NoTransaksi, -3));
+            $model->NoAntrian = intval(substr($NoTransaksi, -3));
             $tglTransaksi = $request->input('TglTransaksi') ? Carbon::parse($request->input('TglTransaksi'), 'Asia/Jakarta') : $now;
             $model->TglTransaksi = $tglTransaksi->toDateString();
             $model->TglPencatatan = $now;
@@ -643,8 +655,87 @@ class TableOrderController extends Controller
             $model->DurasiPaket = $request->input('DurasiPaket');
             $model->Status = $request->input('Status');
             $model->KodePelanggan = $request->input('KodePelanggan');
-            $paket = DB::table('pakettransaksi')->where('id', $request->input('paketid'))->where('RecordOwnerID', $roid)->first();
-            $hargaPaket = $paket ? $paket->HargaNormal : 0;
+
+            $paket = null;
+            $hargaPaket = 0;
+            if ($request->input('JenisPaket') == 'PAKETMEMBER') {
+                $pelanggan = DB::table('pelanggan')
+                    ->where('KodePelanggan', $request->input('KodePelanggan'))
+                    ->where('RecordOwnerID', $roid)
+                    ->first();
+
+                if (!$pelanggan) {
+                    return response()->json(['success' => false, 'message' => 'Pelanggan tidak ditemukan atau belum dipilih.']);
+                }
+                if ($pelanggan->IsMember != 1 || $pelanggan->isPaidMembership != 1) {
+                    return response()->json(['success' => false, 'message' => 'Pelanggan bukan member aktif atau paket belum dibayar.']);
+                }
+
+                // Check active memberships in customer_memberships table matching the category
+                $namaGrup = strtolower($table->NamaKelompok);
+                $namaGrupClean = str_replace(['meja ', 'lapangan ', 'ruang ', 'room '], '', $namaGrup);
+                if (str_contains($namaGrupClean, 'billiard')) {
+                    $namaGrupClean = 'billiar';
+                }
+                $namaGrupClean = trim($namaGrupClean);
+
+                $activeMemberships = DB::table('customer_memberships')
+                    ->join('member_packages', function($join) {
+                        $join->on('customer_memberships.KodePaketMember', '=', 'member_packages.KodePaket')
+                             ->on('customer_memberships.RecordOwnerID', '=', 'member_packages.RecordOwnerID');
+                    })
+                    ->join('itemmaster', function($join) {
+                        $join->on('customer_memberships.KodePaketMember', '=', 'itemmaster.KodeItem')
+                             ->on('customer_memberships.RecordOwnerID', '=', 'itemmaster.RecordOwnerID');
+                    })
+                    ->where('customer_memberships.KodePelanggan', $request->input('KodePelanggan'))
+                    ->where('customer_memberships.RecordOwnerID', $roid)
+                    ->where('customer_memberships.ValidUntil', '>=', Carbon::now('Asia/Jakarta'))
+                    ->whereRaw('(customer_memberships.MaxPlay = 0 OR customer_memberships.Played < customer_memberships.MaxPlay)')
+                    ->select('customer_memberships.*', 'member_packages.KategoriPaket', 'member_packages.Tipe', 'member_packages.KelompokLampu', 'itemmaster.NamaItem')
+                    ->get();
+
+                if ($activeMemberships->isEmpty()) {
+                    return response()->json(['success' => false, 'message' => 'Member tidak memiliki paket aktif yang tersedia atau kuota sudah habis.']);
+                }
+
+                $validMembership = null;
+                foreach ($activeMemberships as $am) {
+                    if ($am->KategoriPaket !== 'HIBURAN') continue;
+                    
+                    // Validate KelompokLampu
+                    if (empty($am->KelompokLampu) || $am->KelompokLampu == $table->KelompokLampu) {
+                        $validMembership = $am;
+                        break;
+                    }
+                }
+
+                if (!$validMembership) {
+                    return response()->json(['success' => false, 'message' => 'Member memiliki paket aktif, tetapi tidak ada yang berlaku untuk kategori ' . $table->NamaKelompok . '.']);
+                }
+
+                // Simpan ID membership yang dipakai ke session atau update played
+                // Deduct Play Quota Immediately
+                DB::table('customer_memberships')
+                    ->where('id', $validMembership->id)
+                    ->update([
+                        'Played' => DB::raw('Played + 1')
+                    ]);
+                    
+                $hargaPaket = 0;
+                
+                if ($validMembership->Tipe === 'DISCOUNT') {
+                    $normalPriceTable = DB::table('pakettransaksi')->where('id', $request->input('paketid'))->where('RecordOwnerID', $roid)->first();
+                    if ($normalPriceTable) {
+                        $diskonPersen = $validMembership->DiskonBelanja ?? 0;
+                        $hargaPaket = $normalPriceTable->HargaNormal - ($normalPriceTable->HargaNormal * ($diskonPersen / 100));
+                    }
+                }
+                
+            } else {
+                $paket = DB::table('pakettransaksi')->where('id', $request->input('paketid'))->where('RecordOwnerID', $roid)->first();
+                $hargaPaket = $paket ? $paket->HargaNormal : 0;
+            }
 
             $model->TaxTotal = 0;
             $model->GrossTotal = $hargaPaket;
@@ -669,9 +760,52 @@ class TableOrderController extends Controller
                 $model->JamMulai = $now;
             }
 
-            if ($request->input('JenisPaket') == 'JAM' || $request->input('JenisPaket') == 'PAKETMEMBER' || $request->input('JenisPaket') == 'JAMREALTIME') {
+            if ($request->input('JenisPaket') == 'JAM' || $request->input('JenisPaket') == 'JAMREALTIME') {
                  $jamMulai = $model->JamMulai->copy();
                  $model->JamSelesai = $jamMulai->addHours($request->input('DurasiPaket'));
+            }
+
+            if ($request->input('JenisPaket') == 'PAKETMEMBER') {
+                $namaGrup = strtolower($table->NamaKelompok);
+                $namaGrupClean = str_replace(['meja ', 'lapangan ', 'ruang ', 'room '], '', $namaGrup);
+                if (str_contains($namaGrupClean, 'billiard')) {
+                    $namaGrupClean = 'billiar';
+                }
+                $namaGrupClean = trim($namaGrupClean);
+
+                $activeMemberships = DB::table('customer_memberships')
+                    ->join('member_packages', function($join) {
+                        $join->on('customer_memberships.KodePaketMember', '=', 'member_packages.KodePaket')
+                             ->on('customer_memberships.RecordOwnerID', '=', 'member_packages.RecordOwnerID');
+                    })
+                    ->join('itemmaster', function($join) {
+                        $join->on('customer_memberships.KodePaketMember', '=', 'itemmaster.KodeItem')
+                             ->on('customer_memberships.RecordOwnerID', '=', 'itemmaster.RecordOwnerID');
+                    })
+                    ->where('customer_memberships.KodePelanggan', $model->KodePelanggan)
+                    ->where('customer_memberships.RecordOwnerID', $roid)
+                    ->where('customer_memberships.ValidUntil', '>=', Carbon::now('Asia/Jakarta'))
+                    ->select('customer_memberships.*', 'member_packages.KategoriPaket', 'itemmaster.NamaItem', 'member_packages.KelompokLampu')
+                    ->get();
+                    
+                $maxMinutes = 60;
+                foreach ($activeMemberships as $am) {
+                    if ($am->KategoriPaket !== 'HIBURAN') continue;
+                    $valid = false;
+                    
+                    if (empty($am->KelompokLampu) || $am->KelompokLampu == $table->KelompokLampu) {
+                        $valid = true;
+                    }
+
+                    if ($valid && $am->maxTimePerPlay > 0) {
+                        $maxMinutes = $am->maxTimePerPlay * 60;
+                        break;
+                    }
+                }
+
+                $jamMulai = $model->JamMulai->copy();
+                $model->JamSelesai = $jamMulai->addMinutes($maxMinutes);
+                $model->DurasiPaket = $maxMinutes / 60;
             }
 
             if ($request->input('JenisPaket') == 'MENIT') {
@@ -701,6 +835,23 @@ class TableOrderController extends Controller
                 DB::rollBack();
                 return response()->json(['success' => false, 'message' => 'Meja sudah dipesan atau digunakan pada jam tersebut. Silakan pilih jam atau meja lain.']);
             }
+
+            // COLLISION DETECTION 2: Check against Online Bookings (bookingtableonline)
+            $overlapOnline = DB::table('bookingtableonline')
+                ->where('mejaID', $model->tableid)
+                ->where('RecordOwnerID', $roid)
+                ->where('StatusTransaksi', 1) // 1 = Confirmed / Paid
+                ->where(function($q) use ($model, $checkEnd) {
+                    $q->where(DB::raw("CAST(CONCAT(TglBooking, ' ', JamMulai) AS DATETIME)"), '<', $checkEnd)
+                      ->where(DB::raw("CAST(CONCAT(TglBooking, ' ', COALESCE(JamSelesai, '23:59:59')) AS DATETIME)"), '>', $model->JamMulai);
+                })
+                ->exists();
+
+            if ($overlapOnline) {
+                DB::rollBack();
+                return response()->json(['success' => false, 'message' => 'Meja sudah dibooking secara online pada rentang waktu tersebut. Sisa waktu tidak mencukupi untuk transaksi ini.']);
+            }
+
             // Future Booking Logic
             // If JamMulai > NOW, force Status to 0 (Booking/Scheduled)
             $now = Carbon::now('Asia/Jakarta');
@@ -1813,6 +1964,25 @@ class TableOrderController extends Controller
                     ]);
             }
 
+            $headerPoint = DB::table('tableorderheader')
+                ->where('NoTransaksi', $noTransaksi)
+                ->where('RecordOwnerID', $recordOwnerID)
+                ->first();
+
+            if ($headerPoint && !empty($headerPoint->KodePelanggan) && $nominalBayar > 0) {
+                if (($company->KonversiRupiahKePoin ?? 0) > 0) {
+                    $poinDidapat = floor($nominalBayar / $company->KonversiRupiahKePoin);
+                    if ($poinDidapat > 0) {
+                        DB::table('pelanggan')
+                            ->where('RecordOwnerID', $recordOwnerID)
+                            ->where('KodePelanggan', $headerPoint->KodePelanggan)
+                            ->update([
+                                'PoinLoyalti' => DB::raw("COALESCE(PoinLoyalti, 0) + " . $poinDidapat)
+                            ]);
+                    }
+                }
+            }
+
             DB::commit();
             $msg = $shouldClose ? 'Pembayaran berhasil & order telah ditutup.' : 'Pembayaran berhasil diproses.';
             return response()->json(['success' => true, 'message' => $msg]);
@@ -1945,6 +2115,15 @@ class TableOrderController extends Controller
                         'TotalTerbayar' => $totalTerbayar
                     ]);
                 
+                if ($order->JenisPaket === 'PAKETMEMBER') {
+                    if (!empty($order->KodePelanggan) && $order->KodePelanggan !== 'CASH') {
+                        DB::table('pelanggan')
+                            ->where('KodePelanggan', $order->KodePelanggan)
+                            ->where('RecordOwnerID', $recordOwnerID)
+                            ->increment('Played');
+                    }
+                }
+
                 // Sinkronisasi Lampu: Langsung Matikan (Hijau)
                 DB::table('titiklampu')
                     ->where('id', $order->tableid)
@@ -2719,25 +2898,38 @@ class TableOrderController extends Controller
                 $slotEnd = $currentSlot->copy()->addHour();
 
                 $isBooked = false;
-                
-                // Aturan 1: Blok jam yang sudah terlewati di tanggal yang dipilih (hari ini)
+                $isLate   = false;
+
+                // Aturan 1: Cek apakah slot berkaitan dengan waktu yang sudah lewat (hari ini)
                 if ($isToday && $slotStart->lt($now)) {
-                    $isBooked = true;
-                } else {
+                    if ($slotEnd->lte($now)) {
+                        // Slot sudah SELESAI TOTAL → blokir sepenuhnya
+                        $isBooked = true;
+                    } else {
+                        // Slot sudah DIMULAI tapi BELUM SELESAI → izinkan (tapi tandai terlambat)
+                        // Kasir tetap bisa mengaktifkan transaksi, waktu dihitung dari awal slot
+                        $isLate = true;
+                    }
+                }
+
+                // Jika belum diblokir karena waktu, cek apakah ada transaksi lain yang overlap
+                if (!$isBooked) {
                     foreach ($allBooked as $booked) {
                         // Cek overlap: start_A < end_B && end_A > start_B
                         if ($slotStart->lt($booked['end']) && $slotEnd->gt($booked['start'])) {
                             $isBooked = true;
+                            $isLate   = false; // jika diboking orang lain, tidak bisa aktif sama sekali
                             break;
                         }
                     }
                 }
 
                 $slots[] = [
-                    'time' => $slotStart->format('H:i'),
+                    'time'       => $slotStart->format('H:i'),
                     'start_full' => $slotStart->format('Y-m-d H:i:s'),
-                    'end_full' => $slotEnd->format('Y-m-d H:i:s'),
-                    'booked' => $isBooked
+                    'end_full'   => $slotEnd->format('Y-m-d H:i:s'),
+                    'booked'     => $isBooked,
+                    'isLate'     => $isLate,
                 ];
 
                 $currentSlot->addHour();
@@ -2849,12 +3041,12 @@ class TableOrderController extends Controller
                 return response()->json(['success' => false, 'message' => 'Meja tidak ditemukan.']);
             }
 
-            // MIGRATION: Ensure QueueNumber column exists (Safer check)
-            if (!Schema::hasColumn('tableorderheader', 'QueueNumber')) {
+            // MIGRATION: Ensure NoAntrian column exists (Safer check)
+            if (!Schema::hasColumn('tableorderheader', 'NoAntrian')) {
                 try {
-                    DB::statement("ALTER TABLE tableorderheader ADD COLUMN QueueNumber INT DEFAULT 0");
+                    DB::statement("ALTER TABLE tableorderheader ADD COLUMN NoAntrian INT DEFAULT 0");
                 } catch (\Exception $e) {
-                    Log::error("Failed to add QueueNumber column: " . $e->getMessage());
+                    Log::error("Failed to add NoAntrian column: " . $e->getMessage());
                 }
             }
 
@@ -2869,7 +3061,7 @@ class TableOrderController extends Controller
             $NoTransaksi = $prefixTrx . str_pad($lastNoTRXCount + 1, 4, '0', STR_PAD_LEFT);
             $model = new TableOrderHeader;
             $model->NoTransaksi = $NoTransaksi;
-            $model->QueueNumber = intval(substr($NoTransaksi, -3));
+            $model->NoAntrian = intval(substr($NoTransaksi, -3));
             $tglTransaksi = $request->input('TglTransaksi');
             // Fallback: If time is missing (length <= 10), add current time
             if (strlen($tglTransaksi) <= 10) {
@@ -2879,13 +3071,49 @@ class TableOrderController extends Controller
             $model->TglPencatatan = $now;
             $model->JenisPaket = $request->input('JenisPaket');
             $model->paketid = $request->input('paketid');
-            if ($model->JenisPaket === 'PAKETMEMBER' && empty($model->paketid)) {
+            if ($model->JenisPaket === 'PAKETMEMBER') {
                 $model->paketid = -1;
+
+                $pelangganId = $request->input('KodePelanggan');
+                
+                $activeMemberships = DB::table('customer_memberships')
+                    ->join('member_packages', function($join) {
+                        $join->on('customer_memberships.KodePaketMember', '=', 'member_packages.KodePaket')
+                             ->on('customer_memberships.RecordOwnerID', '=', 'member_packages.RecordOwnerID');
+                    })
+                    ->where('customer_memberships.KodePelanggan', $pelangganId)
+                    ->where('customer_memberships.RecordOwnerID', Auth::user()->RecordOwnerID)
+                    ->where('customer_memberships.ValidUntil', '>=', Carbon::now('Asia/Jakarta'))
+                    ->whereRaw('(customer_memberships.MaxPlay = 0 OR customer_memberships.Played < customer_memberships.MaxPlay)')
+                    ->select('customer_memberships.*', 'member_packages.KategoriPaket', 'member_packages.KelompokLampu')
+                    ->get();
+                    
+                $validMembership = null;
+                foreach ($activeMemberships as $am) {
+                    if ($am->KategoriPaket !== 'HIBURAN') continue;
+                    
+                    if (empty($am->KelompokLampu) || $am->KelompokLampu == ($table->KelompokLampu ?? '')) {
+                        $validMembership = $am;
+                        break;
+                    }
+                }
+
+                if (!$validMembership) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => 'Member tidak memiliki paket aktif yang tersedia atau kuota sudah habis untuk kategori ini.']);
+                }
+
+                // Deduct Play Quota
+                DB::table('customer_memberships')
+                    ->where('id', $validMembership->id)
+                    ->update([
+                        'Played' => DB::raw('Played + 1')
+                    ]);
             }
             $model->tableid = $request->input('tableid');
             $model->KodeSales = $request->input('KodeSales');
             $model->DurasiPaket = $request->input('DurasiPaket');
-            $model->KodePelanggan = $request->input('KodePelanggan');
+            $model->KodePelanggan = $request->input('KodePelanggan') ?: 'CASH';
             
             // Concat Tgl & Jam
             $jamMulaiStr = $request->input('JamMulai');
@@ -3192,6 +3420,13 @@ class TableOrderController extends Controller
                     $fakturHeader->PajakHiburan = $model->TotalPajakHiburan;
                     $fakturHeader->BiayaLayanan = $model->BiayaLayanan + $adminFeeRp;
                     $fakturHeader->RecordOwnerID = Auth::user()->RecordOwnerID;
+
+                    if (isset($company) && $company->JenisUsaha == 'Apotek') {
+                        $fakturHeader->NamaDokter = $request->input('NamaDokter');
+                        $fakturHeader->NamaPasien = $request->input('NamaPasien');
+                        $fakturHeader->NoResep = $request->input('NoResep');
+                    }
+
                     $fakturHeader->created_at = Carbon::now();
                     $fakturHeader->CreatedBy = Auth::user()->name;
                     $fakturHeader->save();
@@ -3415,6 +3650,7 @@ class TableOrderController extends Controller
             }
         } catch (\Throwable $th) {
             DB::rollback();
+            Log::error("storePaket Error: " . $th->getMessage() . "\n" . $th->getTraceAsString());
             $data['message'] = 'Internal error: ' . $th->getMessage();
         }
 
@@ -3467,13 +3703,28 @@ public function getTableStatuses()
             foreach ($expiredTables as $et) {
                 $netTotal = floatval($et->NetTotal ?? 0);
                 $totalPaid = floatval($et->TotalTerbayar ?? 0);
-                
-                if ($totalPaid >= $netTotal || $netTotal == 0) {
-                    // Fully Paid or Free -> Green/Kosong
+
+                // BUGFIX: Pastikan JamSelesai benar-benar sudah lewat sebelum mematikan lampu.
+                // Sebelumnya kondisi ($netTotal == 0) menyebabkan lampu langsung mati meski waktu sewa
+                // belum habis (contoh: paket gratis atau NetTotal belum ter-set di awal sesi).
+                $jamSelesai = $et->JamSelesai ? Carbon::parse($et->JamSelesai, 'Asia/Jakarta') : null;
+                $isReallyExpired = $jamSelesai && $jamSelesai->lt($now);
+
+                if (!$isReallyExpired) {
+                    // Waktu belum habis, skip - jangan matikan lampu
+                    continue;
+                }
+
+                if ($totalPaid >= $netTotal && $netTotal > 0) {
+                    // Sudah lunas dan waktu habis -> matikan (Kosong/Hijau)
+                    DB::table('tableorderheader')->where('NoTransaksi', $et->NoTransaksi)->where('RecordOwnerID', $roid)->update(['DocumentStatus' => 'C']);
+                    DB::table('titiklampu')->where('id', $et->tableid)->where('RecordOwnerID', $roid)->update(['Status' => 0]);
+                } elseif ($netTotal == 0) {
+                    // NetTotal = 0 (gratis/belum diisi) DAN waktu sudah habis -> tutup
                     DB::table('tableorderheader')->where('NoTransaksi', $et->NoTransaksi)->where('RecordOwnerID', $roid)->update(['DocumentStatus' => 'C']);
                     DB::table('titiklampu')->where('id', $et->tableid)->where('RecordOwnerID', $roid)->update(['Status' => 0]);
                 } else {
-                    // Unpaid -> Checkout status (Orange)
+                    // Waktu habis tapi belum lunas -> Checkout status (Kuning/Orange)
                     DB::table('titiklampu')->where('id', $et->tableid)->where('RecordOwnerID', $roid)->update(['Status' => -1]);
                 }
             }
@@ -3572,12 +3823,13 @@ public function getTableStatuses()
 
 
             // F. Data Consistency Repair (Checkout Status):
-            // Force status -1 (Checkout/Yellow) if tableorderheader status is -1
+            // Force status -1 (Checkout/Yellow) if tableorderheader status is -1 AND it is an active order
             $shouldBeYellow = DB::table('tableorderheader')
                 ->join('titiklampu', 'tableorderheader.tableid', '=', 'titiklampu.id')
                 ->where('tableorderheader.RecordOwnerID', $roid)
                 ->where('titiklampu.RecordOwnerID', $roid)
                 ->where('tableorderheader.Status', -1)
+                ->where('tableorderheader.DocumentStatus', 'O') // ONLY active orders
                 ->where('titiklampu.Status', '!=', -1)
                 ->select('titiklampu.id')
                 ->get();
@@ -3631,7 +3883,8 @@ public function getTableStatuses()
                     tableorderheader.JenisPaket,
                     COALESCE(tableorderheader.TotalTerbayar, 0) as TotalPembayaran,
                     COALESCE(tableorderheader.NetTotal, 0) as NetTotal,
-                    COALESCE(tkelompoklampu.NamaKelompok,'') AS NamaKelompok
+                    COALESCE(tkelompoklampu.NamaKelompok,'') AS NamaKelompok,
+                    titiklampu.KelompokLampu
                 ")
                 ->leftJoin('tableorderheader', function($join) use ($roid, $now) {
                     $join->on('titiklampu.id', '=', 'tableorderheader.tableid')
@@ -4119,6 +4372,44 @@ public function getTableStatuses()
                 $totalMenitAdd = $unitDurasi * $durasiBaru * 365 * 24 * 60;
             }
 
+            // COLLISION DETECTION (Extending Duration)
+            if ($header->JamSelesai) {
+                $newJamSelesai = Carbon::parse($header->JamSelesai)->addMinutes($totalMenitAdd);
+                
+                // 1. Check against regular table orders
+                $overlap = DB::table('tableorderheader')
+                    ->where('tableid', $header->tableid)
+                    ->where('RecordOwnerID', $recordOwnerID)
+                    ->whereIn('DocumentStatus', ['O', 'D'])
+                    ->where('NoTransaksi', '!=', $noTransaksi)
+                    ->where(function($q) use ($header, $newJamSelesai) {
+                        $q->where('JamMulai', '<', $newJamSelesai)
+                          ->where(DB::raw("COALESCE(JamSelesai, DATE_ADD(JamMulai, INTERVAL 24 HOUR))"), '>', $header->JamSelesai);
+                    })
+                    ->exists();
+
+                if ($overlap) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => 'Penambahan durasi dibatalkan. Waktu tambahan menabrak pesanan lain di meja ini.']);
+                }
+
+                // 2. Check against Booking Online
+                $overlapOnline = DB::table('bookingtableonline')
+                    ->where('mejaID', $header->tableid)
+                    ->where('RecordOwnerID', $recordOwnerID)
+                    ->where('StatusTransaksi', 1)
+                    ->where(function($q) use ($header, $newJamSelesai) {
+                        $q->where(DB::raw("CAST(CONCAT(TglBooking, ' ', JamMulai) AS DATETIME)"), '<', $newJamSelesai)
+                          ->where(DB::raw("CAST(CONCAT(TglBooking, ' ', COALESCE(JamSelesai, '23:59:59')) AS DATETIME)"), '>', $header->JamSelesai);
+                    })
+                    ->exists();
+
+                if ($overlapOnline) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => 'Penambahan durasi dibatalkan. Waktu tambahan menabrak reservasi online yang sudah dikonfirmasi.']);
+                }
+            }
+
             // Detect Midtrans AUTO
             $mpId = $request->input('MetodePembayaran');
             $mp = !empty($mpId) ? MetodePembayaran::find($mpId) : null;
@@ -4437,6 +4728,13 @@ public function getTableStatuses()
                     $fH->BiayaLayanan = $sessionData['serviceRp'] + $sessionData['adminFeeRp'];
                     $fH->SyaratDanKetentuan = "";
                     $fH->RecordOwnerID = $recordOwnerID;
+
+                    if (isset($company) && $company->JenisUsaha == 'Apotek') {
+                        $fH->NamaDokter = $sessionData['NamaDokter'] ?? '';
+                        $fH->NamaPasien = $sessionData['NamaPasien'] ?? '';
+                        $fH->NoResep = $sessionData['NoResep'] ?? '';
+                    }
+
                     $fH->save();
 
                     // 2. Create Faktur Detail
@@ -5311,6 +5609,9 @@ public function getTableStatuses()
                     'ppnPersen' => $ppnPersen,
                     'gudangPos' => $gudangPos,
                     'periode' => $periode,
+                    'NamaDokter' => $request->input('NamaDokter'),
+                    'NamaPasien' => $request->input('NamaPasien'),
+                    'NoResep' => $request->input('NoResep')
                 ]]);
 
                 // Midtrans Snap Token
@@ -5381,6 +5682,13 @@ public function getTableStatuses()
             $fH->BiayaLayanan = $serviceRp + $adminFeeRp;
             $fH->SyaratDanKetentuan = "";
             $fH->RecordOwnerID = $recordOwnerID;
+
+            if (isset($company) && $company->JenisUsaha == 'Apotek') {
+                $fH->NamaDokter = $request->input('NamaDokter');
+                $fH->NamaPasien = $request->input('NamaPasien');
+                $fH->NoResep = $request->input('NoResep');
+            }
+
             $fH->save();
 
             // Faktur Detail - per item

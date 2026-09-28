@@ -17,10 +17,13 @@ class DiscountVoucherController extends Controller
         $field = ['VoucherCode', 'DiscountDescription'];
         $keyword = $request->input('keyword');
 
-        $discountvouchers = DiscountVoucher::where(function ($query) use ($keyword, $field) {
-            foreach ($field as $column) {
-                $query->orWhere($column, 'like', '%' . $keyword . '%');
-            }
+        \Illuminate\Support\Facades\Log::info('Voucher View accessed by ' . Auth::user()->name . ' ('. Auth::user()->RecordOwnerID .')');
+        $discountvouchers = DiscountVoucher::when($keyword, function ($query) use ($keyword, $field) {
+            $query->where(function ($q) use ($keyword, $field) {
+                foreach ($field as $column) {
+                    $q->orWhere($column, 'like', '%' . $keyword . '%');
+                }
+            });
         })
         ->where('RecordOwnerID', Auth::user()->RecordOwnerID)
         ->get();
@@ -29,6 +32,7 @@ class DiscountVoucherController extends Controller
         $text = "Are you sure you want to delete this voucher?";
         confirmDelete($title, $text);
 
+        \Illuminate\Support\Facades\Log::info('Voucher count: ' . count($discountvouchers));
         return view("setting.DiscountVoucher", [
             'discountvouchers' => $discountvouchers
         ]);

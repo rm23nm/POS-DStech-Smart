@@ -1,4513 +1,1702 @@
 <!DOCTYPE html>
-<!--
-Template Name: Kundol Admin - Bootstrap 4 HTML Admin Dashboard Theme
-Author: Themes-coder
-Website: https://themes-coder.com/
-Contact: sales@themes-coder.com
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
+
 <html lang="en">
-<!--begin::Head-->
-
-<head>
-	
-	<meta charset="utf-8" />
-	<title>Admin | Dashboard</title>
-	<meta name="description" content="Updates and statistics" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-	<!--begin::Fonts-->
-	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-	<!--end::Fonts-->
-
-	<!--begin::Global Theme Styles(used by all pages)-->
-	<link href="{{ asset('css/style.css?v=1.0')}}" rel="stylesheet" type="text/css" />
-	<!--end::Global Theme Styles-->
-
-	<link href="{{ asset('api/pace/pace-theme-flat-top.css')}}" rel="stylesheet" type="text/css" />
-	<link href="{{ asset('api/mcustomscrollbar/jquery.mCustomScrollbar.css')}}" rel="stylesheet" type="text/css" />
-	
-	{{-- <link href="http://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" /> --}}
-	<link href="{{asset('api/datatable/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css" />
-	<link href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-	<link href="{{asset('api/select2/select2.min.css')}}" rel="stylesheet" />
-
-	<link rel="shortcut icon" href="{{ asset('media/logos/favicon.ico')}}" />
-
-	<style type="text/css">
-		:root {
-			--primary: #0b57d0; /* PT. DSTECH Royal Blue */
-			--primary-hover: #0842a0;
-			--secondary: #dc2626; /* PT. DSTECH Action Crimson Red */
-			--secondary-hover: #b91c1c;
-			--accent: #10b981; /* Neon Emerald */
-			--accent-hover: #059669;
-			--dark: #0f172a;
-			--light: #f8fafc;
-			--border-color: rgba(11, 87, 208, 0.08);
-			--glass-bg: rgba(255, 255, 255, 0.9);
-			--glass-border: rgba(255, 255, 255, 0.5);
-			--shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
-			--shadow-md: 0 15px 35px -10px rgba(11, 87, 208, 0.12);
-			--shadow-lg: 0 30px 60px -15px rgba(11, 87, 208, 0.22);
-			--premium-gradient: linear-gradient(135deg, #094cb4 0%, #00bcff 100%); /* PT. DSTECH Royal to Cyan Gradient */
-		}
-
-		body {
-			font-family: 'Outfit', sans-serif !important;
-			background: radial-gradient(at 0% 0%, rgba(11, 87, 208, 0.12) 0px, transparent 50%),
-			            radial-gradient(at 50% 0%, rgba(220, 38, 38, 0.08) 0px, transparent 50%),
-			            radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
-			            linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82)),
-			            url('{{ asset("images/misc/bg-login3.jpg") }}') !important;
-			background-size: cover, cover, cover, cover, 100% 100% !important; /* Image stretches 100% 100% to fit screen paper completely as a single piece */
-			background-position: top center !important;
-			background-repeat: no-repeat !important;
-			background-attachment: fixed !important;
-			color: #1e293b !important;
-			overflow: hidden !important;
-			height: 100vh !important;
-			position: relative;
-		}
-
-		/* Premium Grid Overlay */
-		body::before {
-			content: '';
-			position: absolute;
-			top: 0; left: 0; right: 0; bottom: 0;
-			background-image: linear-gradient(rgba(11, 87, 208, 0.015) 1px, transparent 1px),
-			                  linear-gradient(90deg, rgba(11, 87, 208, 0.015) 1px, transparent 1px);
-			background-size: 40px 40px;
-			pointer-events: none;
-			z-index: -1;
-		}
-
-		/* Smooth Page Loader */
-		.pace {
-			background: var(--primary) !important;
-		}
-
-		/* Premium Header - Make solid white glassmorphism to cover the busy background image watermark and make text/logo highly visible */
-		.pos-header {
-			background: rgba(255, 255, 255, 0.95) !important;
-			backdrop-filter: blur(12px) !important;
-			-webkit-backdrop-filter: blur(12px) !important;
-			border-bottom: 1.5px solid rgba(11, 87, 208, 0.25) !important;
-			padding: 0.5rem 1.5rem !important;
-			box-shadow: 0 4px 18px rgba(11, 87, 208, 0.08) !important;
-			position: sticky;
-			top: 0;
-			z-index: 1000;
-			height: 68px;
-		}
-
-		/* Sleek Glass Welcome Greeting Badge on the left */
-		.greeting-text {
-			margin-left: 95px; /* Safely clears the printed company logo in top-left banner */
-			background: rgba(255, 255, 255, 0.92) !important;
-			padding: 6px 14px !important;
-			border-radius: 12px !important;
-			border: 1px solid rgba(11, 87, 208, 0.25) !important;
-			box-shadow: 0 4px 12px rgba(11, 87, 208, 0.1);
-			backdrop-filter: blur(8px);
-			-webkit-backdrop-filter: blur(8px);
-			display: inline-flex;
-			align-items: center;
-			gap: 6px;
-			height: 38px;
-			transition: all 0.2s ease;
-		}
-		.greeting-text:hover {
-			transform: translateY(-1px);
-			box-shadow: 0 6px 16px rgba(11, 87, 208, 0.15);
-		}
-
-		/* Digital Neon Clock Glass Card */
-		.clock-main {
-			background: rgba(255, 255, 255, 0.92) !important;
-			border: 1.5px solid rgba(11, 87, 208, 0.3) !important;
-			border-radius: 50px !important;
-			padding: 0.3rem 1.5rem !important;
-			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-			backdrop-filter: blur(8px);
-			-webkit-backdrop-filter: blur(8px);
-			height: 38px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.clock .datetime-content ul {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 2px;
-			margin: 0;
-			padding: 0;
-			list-style: none;
-		}
-
-		.clock .datetime-content ul li {
-			font-weight: 800;
-			font-size: 1.15rem;
-			color: var(--primary) !important;
-			letter-spacing: 0.5px;
-		}
-
-		#Date {
-			font-size: 0.75rem;
-			font-weight: 600;
-			color: #475569;
-			text-align: center;
-			margin-top: 2px;
-			text-transform: uppercase;
-			letter-spacing: 1px;
-		}
-
-		/* Content Wrap */
-		.contentPOS {
-			padding: 0.35rem 0 !important;
-		}
-
-		/* Premium Tactile Cards */
-		.card {
-			background: rgba(255, 255, 255, 0.85) !important;
-			backdrop-filter: blur(20px);
-			-webkit-backdrop-filter: blur(20px);
-			border-radius: 24px !important;
-			border: 1px solid rgba(255, 255, 255, 0.6) !important;
-			box-shadow: var(--shadow-md) !important;
-			transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
-			margin-bottom: 1.5rem !important;
-		}
-
-		.card:hover {
-			transform: translateY(-2px);
-			box-shadow: var(--shadow-lg) !important;
-			border-color: rgba(79, 70, 229, 0.25) !important;
-		}
-
-		.card-header {
-			background: transparent !important;
-			border-bottom: 1.5px solid var(--border-color) !important;
-			padding: 1.25rem 1.5rem !important;
-		}
-
-		.card-body {
-			padding: 1.5rem !important;
-		}
-
-		/* Compact Doc Badge */
-		.doc-badge-container {
-			background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-			border-radius: 14px;
-			padding: 0.5rem 1rem;
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-			border: 1px solid rgba(0,0,0,0.04);
-		}
-
-		#_NoTransaksi {
-			font-weight: 800 !important;
-			font-size: 1.15rem !important;
-			color: var(--primary) !important;
-			letter-spacing: 0.5px;
-		}
-
-		/* Inputs Redesign */
-		.form-control, select.form-control {
-			border-radius: 14px !important;
-			border: 1.5px solid #cbd5e1 !important;
-			padding: 0.75rem 1rem !important;
-			font-size: 0.95rem !important;
-			color: #1e293b !important;
-			background-color: #ffffff !important;
-			box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01) !important;
-			transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-		}
-
-		.form-control:focus {
-			border-color: var(--primary) !important;
-			box-shadow: 0 0 0 4px rgba(0, 80, 157, 0.12) !important;
-			background-color: #ffffff !important;
-		}
-
-		.input-group-text {
-			border-radius: 14px !important;
-			background-color: #f1f5f9 !important;
-			border: 1.5px solid #cbd5e1 !important;
-		}
-
-		/* Select2 Premium Override */
-		.select2-container--default .select2-selection--single {
-			border-radius: 14px !important;
-			border: 1.5px solid #cbd5e1 !important;
-			height: 40px !important;
-			padding: 5px 12px !important;
-			background-color: #ffffff !important;
-			transition: all 0.2s ease !important;
-		}
-
-		.select2-container--default .select2-selection--single:focus,
-		.select2-container--default.select2-container--open .select2-selection--single {
-			border-color: var(--primary) !important;
-			box-shadow: 0 0 0 4px rgba(0, 80, 157, 0.12) !important;
-		}
-
-		.select2-selection__arrow {
-			height: 38px !important;
-		}
-		.select2-container--default .select2-selection--single .select2-selection__rendered {
-			line-height: 28px !important;
-			color: #1e293b !important;
-			font-weight: 800 !important;
-			padding-left: 0 !important;
-		}
-
-		/* Advanced Touch NumPad Styles */
-		.numpad-grid {
-			display: grid;
-			grid-template-columns: repeat(4, 1fr);
-			gap: 8px;
-		}
-		.btn-numpad {
-			background: rgba(255, 255, 255, 0.8) !important;
-			backdrop-filter: blur(5px);
-			border: 1.5px solid #cbd5e1 !important;
-			color: #1e293b !important;
-			height: 38px !important;
-			border-radius: 14px !important;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), inset 0 2px 0 rgba(255,255,255,0.2) !important;
-			transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
-			display: flex !important;
-			flex-direction: column !important;
-			align-items: center !important;
-			justify-content: center !important;
-			padding: 2px !important;
-		}
-		.btn-numpad:hover {
-			background: #f1f5f9 !important;
-			border-color: #94a3b8 !important;
-			transform: translateY(-1px);
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
-		}
-		.btn-numpad:active {
-			transform: translateY(1px);
-			box-shadow: none !important;
-		}
-		.numpad-num {
-			font-size: 1.3rem !important;
-			font-weight: 950 !important;
-			line-height: 1;
-		}
-		.numpad-sub {
-			font-size: 0.65rem !important;
-			color: #64748b !important;
-			font-weight: 800 !important;
-			letter-spacing: 0.5px;
-			margin-top: 1px;
-		}
-
-		/* Compact QWERTY Touch Keypad Styles */
-		.btn-qwerty {
-			background: rgba(255, 255, 255, 0.95) !important;
-			border: 1.5px solid #cbd5e1 !important;
-			color: #0f172a !important;
-			font-weight: 950 !important;
-			font-size: 1.25rem !important;
-			height: 38px !important;
-			min-width: 36px;
-			padding: 0 !important;
-			border-radius: 12px !important;
-			box-shadow: 0 2px 4px rgba(0,0,0,0.04), inset 0 2px 0 rgba(255,255,255,0.2) !important;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
-			flex: 1;
-		}
-		.btn-qwerty:hover {
-			background: #f8fafc !important;
-			border-color: #94a3b8 !important;
-			transform: translateY(-1px);
-		}
-		.btn-qwerty:active {
-			background: #e2e8f0 !important;
-			transform: translateY(1px);
-		}
-		.btn-qwerty-action {
-			background: #f1f5f9 !important;
-			border-color: #cbd5e1 !important;
-		}
-		.btn-numpad-action {
-			background: rgba(79, 70, 229, 0.06) !important;
-			border: 1.5px solid rgba(79, 70, 229, 0.18) !important;
-			color: var(--primary) !important;
-			font-weight: 950 !important;
-			font-size: 1.1rem !important;
-			height: 38px !important;
-			border-radius: 14px !important;
-			transition: all 0.15s ease !important;
-		}
-		.btn-numpad-action:hover, .btn-numpad-action.active {
-			background: var(--primary) !important;
-			color: white !important;
-			border-color: var(--primary) !important;
-			box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2) !important;
-		}
-		.btn-numpad-clear {
-			background: rgba(244, 63, 94, 0.06) !important;
-			border: 1.5px solid rgba(244, 63, 94, 0.18) !important;
-			color: var(--secondary) !important;
-			font-weight: 950 !important;
-			font-size: 1.2rem !important;
-			height: 38px !important;
-			border-radius: 14px !important;
-			transition: all 0.15s ease !important;
-		}
-		.btn-numpad-clear:hover {
-			background: var(--secondary) !important;
-			color: white !important;
-			border-color: var(--secondary) !important;
-			box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2) !important;
-		}
-		.btn-numpad-enter {
-			background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-			border: none !important;
-			color: white !important;
-			font-weight: 950 !important;
-			font-size: 1.2rem !important;
-			height: 38px !important;
-			border-radius: 14px !important;
-			box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
-			transition: all 0.15s ease !important;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.btn-numpad-enter:hover {
-			box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45) !important;
-			transform: translateY(-1px) scale(1.02);
-		}
-
-		/* Compact Product Card Grid Catalog Styles */
-		.catalog-product-card {
-			background: rgba(255, 255, 255, 0.85) !important;
-			backdrop-filter: blur(10px);
-			border-radius: 12px !important;
-			border: 1.5px solid rgba(255, 255, 255, 0.6) !important;
-			padding: 0.5rem !important;
-			cursor: pointer;
-			transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01) !important;
-			position: relative;
-			overflow: hidden;
-			height: 165px;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-start;
-			gap: 4px;
-		}
-		.catalog-product-card:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 8px 16px rgba(79, 70, 229, 0.1) !important;
-			border-color: rgba(79, 70, 229, 0.3) !important;
-			background: #ffffff !important;
-		}
-		.catalog-product-card:hover img {
-			transform: scale(1.06);
-		}
-		.catalog-product-title {
-			font-size: 0.72rem;
-			font-weight: 750;
-			color: #1e293b;
-			line-height: 1.25;
-			margin: 0;
-			display: -webkit-box;
-			-webkit-line-clamp: 2;
-			-webkit-box-orient: vertical;
-			overflow: hidden;
-			height: 2.5em;
-			flex-grow: 1;
-		}
-		.catalog-product-footer {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			margin-top: auto;
-			padding-top: 4px;
-		}
-		.catalog-product-code {
-			font-size: 0.62rem;
-			font-weight: 600;
-			color: #94a3b8;
-		}
-		.catalog-product-price {
-			font-size: 0.78rem;
-			font-weight: 850;
-			color: #059669;
-		}
-		.catalog-product-badge {
-			position: relative !important;
-			background: rgba(79, 70, 229, 0.08);
-			color: var(--primary);
-			font-size: 0.55rem;
-			font-weight: 750;
-			padding: 1px 4px;
-			border-radius: 4px;
-			white-space: nowrap;
-			align-self: flex-start;
-		}
-
-		/* Alfamart Style Colorful Grid Shortcuts (Sleek and Compact) */
-		.alfamart-shortcut-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-			gap: 8px;
-			margin-top: 0.5rem;
-		}
-		.btn-alfamart-tile {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			padding: 0.35rem 0.5rem !important;
-			border-radius: 12px !important;
-			color: white !important;
-			font-weight: 800 !important;
-			font-size: 0.75rem !important;
-			cursor: pointer;
-			transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-			border: none !important;
-			box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-			height: 55px;
-		}
-		.btn-alfamart-tile:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 6px 15px rgba(0,0,0,0.12) !important;
-			filter: brightness(1.08);
-		}
-		.btn-alfamart-tile:active {
-			transform: translateY(1px);
-			box-shadow: none !important;
-		}
-		.btn-alfamart-tile kbd {
-			background: rgba(255, 255, 255, 0.25);
-			border-radius: 4px;
-			padding: 1px 6px;
-			font-size: 0.68rem;
-			font-weight: 900;
-			margin-bottom: 2px;
-			color: white;
-			box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-		}
-		.tile-f2 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; }
-		.tile-f3 { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; }
-		.tile-f4 { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important; }
-		.tile-f5 { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
-		.tile-f6 { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important; }
-		.tile-f7 { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important; }
-		.tile-f9 { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
-		.tile-del { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; }
-
-		/* Barcode Input Glowing Scan line */
-		.barcode-wrapper {
-			position: relative;
-		}
-
-		.barcode-wrapper input {
-			padding-left: 45px !important;
-			font-weight: 600;
-			letter-spacing: 0.5px;
-		}
-
-		.barcode-icon {
-			position: absolute;
-			left: 16px;
-			top: 50%;
-			transform: translateY(-50%);
-			color: #94a3b8;
-			z-index: 10;
-			pointer-events: none;
-			transition: color 0.2s ease;
-		}
-
-		.barcode-wrapper input:focus + .barcode-icon {
-			color: var(--primary);
-			animation: pulseScan 1.5s infinite;
-		}
-
-		@keyframes pulseScan {
-			0% { opacity: 0.5; }
-			50% { opacity: 1; }
-			100% { opacity: 0.5; }
-		}
-
-		/* DX DataGrid Premium Makeover */
-		.dx-datagrid {
-			border-radius: 16px !important;
-			overflow: hidden !important;
-			border: 1px solid var(--border-color) !important;
-		}
-
-		.dx-header-row {
-			background-color: #f8fafc !important;
-			font-weight: 700 !important;
-			color: #1e293b !important;
-		}
-
-		.dx-row-alt {
-			background-color: #f8fafc/50 !important;
-		}
-
-		/* Right Column: Premium Digital Receipt Tape Container */
-		.receipt-tape {
-			background: rgba(255, 255, 255, 0.95) !important;
-			backdrop-filter: blur(20px);
-			-webkit-backdrop-filter: blur(20px);
-			border-radius: 28px !important;
-			border: 2px dashed rgba(79, 70, 229, 0.25) !important;
-			padding: 1.75rem !important;
-			position: relative;
-			box-shadow: var(--shadow-lg) !important;
-		}
-
-		.receipt-tape::before {
-			content: '';
-			position: absolute;
-			top: -4px; left: 10px; right: 10px;
-			height: 8px;
-			background-image: radial-gradient(circle, rgba(79, 70, 229, 0.2) 4px, transparent 5px);
-			background-size: 12px 8px;
-		}
-
-		.receipt-tape::after {
-			content: '';
-			position: absolute;
-			bottom: -4px; left: 10px; right: 10px;
-			height: 8px;
-			background-image: radial-gradient(circle, rgba(79, 70, 229, 0.2) 4px, transparent 5px);
-			background-size: 12px 8px;
-		}
-
-		.shop-profile {
-			border-bottom: 1.5px dashed rgba(79, 70, 229, 0.15);
-			padding-bottom: 1.25rem;
-			margin-bottom: 1.25rem;
-		}
-
-		.shop-profile .media .bg-primary {
-			border-radius: 16px !important;
-			font-weight: 900;
-			box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
-			background: var(--premium-gradient) !important;
-		}
-
-		.shop-profile .title {
-			font-size: 1.15rem;
-			color: #0f172a;
-			margin-bottom: 4px;
-			font-weight: 850;
-		}
-
-		.shop-profile p {
-			margin-bottom: 2px;
-			font-size: 0.8rem;
-			color: #475569;
-		}
-
-		.right-table th {
-			font-size: 0.9rem;
-			color: #475569 !important;
-			font-weight: 700 !important;
-		}
-
-		.TotalText {
-			font-family: 'Courier New', Courier, monospace;
-			font-weight: 800 !important;
-			font-size: 1.35rem !important;
-			color: #0f172a !important;
-			text-align: right;
-			padding: 0 !important;
-			background: transparent !important;
-			border: none !important;
-			box-shadow: none !important;
-		}
-
-		/* Glowing LED Total Tagihan Board */
-		.premium-total-card {
-			background: linear-gradient(135deg, #0f172a 0%, #030712 100%) !important;
-			border: 2.5px solid rgba(0, 255, 196, 0.65) !important;
-			color: #ffffff;
-			border-radius: 24px !important;
-			padding: 1.15rem 1.5rem !important;
-			position: relative;
-			overflow: hidden;
-			box-shadow: 0 25px 50px rgba(0, 255, 196, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.05);
-		}
-
-		.premium-total-card::after {
-			content: '';
-			position: absolute;
-			top: -40%; left: -40%;
-			width: 180%; height: 180%;
-			background: radial-gradient(circle, rgba(0, 255, 196, 0.15) 0%, transparent 60%);
-			pointer-events: none;
-		}
-
-		#_GrandTotal {
-			font-family: 'Courier New', Courier, monospace !important;
-			font-size: 3.35rem !important;
-			font-weight: 950 !important;
-			height: auto !important;
-			color: #00ffc4 !important; /* Premium Cyan Neon Glow */
-			text-shadow: 0 0 20px rgba(0, 255, 196, 0.95), 0 0 3px rgba(0, 255, 196, 1) !important;
-			text-align: right !important;
-			border: none !important;
-			background: transparent !important;
-			padding: 0 !important;
-			box-shadow: none !important;
-		}
-
-		/* Action Grid Buttons */
-		.buttons-cash {
-			margin-top: 1.5rem;
-			width: 100%;
-		}
-
-		.buttons-cash > div {
-			display: grid;
-			grid-template-columns: 1fr;
-			gap: 10px;
-			width: 100%;
-		}
-
-		.btn-primary {
-			background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; /* Green for Bayar */
-			border: none !important;
-			box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35) !important;
-			padding: 0.9rem !important;
-			font-size: 1.05rem !important;
-		}
-
-		.btn-primary:hover {
-			transform: translateY(-2px) scale(1.01);
-			box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45) !important;
-		}
-
-		.btn-danger {
-			background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important; /* Crimson red for cancel */
-			border: none !important;
-			box-shadow: 0 6px 20px rgba(244, 63, 94, 0.25) !important;
-			padding: 0.9rem !important;
-		}
-
-		.btn-danger:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 10px 25px rgba(244, 63, 94, 0.35) !important;
-		}
-
-		.btn-secondary {
-			background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; /* Gold/orange for pending draft */
-			border: none !important;
-			color: white !important;
-			box-shadow: 0 6px 20px rgba(245, 158, 11, 0.2) !important;
-			padding: 0.9rem !important;
-		}
-
-		.btn-secondary:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3) !important;
-		}
-
-		/* Modal styling overrides */
-		.modal-content {
-			border-radius: 28px !important;
-			border: none !important;
-			box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-			overflow: hidden;
-		}
-
-		.modal-header {
-			background: #f8fafc !important;
-			border-bottom: 1.5px solid var(--border-color) !important;
-			padding: 1.5rem 2rem !important;
-		}
-
-		.modal-title {
-			font-weight: 800;
-			color: #0f172a;
-		}
-
-		.modal-body {
-			padding: 2rem !important;
-		}
-
-		/* Payment Horizontal List styling */
-		.horizontal-list {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-			gap: 12px;
-			padding: 0;
-			list-style: none;
-			margin: 0;
-		}
-
-		.horizontal-list li {
-			border: 2px solid #e2e8f0 !important;
-			border-radius: 16px !important;
-			padding: 1rem !important;
-			text-align: center;
-			cursor: pointer;
-			background: #ffffff;
-			transition: all 0.2s ease;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			gap: 8px;
-		}
-
-		.horizontal-list li:hover {
-			border-color: var(--primary) !important;
-			background: rgba(0, 80, 157, 0.02);
-			transform: translateY(-2px);
-		}
-
-		.horizontal-list li.active {
-			border-color: var(--primary) !important;
-			background: rgba(0, 80, 157, 0.05) !important;
-			box-shadow: 0 0 0 3px rgba(0, 80, 157, 0.15);
-		}
-
-		.horizontal-list li span img {
-			max-height: 35px;
-			object-fit: contain;
-		}
-
-		.horizontal-list li .list-title {
-			font-size: 0.8rem;
-			font-weight: 700;
-			color: #334155;
-		}
-
-		/* Custom scrollbar */
-		.scrollbar-1::-webkit-scrollbar {
-			width: 6px;
-			height: 6px;
-		}
-		.scrollbar-1::-webkit-scrollbar-thumb {
-			background: #cbd5e1;
-			border-radius: 10px;
-		}
-
-	</style>
-</head>
-<!--end::Head-->
-<!--begin::Body-->
-
-<body id="tc_body" class="header-fixed header-mobile-fixed subheader-enabled aside-enabled aside-fixed">
-   <!-- Paste this code after body tag -->
-   <!-- s -->
-   <!-- pos header -->
-
-   <header class="pos-header">
-	   <div class="container-fluid">
-		   <div class="row align-items-center" style="height: 52px;">
-			   <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center" style="position: relative;">
-				   <!-- Logo Perusahaan Client -->
-				   <div class="logo-container" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%);">
-					   <?php $companyData = json_decode($company, true); ?>
-					   @if(!empty($companyData[0]['icon']))
-						   <img src="{{ $companyData[0]['icon'] }}" alt="Logo" style="height: 42px; max-width: 90px; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(9, 76, 180, 0.15); background: white; border: 1.5px solid rgba(9, 76, 180, 0.2); padding: 2px;">
-					   @else
-						   <img src="{{ asset('images/misc/LogoFront.png') }}" alt="Logo" style="height: 42px; max-width: 90px; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(9, 76, 180, 0.15); background: white; border: 1.5px solid rgba(9, 76, 180, 0.2); padding: 2px;">
-					   @endif
-				   </div>
-				   <div class="greeting-text" style="margin-left: 105px !important; background: linear-gradient(135deg, rgba(9, 76, 180, 0.06) 0%, rgba(0, 188, 255, 0.06) 100%) !important; border: 1.5px solid rgba(9, 76, 180, 0.2) !important;">
-					<span class="font-weight-bold" style="font-size: 0.85rem; letter-spacing: 0.5px; color: #094cb4;">WELCOME,</span>
-					<span class="font-weight-bolder text-dark" style="font-size: 0.85rem;">{{ Auth::user()->name }}</span>
-				   </div>
-			   </div>
-			   <div class="col-xl-4 col-lg-5 col-md-6 clock-main">
-				<div class="clock">
-				  <div class="datetime-content">
-					<ul>
-						<li id="hours"></li>
-						<li id="point1">:</li>
-						<li id="min"></li>
-						<li id="point">:</li>
-						<li id="sec"></li>
-					</ul>
-				  </div>
-				 <div class="datetime-content">
-					<div id="Date" class=""></div>
-				 </div>
+	<head>
+		<meta charset="utf-8" />
+		<title>{{ config('app.name', 'Admin | Dashboard') }}</title>
+		<meta name="description" content="Updates and statistics" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+
+		<!--begin::Global Theme Styles(used by all pages)-->
+		<link href="{{ asset('css/style.css?v=1.0') }}" rel="stylesheet" type="text/css" />
+		<!--end::Global Theme Styles-->
+
+		<link href="{{ asset('api/pace/pace-theme-flat-top.css') }}" rel="stylesheet" type="text/css" />
+		<link href="{{ asset('api/mcustomscrollbar/jquery.mCustomScrollbar.css') }}" rel="stylesheet" type="text/css" />
+		<link href="{{ asset('api/datatable/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+		<link href="{{ asset('api/select2/select2.min.css') }}" rel="stylesheet" />
+		<link href="{{ asset('api/multiple-select/multiple-select.min.css') }}" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+		<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+		<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+		<!-- Premium Brand Sidebar Styling Overrides (Merah, Biru, Putih) -->
+		<style>
+			/* Sidebar Container Background & Premium Brand Theme Overrides (White Corporate) */
+			#tc_aside {
+				background: #ffffff !important;
+				border-right: 1px solid #e2e8f0 !important;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+			}
+
+			#tc_brand {
+				background: #ffffff !important;
+				border-bottom: 1px solid #e2e8f0 !important;
+				padding: 15px 25px !important;
+			}
+
+			/* Category Dividers Style */
+			.menu-section {
+				margin-top: 15px !important;
+				margin-bottom: 5px !important;
+				border-bottom: 1px solid #f1f5f9 !important;
+				padding-bottom: 6px !important;
+			}
+
+			.menu-section-text {
+				color: #0f172a !important; /* Clean Dark Slate */
+				text-transform: uppercase !important;
+				font-size: 0.68rem !important;
+				font-weight: 800 !important;
+				letter-spacing: 1.5px !important;
+				padding-left: 15px !important;
+				border-left: 4px solid #d01818 !important; /* Strong Crimson Red left-accent line */
+			}
+
+			/* Nav Item Links styling */
+			.aside-menu .nav .nav-item > .nav-link {
+				color: #334155 !important; /* Medium Slate Charcoal */
+				font-weight: 600 !important;
+				padding: 10px 16px !important;
+				border-radius: 6px !important;
+				margin: 3px 12px !important;
+				background: transparent !important;
+				transition: all 0.2s ease-in-out !important;
+				border-left: 3px solid transparent !important;
+			}
+
+			/* Hover over Navigation Links - Only for top-level main category items! */
+			.aside-menu .nav .nav-item > .nav-link:not(.sub-nav-link):not(.mini-sub-nav-link):hover {
+				color: #ffffff !important;
+				background: #d01818 !important; /* Corporate Crimson Red */
+				border-left: 3px solid #0091ff !important; /* Corporate Blue indicator on left edge */
+				box-shadow: 0 4px 12px rgba(208, 24, 24, 0.2) !important;
+			}
+
+			/* Active Navigation Link - Only for top-level main category items! */
+			.aside-menu .nav .nav-item.active > .nav-link:not(.sub-nav-link):not(.mini-sub-nav-link),
+			.aside-menu .nav .nav-item > .nav-link:not(.collapsed):not(.sub-nav-link):not(.mini-sub-nav-link) {
+				color: #ffffff !important;
+				background: #0072ff !important; /* Corporate Vibrant Blue */
+				border-left: 3px solid #d01818 !important; /* Crimson Red indicator on left edge */
+				box-shadow: 0 4px 12px rgba(0, 114, 255, 0.2) !important;
+				font-weight: 700 !important;
+			}
+
+			/* Arrow indicator rotate icon */
+			.aside-menu .nav .nav-item > .nav-link .fa-chevron-right {
+				color: #94a3b8 !important;
+				transition: transform 0.2s ease !important;
+			}
+
+			.aside-menu .nav .nav-item.active > .nav-link .fa-chevron-right,
+			.aside-menu .nav .nav-item > .nav-link:not(.collapsed) .fa-chevron-right {
+				color: #94a3b8 !important;
+				transform: rotate(0deg) !important;
+			}
+			
+			.aside-menu .nav .nav-item.active > .nav-link:not(.sub-nav-link):not(.mini-sub-nav-link) .fa-chevron-right,
+			.aside-menu .nav .nav-item > .nav-link:not(.collapsed):not(.sub-nav-link):not(.mini-sub-nav-link) .fa-chevron-right {
+				color: #ffffff !important;
+				transform: rotate(90deg) !important;
+			}
+
+			/* SVG icons & font awesome icons styling */
+			.aside-menu .nav-icon i,
+			.aside-menu .nav-icon svg {
+				color: #64748b !important;
+				transition: all 0.2s ease !important;
+			}
+
+			.aside-menu .nav-item:hover > .nav-link:not(.sub-nav-link):not(.mini-sub-nav-link) .nav-icon i,
+			.aside-menu .nav-item:hover > .nav-link:not(.sub-nav-link):not(.mini-sub-nav-link) .nav-icon svg,
+			.aside-menu .nav-item.active > .nav-link:not(.sub-nav-link):not(.mini-sub-nav-link) .nav-icon i,
+			.aside-menu .nav-item.active > .nav-link:not(.sub-nav-link):not(.mini-sub-nav-link) .nav-icon svg,
+			.aside-menu .nav-link:not(.collapsed):not(.sub-nav-link):not(.mini-sub-nav-link) .nav-icon i,
+			.aside-menu .nav-link:not(.collapsed):not(.sub-nav-link):not(.mini-sub-nav-link) .nav-icon svg {
+				color: #ffffff !important;
+			}
+
+			/* Submenu & nested items styling */
+			.aside-menu .nav-collapse {
+				background: #f8fafc !important; /* Light background for inner menus */
+				margin: 0 12px !important;
+				border-radius: 6px !important;
+				padding: 3px 0 !important;
+				border: 1px solid #e2e8f0 !important;
+			}
+
+			.aside-menu .sub-nav-link {
+				color: #475569 !important;
+				font-size: 0.88rem !important;
+				font-weight: 600 !important;
+				padding: 8px 15px 8px 25px !important;
+				border-radius: 6px !important;
+				margin: 2px 8px !important;
+				border-left: 2px solid transparent !important;
+			}
+
+			.aside-menu .sub-nav-link:hover {
+				color: #d01818 !important; /* Crimson Red Text on hover */
+				background: rgba(208, 24, 24, 0.05) !important;
+				border-left: 2px solid #d01818 !important;
+			}
+
+			.aside-menu .nav-item.active > .sub-nav-link,
+			.aside-menu .sub-nav-link.active {
+				color: #0072ff !important; /* Vibrant Blue Text on active */
+				background: rgba(0, 114, 255, 0.08) !important;
+				border-left: 2px solid #0072ff !important;
+			}
+
+			/* Level 3 deep nested links */
+			.aside-menu .mini-sub-nav-link {
+				color: #64748b !important;
+				font-size: 0.82rem !important;
+				font-weight: 500 !important;
+				padding: 6px 12px 6px 35px !important;
+				transition: all 0.2s ease !important;
+				border-left: 2px solid transparent !important;
+			}
+
+			.aside-menu .mini-sub-nav-link:hover {
+				color: #d01818 !important;
+				padding-left: 40px !important;
+				border-left: 2px solid #d01818 !important;
+			}
+
+			.aside-menu .nav-item.active > .mini-sub-nav-link,
+			.aside-menu .mini-sub-nav-link.active {
+				color: #0072ff !important;
+				font-weight: 700 !important;
+				padding-left: 40px !important;
+				border-left: 2px solid #0072ff !important;
+			}
+
+			/* Ensure sidebar wrapper scrolls perfectly and is constrained to screen height */
+			#tc_aside_menu_wrapper {
+				overflow-y: auto !important;
+				max-height: calc(100vh - 75px) !important;
+			}
+
+			/* Custom Sidebar Scrollbar */
+			#tc_aside_menu_wrapper::-webkit-scrollbar {
+				width: 5px !important;
+			}
+			#tc_aside_menu_wrapper::-webkit-scrollbar-track {
+				background: #f8fafc !important;
+			}
+			#tc_aside_menu_wrapper::-webkit-scrollbar-thumb {
+				background: #cbd5e1 !important;
+				border-radius: 3px !important;
+			}
+			#tc_aside_menu_wrapper::-webkit-scrollbar-thumb:hover {
+				background: #d01818 !important; /* Glowing Brand Red on Scrollbar Hover */
+			}
+		</style>
+	</head>
+
+	<body id="tc_body" class="header-fixed header-mobile-fixed subheader-enabled aside-enabled aside-fixed">
+
+
+	<!--begin::Header Mobile-->
+	<div id="tc_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
+		<!--begin::Logo-->
+		<a href="{{ route('dashboard') }}" class="brand-logo">
+
+			<span class="brand-text"><img style="height: 100%;" alt="Logo" src="{{ asset('images/misc/logo-dashboard.png') }}" /></span>
+
+		</a>
+		<!--end::Logo-->
+		<!--begin::Toolbar-->
+		<div class="d-flex align-items-center">
+           
+			<div class="posicon d-flex">
+				<a href="{{ url('gate/logs') }}" class="btn btn-info d-flex align-items-center justify-content-center white me-2">Log Gate</a>
+				<a href="{{ url('fpenjualan/pos') }}" class="btn btn-danger d-flex align-items-center justify-content-center white me-2">POS</a>
+				<a href="#" id="btn-update-notification" class="btn btn-warning btn-update-notification d-flex align-items-center justify-content-center white me-2 pulse-update" style="display: none !important; font-weight: bold; background-color: #ffc107; color: #000;">
+					<i class="fas fa-exclamation-circle text-dark me-2"></i> Update Tersedia
+				</a>
+                <?php
+                    $licenseWarnMobile = false;
+                    $licenseDaysLeftMobile = 0;
+                    $licensePathMobile = storage_path('app/offline_license.json');
+                    if (file_exists($licensePathMobile)) {
+                        $lDataMobile = json_decode(file_get_contents($licensePathMobile), true);
+                        if (isset($lDataMobile['valid_until'])) {
+                            $diffMobile = \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($lDataMobile['valid_until']), false);
+                            if ($diffMobile <= 7 && $diffMobile >= 0) {
+                                $licenseWarnMobile = true;
+                                $licenseDaysLeftMobile = (int)$diffMobile;
+                            }
+                        }
+                    }
+                ?>
+                @if($licenseWarnMobile)
+                <a href="#" class="btn btn-danger d-flex align-items-center justify-content-center white me-2" title="Segera hubungi Admin Pusat untuk perpanjangan." style="font-weight: bold;">
+                    <i class="fas fa-clock text-white me-2"></i> H-{{ $licenseDaysLeftMobile }}
+
+                </a>
+                @endif
+			</div>
+			<button class="btn p-0" id="tc_aside_mobile_toggle">
+				<svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-justify-right" fill="currentColor"
+					xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd"
+						d="M6 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-4-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+				</svg>
+			</button>
+
+			<button class="btn p-0 ms-2" id="tc_header_mobile_topbar_toggle">
+				<span class="svg-icon svg-icon-xl">
+
+					<svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor"
+						xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd"
+							d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+					</svg>
+
+				</span>
+			</button>
+
+		</div>
+		<!--end::Toolbar-->
+	</div>
+	<!--end::Header Mobile-->
+	<!--begin::Main-->
+	<div class="d-flex flex-column flex-root">
+		<!--begin::Page-->
+		<div class="d-flex flex-row flex-column-fluid page">
+			<div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="tc_aside">
+				<!--begin::Brand-->
+				<div class="brand flex-column-auto" id="tc_brand">
+					<!--begin::Logo-->
+					<a href="{{ route('dashboard') }}" class="brand-logo">
+						<img class="brand-image" style="height: 100%;" alt="Logo" src="{{ asset('images/misc/logo-dashboard.png') }}" />
+						<span class="brand-text"><img style="height: 100%;" alt="Logo"
+								src="{{ asset('images/misc/logo-dashboard.png') }}" /></span>
+
+					</a>
+					<!--end::Logo-->
 				</div>
-			   </div>
-			   <div class="col-xl-4 col-lg-3 col-md-12 order-lg-last order-second">
-				<div class="topbar justify-content-end align-items-center gap-2">
-					<!-- Active Cashier Badge -->
-					<div class="topbar-item d-none d-md-flex">
-						<span class="badge px-3 py-2 rounded-pill font-weight-bold" style="font-size: 0.72rem; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; background: rgba(255, 255, 255, 0.92) !important; border: 1px solid rgba(11, 87, 208, 0.25) !important; color: var(--primary) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.05); height: 38px;">
-							<span class="spinner-grow spinner-grow-sm text-primary" role="status" style="width: 6px; height: 6px; border-width: 1.5px;"></span>
-							Kasir Aktif: Retail Mode
-						</span>
-					</div>
- 
-					<!-- Document Number Badge -->
-					<div class="topbar-item me-1">
-						<div class="doc-badge-container d-flex align-items-center gap-1.5 px-3 py-1.5 rounded-pill" style="background: rgba(255, 255, 255, 0.92) !important; border: 1px solid rgba(11, 87, 208, 0.25) !important; display: inline-flex; box-shadow: 0 4px 10px rgba(0,0,0,0.05); height: 38px;">
-							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-file-earmark-text text-primary" viewBox="0 0 16 16">
-								<path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-								<path d="M2 2a2 2 0 0 1 2-2h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm7.5 1.5v-2.148L3.852 5.5H5.5a1.5 1.5 0 0 0 1.5-1.5"/>
-							</svg>
-							<span class="text-muted font-weight-bold" style="font-size: 0.72rem; margin-left: 4px;">No. Dok:</span>
-							<div id="_NoTransaksi" class="text-success font-weight-bold" style="font-size: 0.72rem; margin-left: 2px;"></div>
-						</div>
-					</div>
- 
-					<div class="topbar-item folder-data">
-						<div class="btn btn-icon w-auto h-auto btn-clean d-flex align-items-center py-0 me-3" data-bs-toggle="modal" data-bs-target="#folderpop" style="background: rgba(255, 255, 255, 0.92) !important; border: 1px solid rgba(11, 87, 208, 0.25) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-radius: 12px; height: 38px; padding: 0 12px !important; position: relative;">
-							<span class="badge badge-pill badge-primary" id="_draftCount" style="position: absolute; top: -8px; right: -8px; background: var(--secondary) !important;">5</span>
-							<span class="symbol symbol-35">
-								<span class="symbol-label bg-transparent font-size-h5" style="width: auto; height: auto;">
-									<svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" fill="var(--primary)" viewBox="0 0 16 16">
-										<path d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"></path>
-									</svg>
-								</span>
-							</span>
-						</div>
-					</div>
+				<!--end::Brand-->
+				<!--begin::Aside Menu-->
+				<div class="aside-menu-wrapper flex-column-fluid overflow-auto h-100" id="tc_aside_menu_wrapper">
+					<!--begin::Menu Container-->
+					<div id="tc_aside_menu" class="aside-menu  mb-5" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+						<!--begin::Menu Nav-->
+						<div id="accordion">
+							<ul class="nav flex-column">
+								@if(!isset($cData[0]['JenisUsaha']) || $cData[0]['JenisUsaha'] != 'Parkir')
+								<li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+									<a href="{{ route('dashboard') }}" class="nav-link">
+										<span class="svg-icon nav-icon">
+											<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px"
+												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
+												<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+												<polyline points="9 22 9 12 15 12 15 22"></polyline>
+											</svg>
+										</span>
+										<span class="nav-text">
+											Dashboard
+										</span>
+									</a>
+								</li>
 
-					<div class="topbar-item folder-data">
-						<div id="btOpenCustDisplay" class="btn btn-icon  w-auto h-auto btn-clean d-flex align-items-center py-0 me-3">
-							<span class="symbol symbol-35  symbol-light-success">
-								<span class="symbol-label font-size-h5 ">
-									<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16">
-									<path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5M12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0m2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0M1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25"/>
-									</svg>
-								</span>
-							</span>
-						</div>
-				 
-					</div>
-			 
-				 <div class="dropdown">
-					 <div class="topbar-item" data-bs-toggle="dropdown" data-display="static">
-						 <div class="btn btn-icon w-auto h-auto btn-clean d-flex align-items-center py-0">
-						 
-							 <span class="symbol symbol-35 symbol-light-success">
-								 <span class="symbol-label font-size-h5 ">
-									 <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										 <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
-									 </svg>
-								 </span>
-							 </span>
-						 </div>
-					 </div>
- 
-					 <div class="dropdown-menu dropdown-menu-right" style="min-width: 150px;">
- 
- 
-						 <a href="{{ route('logout') }}" class="dropdown-item">
-							 <span class="svg-icon svg-icon-xl svg-icon-primary me-2">
-								 <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-power">
-									 <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-									 <line x1="12" y1="2" x2="12" y2="12"></line>
-								 </svg>
-							 </span>
-							 Logout
-						 </a>
-					 </div>
- 
-				 </div>
-				</div>
-		 
-				</div>
-		   </div>
-	   </div>
-   </header>
-   <div class="contentPOS">
-	    <div class="container-fluid pt-2">
+								<li class="nav-item">
+									<a href="https://api.whatsapp.com/send/?phone=6282258493130&text=Saya%20ada%20kendala%20di%20PoS&type=phone_number&app_absent=0" target="_blank" class="nav-link">
+										<span class="svg-icon nav-icon">
+											<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 100 100">
+												<path d="M 50 15 C 30.68158 15 15 30.68158 15 50 C 15 56.13094 16.607004 61.884452 19.378906 66.896484 L 15.072266 82.464844 C 14.671771 83.913976 16.085438 85.328373 17.535156 84.925781 L 33.105469 80.619141 C 38.11809 83.391483 43.869654 85 50 85 C 69.31842 85 85 69.31842 85 50 C 85 30.68158 69.31842 15 50 15 z M 50 17 C 68.23758 17 83 31.76242 83 50 C 83 68.23758 68.23758 83 50 83 C 44.064811 83 38.507278 81.426921 33.695312 78.685547 A 1.0001 1.0001 0 0 0 32.933594 78.591797 L 17 82.998047 L 21.408203 67.066406 A 1.0001 1.0001 0 0 0 21.3125 66.304688 C 18.572114 61.493724 17 55.935189 17 50 C 17 31.76242 31.76242 17 50 17 z M 50 22 C 34.541787 22 22 34.541787 22 50 C 22 55.881567 23.836204 61.330109 26.935547 65.835938 L 24.408203 74.976562 A 0.50005 0.50005 0 0 0 25.023438 75.591797 L 34.164062 73.064453 C 38.670353 76.164715 44.118498 78 50 78 C 65.458213 78 78 65.458213 78 50 C 78 42.300345 74.888757 35.321559 69.855469 30.259766 A 0.50064154 0.50064154 0 0 0 69.144531 30.964844 C 73.999243 35.84705 77 42.569655 77 50 C 77 64.917787 64.917787 77 50 77 C 44.23771 77 38.905865 75.191654 34.521484 72.117188 A 0.50005 0.50005 0 0 0 34.101562 72.044922 L 25.607422 74.394531 L 27.957031 65.900391 A 0.50005 0.50005 0 0 0 27.884766 65.480469 C 24.810274 61.096051 23 55.763251 23 50 C 23 35.082213 35.082213 23 50 23 C 52.55371 23 55.020926 23.36246 57.363281 24.025391 A 0.50048162 0.50048162 0 1 0 57.636719 23.0625 C 55.209074 22.375431 52.64829 22 50 22 z M 60.496094 24.078125 A 0.50005 0.50005 0 0 0 60.308594 25.041016 C 61.322994 25.460903 62.30459 25.942928 63.253906 26.478516 A 0.50005 0.50005 0 1 0 63.746094 25.609375 C 62.76341 25.054963 61.745006 24.5533 60.691406 24.117188 A 0.50005 0.50005 0 0 0 60.496094 24.078125 z M 65.501953 26.78125 A 0.50005 0.50005 0 0 0 65.21875 27.697266 C 65.896135 28.160326 66.552092 28.652154 67.181641 29.171875 A 0.50014932 0.50014932 0 0 0 67.818359 28.400391 C 67.163908 27.860112 66.481865 27.351987 65.78125 26.873047 A 0.50005 0.50005 0 0 0 65.501953 26.78125 z M 38.505859 34.007812 C 37.845251 34.007813 36.824284 34.260032 35.978516 35.199219 C 35.271123 35.972723 32.998047 38.173727 32.998047 42.396484 C 32.998047 46.679817 36.023022 50.663593 36.412109 51.195312 L 36.414062 51.199219 L 36.416016 51.201172 C 36.430436 51.220332 36.575724 51.438775 36.775391 51.734375 C 36.975058 52.029975 37.248201 52.42704 37.589844 52.898438 C 38.273129 53.841229 39.231039 55.081376 40.439453 56.410156 C 42.856281 59.067717 46.270549 62.086384 50.5 63.777344 L 50.5 63.779297 C 53.950904 65.155835 56.049506 65.717908 57.503906 65.916016 C 58.958307 66.114123 59.774729 65.934404 60.470703 65.871094 L 60.472656 65.871094 C 61.387233 65.783994 62.594991 65.255966 63.746094 64.501953 C 64.897196 63.747941 65.973248 62.780676 66.378906 61.625 C 66.731316 60.624677 66.90952 59.697083 66.972656 58.958984 C 67.004226 58.589935 67.006568 58.268044 66.986328 58 C 66.966088 57.731956 66.952928 57.536276 66.816406 57.300781 L 66.814453 57.300781 C 66.637307 56.996725 66.369529 56.822032 66.078125 56.660156 C 65.787163 56.498526 65.449818 56.34545 65.052734 56.144531 L 65.050781 56.144531 C 64.637858 55.933746 63.442559 55.335311 62.248047 54.751953 C 61.052867 54.16827 59.91589 53.618524 59.449219 53.445312 L 59.447266 53.445312 C 59.064546 53.305532 58.679978 53.164003 58.230469 53.216797 C 57.78096 53.269587 57.352991 53.568619 57.033203 54.052734 C 56.544054 54.793239 54.963453 56.687978 54.5 57.222656 L 54.5 57.224609 L 54.498047 57.224609 C 54.307125 57.445275 54.196764 57.501114 54.064453 57.517578 C 53.932143 57.534038 53.705281 57.493568 53.341797 57.3125 L 53.345703 57.316406 C 52.873162 57.075171 52.068986 56.779112 50.955078 56.175781 C 49.841171 55.57245 48.447878 54.678493 46.929688 53.306641 C 44.585287 51.188617 42.970013 48.538118 42.507812 47.734375 L 42.507812 47.732422 C 42.322359 47.412661 42.342497 47.293967 42.390625 47.162109 C 42.438345 47.031376 42.583064 46.859731 42.78125 46.658203 L 42.785156 46.654297 C 43.200691 46.240138 43.642306 45.646556 44.033203 45.185547 L 44.035156 45.183594 L 44.035156 45.181641 C 44.474846 44.654232 44.641734 44.250708 44.908203 43.716797 L 44.910156 43.714844 L 44.910156 43.712891 C 45.255851 43.00208 45.073483 42.306015 44.84375 41.833984 C 44.81903 41.781934 44.67238 41.42699 44.486328 40.964844 C 44.299771 40.501443 44.059641 39.903463 43.804688 39.267578 C 43.294778 37.995809 42.722418 36.57638 42.353516 35.746094 C 42.023682 35.00017 41.647885 34.547881 41.222656 34.298828 C 40.798805 34.050582 40.378251 34.037375 40.085938 34.027344 L 40.082031 34.027344 C 39.59203 34.006824 39.04652 34.007812 38.505859 34.007812 z M 38.505859 35.007812 C 39.047859 35.007812 39.583912 35.008017 40.042969 35.027344 L 40.044922 35.027344 L 40.046875 35.027344 C 40.336463 35.037344 40.523526 35.048914 40.716797 35.162109 C 40.910068 35.275306 41.161287 35.521315 41.439453 36.150391 L 41.439453 36.152344 C 41.792551 36.947058 42.367862 38.370894 42.876953 39.640625 C 43.131499 40.275491 43.371026 40.871978 43.558594 41.337891 C 43.746162 41.803803 43.868468 42.11061 43.943359 42.267578 L 43.943359 42.269531 L 43.945312 42.271484 C 44.117584 42.625453 44.200021 42.888202 44.011719 43.275391 C 43.732078 43.836093 43.628816 44.10771 43.267578 44.541016 L 43.271484 44.539062 C 42.849498 45.036737 42.395601 45.631526 42.076172 45.949219 L 42.074219 45.951172 L 42.072266 45.953125 C 41.866106 46.162324 41.597043 46.42067 41.451172 46.820312 C 41.3053 47.219955 41.353032 47.735136 41.642578 48.234375 C 42.131246 49.08401 43.779342 51.807915 46.259766 54.048828 C 47.843016 55.479235 49.308033 56.420713 50.478516 57.054688 C 51.649358 57.688856 52.55612 58.035267 52.892578 58.207031 L 52.894531 58.207031 L 52.896484 58.208984 C 53.348 58.433911 53.76331 58.562551 54.1875 58.509766 C 54.611115 58.457056 54.970009 58.206586 55.253906 57.878906 C 55.740453 57.317584 57.27629 55.501011 57.869141 54.603516 C 58.090353 54.268631 58.203462 54.22569 58.345703 54.208984 C 58.487944 54.192274 58.744235 54.253544 59.103516 54.384766 C 59.387252 54.490292 60.619807 55.069829 61.808594 55.650391 C 62.998414 56.231457 64.200934 56.832627 64.597656 57.035156 L 64.599609 57.035156 C 65.017738 57.246782 65.358451 57.403579 65.591797 57.533203 C 65.825143 57.662827 65.927318 57.761791 65.951172 57.802734 C 65.914652 57.739734 65.975324 57.878684 65.990234 58.076172 C 66.005144 58.273659 66.002419 58.547971 65.974609 58.873047 C 65.918999 59.523198 65.758137 60.377292 65.435547 61.292969 C 65.166206 62.060292 64.247616 62.979278 63.199219 63.666016 C 62.150821 64.352753 60.955329 64.820103 60.378906 64.875 C 59.591675 64.94676 58.967575 65.104839 57.638672 64.923828 C 56.308822 64.742686 54.27919 64.209071 50.871094 62.849609 C 46.851545 61.242569 43.534109 58.32722 41.179688 55.738281 C 40.002477 54.443812 39.065309 53.232645 38.398438 52.3125 C 38.065002 51.852427 37.799306 51.465642 37.603516 51.175781 C 37.407726 50.885921 37.302422 50.715952 37.214844 50.599609 C 36.797398 50.029115 33.998047 46.195201 33.998047 42.396484 C 33.998047 38.519242 35.92619 36.737542 36.716797 35.873047 L 36.716797 35.871094 L 36.71875 35.871094 C 37.356331 35.161334 38.097339 35.007812 38.505859 35.007812 z"></path>
+											</svg>
+										</span>
+										<span class="nav-text">
+											Support
+										</span>
+									</a>
+								</li>
 
-			<div class="row">
-				<!-- COLUMN 1: Product Grid Catalog & Action Buttons Grid (HashMicro + Alfamart) -->
-				<div class="col-xl-6 col-lg-6 col-md-12 d-flex flex-column" style="height: calc(100vh - 105px) !important; margin-bottom: 0px !important;">
-					<div class="card card-custom gutter-b bg-white border-0 mb-3" style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; border-radius: 24px !important;">
-						<div class="card-header border-0 py-2 d-flex flex-column gap-2" style="background: rgba(255,255,255,0.95); border-radius: 24px 24px 0 0;">
-							<div class="d-flex justify-content-between align-items-center w-100">
-								<h4 class="font-weight-bold text-dark mb-0" style="font-size: 1.1rem; letter-spacing: 0.5px;">Sparepart & Item</h4>
-								<div class="d-flex align-items-center gap-2">
-									<!-- Giant Neon LED Total Tagihan billboard in catalog header -->
-									<div class="led-header-total px-3 py-1 rounded-pill" style="background: #0f172a; border: 1.5px solid #00ffc4; box-shadow: 0 4px 15px rgba(0,255,196,0.15); display: flex; align-items: center;">
-										<span class="text-muted me-2" style="font-size: 0.65rem; font-weight: 800; color: #94a3b8 !important; letter-spacing: 1px; line-height: 1;">TOTAL:</span>
-										<span id="headerGrandTotal" style="font-family: monospace; font-size: 1rem; font-weight: 900; color: #00ffc4; text-shadow: 0 0 10px rgba(0, 255, 196, 0.5); line-height: 1;">Rp 0</span>
+								<li class="nav-item {{ request()->routeIs('log') ? 'active' : '' }}">
+									<a href="{{ route('log', ['id' => base64_encode(Auth::user()->RecordOwnerID)]) }}" class="nav-link">
+										<span class="svg-icon nav-icon">
+											<i class="fas fa-clipboard-check font-size-h4"></i>
+										</span>
+										<span class="nav-text">
+											Log Aktivitas
+										</span>
+									</a>
+								</li>
+								@endif
+								
+								<?php
+									if(!function_exists('is_nav_exact_active')) {
+										function is_nav_exact_active($item) {
+											if (!isset($item['Link']) || empty($item['Link']) || $item['Link'] == '#' || $item['Link'] == 'javascript:void(0)') {
+												return false;
+											}
+											return request()->routeIs($item['Link']) || request()->is($item['Link']) || request()->is($item['Link'] . '/*') || (filter_var($item['Link'], FILTER_VALIDATE_URL) ? request()->fullUrlIs($item['Link']) : request()->fullUrlIs(url($item['Link'])));
+										}
+									}
+									if(!function_exists('is_nav_child_active')) {
+										function is_nav_child_active($item) {
+											if (isset($item['submenu']) && count($item['submenu']) > 0) {
+												foreach ($item['submenu'] as $sub) {
+													if (is_nav_exact_active($sub) || is_nav_child_active($sub)) return true;
+												}
+											}
+											return false;
+										}
+									}
+
+									$premiumCategories = [
+										'pos' => [
+											'PermissionName' => 'Operasional POS Kasir',
+											'Icon' => 'fas fa-cash-register',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'billiard' => [
+											'PermissionName' => 'Sewa Billing & IoT',
+											'Icon' => 'fas fa-lightbulb',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'booking' => [
+											'PermissionName' => 'Booking & Reservasi',
+											'Icon' => 'far fa-calendar-alt',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'display' => [
+											'PermissionName' => 'Layar Antrean & KDS',
+											'Icon' => 'fas fa-desktop',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'resto' => [
+											'PermissionName' => 'Manajemen Resto',
+											'Icon' => 'fas fa-utensils',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'inventory' => [
+											'PermissionName' => 'Inventori & Stok',
+											'Icon' => 'fas fa-boxes',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'consignment' => [
+											'PermissionName' => 'Barang Konsinyasi',
+											'Icon' => 'fas fa-handshake',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'purchasing' => [
+											'PermissionName' => 'Pembelian & Supplier',
+											'Icon' => 'fas fa-shopping-cart',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'crm' => [
+											'PermissionName' => 'Mitra Bisnis & CRM',
+											'Icon' => 'fas fa-users',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'hrd' => [
+											'PermissionName' => 'HRD & Absensi',
+											'Icon' => 'fas fa-user-clock',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'finance' => [
+											'PermissionName' => 'Kas, Bank & Biaya',
+											'Icon' => 'fas fa-wallet',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'accounting' => [
+											'PermissionName' => 'Akuntansi & COA',
+											'Icon' => 'fas fa-book',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'reports_sales' => [
+											'PermissionName' => 'Laporan Bisnis & Stok',
+											'Icon' => 'fas fa-chart-bar',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'reports_accounting' => [
+											'PermissionName' => 'Laporan Keuangan',
+											'Icon' => 'fas fa-balance-scale',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'bengkel' => [
+											'PermissionName' => 'Manajemen Bengkel & Dealer',
+											'Icon' => 'fas fa-wrench',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'klinik' => [
+											'PermissionName' => 'Management Klinik',
+											'Icon' => 'fas fa-hospital',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'system' => [
+											'PermissionName' => 'Sistem & Pengaturan',
+											'Icon' => 'fas fa-cogs',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'bengkel' => [
+											'PermissionName' => 'Manajemen Bengkel',
+											'Icon' => 'fas fa-tools',
+											'submenu' => [],
+											'ParentType' => 1
+										],
+										'dealer' => [
+											'PermissionName' => 'Dealer Kendaraan',
+											'Icon' => 'fas fa-car-side',
+											'submenu' => [
+												[
+													'PermissionName' => 'Stok Unit Kendaraan',
+													'Link' => 'dealer/inventory',
+													'Icon' => 'fas fa-boxes',
+													'submenu' => [],
+													'ParentType' => 0
+												],
+												[
+													'PermissionName' => 'POS Penjualan Kendaraan',
+													'Link' => 'dealer/pos',
+													'Icon' => 'fas fa-cash-register',
+													'submenu' => [],
+													'ParentType' => 0
+												]
+											],
+											'ParentType' => 1
+										],
+									];
+
+									// Traverse $navbars and sort L2 items into the correct premium categories
+									foreach ($navbars as $lv1) {
+										if (!empty($lv1['submenu'])) {
+											foreach ($lv1['submenu'] as $lv2) {
+												$targetCat = null;
+												$l2Name = strtolower(trim($lv2['PermissionName']));
+
+												if ($l2Name === 'bussiness partner') {
+													$targetCat = 'crm';
+												} elseif ($l2Name === 'manajemen gate') {
+													$targetCat = 'billiard';
+												} elseif ($l2Name === 'controller') {
+													// Check submenus to differentiate billiard controller from system serial number controller
+													$isSystemController = false;
+													if (!empty($lv2['submenu'])) {
+														foreach ($lv2['submenu'] as $keyLv3 => $lv3) {
+															$l3Name = strtolower(trim($lv3['PermissionName']));
+															
+															// Filter out Lampu and Table Order for TiketGate
+															if (false /* disabled TiketGate filter */) {
+																if (str_contains($l3Name, 'lampu') || str_contains($l3Name, 'table order')) {
+																	unset($lv2['submenu'][$keyLv3]);
+																	continue;
+																}
+															}
+															
+															if (str_contains($l3Name, 'serial number') || str_contains($l3Name, 'generator')) {
+																$isSystemController = true;
+															}
+														}
+													}
+													if ($isSystemController) {
+														$targetCat = 'system';
+													} else {
+														if (false /* disabled TiketGate filter */) {
+															continue;
+														}
+														$targetCat = 'billiard';
+													}
+												} elseif ($l2Name === 'item master data') {
+													$targetCat = 'inventory';
+												} elseif ($l2Name === 'finance') {
+													$finSub = [];
+													$acctSub = [];
+													if (!empty($lv2['submenu'])) {
+														foreach ($lv2['submenu'] as $lv3) {
+															$l3Link = strtolower(trim($lv3['Link']));
+															if (in_array($l3Link, ['bank', 'metodepembayaran', 'kelompokrekening'])) {
+																$finSub[] = $lv3;
+															} else {
+																$acctSub[] = $lv3;
+															}
+														}
+													}
+													if (!empty($finSub)) {
+														$premiumCategories['finance']['submenu'][] = [
+															'PermissionName' => 'Master Keuangan',
+															'Link' => '#',
+															'Icon' => $lv2['Icon'],
+															'submenu' => $finSub,
+															'ParentType' => 1
+														];
+													}
+													if (!empty($acctSub)) {
+														$premiumCategories['accounting']['submenu'][] = [
+															'PermissionName' => 'Master Akuntansi',
+															'Link' => '#',
+															'Icon' => $lv2['Icon'],
+															'submenu' => $acctSub,
+															'ParentType' => 1
+														];
+													}
+													continue;
+												} elseif ($l2Name === 'pengaturan toko') {
+													$targetCat = 'system';
+												} elseif ($l2Name === 'pembelian') {
+													$targetCat = 'purchasing';
+												} elseif ($l2Name === 'penjualan') {
+													$posSub = [];
+													$bookSub = [];
+													if (!empty($lv2['submenu'])) {
+														foreach ($lv2['submenu'] as $lv3) {
+															$l3Link = strtolower(trim($lv3['Link']));
+															if (str_contains($l3Link, 'booking')) {
+																$bookSub[] = $lv3;
+															} else {
+																$posSub[] = $lv3;
+															}
+														}
+													}
+													if (!empty($posSub)) {
+														$premiumCategories['pos']['submenu'][] = [
+															'PermissionName' => 'Transaksi POS',
+															'Link' => '#',
+															'Icon' => $lv2['Icon'],
+															'submenu' => $posSub,
+															'ParentType' => 1
+														];
+													}
+													if (!empty($bookSub)) {
+														$premiumCategories['booking']['submenu'][] = [
+															'PermissionName' => 'Pemesanan Tempat',
+															'Link' => '#',
+															'Icon' => $lv2['Icon'],
+															'submenu' => $bookSub,
+															'ParentType' => 1
+														];
+													}
+													continue;
+												} elseif ($l2Name === 'halaman pos kasir') {
+													$targetCat = 'pos';
+												} elseif (strpos($l2Name, 'apotek') !== false || strpos($l2Name, 'peracikan') !== false || strpos($l2Name, 'pengambilan') !== false || in_array($l2Name, ['info kitchen', 'queue antrian fnb', 'monitor counter (recall)', 'antrian fnb dapur', 'queue lapangan', 'customer display pos'])) {
+													$targetCat = 'display';
+												} elseif ($l2Name === 'konsinyasi') {
+													$targetCat = 'consignment';
+												} elseif ($l2Name === 'management attendance' || str_contains($l2Name, 'absensi') || in_array($l2Name, ['pengajuan izin', 'approval izin', 'master gaji', 'proses penggajian', 'pengaturan libur'])) {
+													$targetCat = 'hrd';
+												} elseif ($l2Name === 'inventory') {
+													$targetCat = 'inventory';
+												} elseif ($l2Name === 'jurnal entry') {
+													$targetCat = 'accounting';
+												} elseif (in_array($l2Name, ['transaksi biaya', 'kas masuk', 'kas keluar', 'transfer kas', 'transaksi bank', 'opening balance', 'closing kasir', 'closing bulanan'])) {
+													$targetCat = 'finance';
+												} elseif (in_array($l2Name, ['lap penjualan', 'lap pembelian', 'laporan inventory'])) {
+													$targetCat = 'reports_sales';
+												} elseif ($l2Name === 'lap akutansi') {
+													$targetCat = 'reports_accounting';
+												} elseif (in_array($l2Name, ['antrian bengkel', 'riwayat servis', 'pendaftaran servis', 'mekanik progres', 'data booking bengkel'])) {
+													$targetCat = 'bengkel';
+												} elseif (in_array($l2Name, ['autorisasi', 'pengguna'])) {
+													$targetCat = 'system';
+												} elseif ($l2Name === 'paket') {
+													if (false /* disabled TiketGate filter */) {
+														if (!empty($lv2['submenu'])) {
+															foreach ($lv2['submenu'] as $keyLv3 => $lv3) {
+																$l3Name = strtolower(trim($lv3['PermissionName']));
+																if (str_contains($l3Name, 'lampu') || str_contains($l3Name, 'paket transaksi')) {
+																	unset($lv2['submenu'][$keyLv3]);
+																}
+															}
+														}
+													}
+													$targetCat = 'billiard';
+												} elseif ($l2Name === 'paket member') {
+													$targetCat = 'billiard';
+												} elseif (in_array($l2Name, ['master resto', 'transaksi resto'])) {
+													$targetCat = 'resto';
+												} elseif (in_array($l2Name, ['produk', 'term and conditon', 'app setting', 'slide login', 'pengguna', 'invoice pengguna', 'article', 'serial number generator', 'voucher', 'integrasi multi-app'])) {
+													$targetCat = 'system';
+												}
+
+												if ($targetCat && isset($premiumCategories[$targetCat])) {
+													$premiumCategories[$targetCat]['submenu'][] = $lv2;
+												}
+											}
+										}
+									}
+
+									// Tambahkan Menu Panduan Offline POS Khusus SuperAdmin (Pemilik Aplikasi)
+									if (Auth::user()->RecordOwnerID == '999999') {
+										$premiumCategories['system']['submenu'][] = [
+											'PermissionName' => 'Panduan Offline POS',
+											'Link' => 'panduan-offline-pos',
+											'Icon' => 'fas fa-book',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+										$premiumCategories['system']['submenu'][] = [
+											'PermissionName' => 'Offline License (POS)',
+											'Link' => 'admin/offline-licenses',
+											'Icon' => 'fas fa-key',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+									}
+
+									// Add hardcoded Bengkel Menus if Jenis Usaha is Bengkel/Servis
+									if (isset($cData[0]['JenisUsaha']) && in_array($cData[0]['JenisUsaha'], ['Bengkel', 'Servis'])) {
+										$premiumCategories['crm']['submenu'][] = [
+											'PermissionName' => 'Mekanik',
+											'Link' => 'mekanik',
+											'Icon' => 'fas fa-user-cog',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+										$premiumCategories['inventory']['submenu'][] = [
+											'PermissionName' => 'Permintaan Sparepart Bengkel',
+											'Link' => 'gudang/permintaan-sparepart',
+											'Icon' => 'fas fa-truck-loading',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+										$premiumCategories['bengkel']['submenu'][] = [
+											'PermissionName' => 'Data Booking Bengkel',
+											'Link' => 'admin-booking-bengkel',
+											'Icon' => 'fas fa-calendar-check',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+										$premiumCategories['bengkel']['submenu'][] = [
+											'PermissionName' => 'Service Advisor',
+											'Link' => 'service-advisor',
+											'Icon' => 'fas fa-clipboard-list',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+										$premiumCategories['bengkel']['submenu'][] = [
+											'PermissionName' => 'Master Kendaraan',
+											'Link' => 'kendaraan',
+											'Icon' => 'fas fa-car',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+										$premiumCategories['display']['submenu'][] = [
+											'PermissionName' => 'Dashboard Mekanik',
+											'Link' => 'dashboard-mekanik',
+											'Icon' => 'fas fa-wrench',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+										$premiumCategories['display']['submenu'][] = [
+											'PermissionName' => 'Queue Bengkel',
+											'Link' => 'queue-bengkel',
+											'Icon' => 'fas fa-tv',
+											'submenu' => [],
+											'ParentType' => 0
+										];
+									}
+
+									// ---> REORGANIZE DISPLAY MENU <---
+									$displayItems = $premiumCategories['display']['submenu'];
+									$apotekItems = [];
+									$fnbItems = [];
+									$otherDisplayItems = [];
+									$userJenisUsaha = DB::table('company')->where('KodePartner', Auth::user()->RecordOwnerID)->value('JenisUsaha') ?? 'Retail';
+									$jenisUsaha = isset($cData[0]['JenisUsaha']) ? $cData[0]['JenisUsaha'] : '';
+
+									foreach ($displayItems as $item) {
+										$name = strtolower(trim($item['PermissionName']));
+										// Identifikasi item-item F&B / KDS
+										if (strpos($name, 'fnb') !== false || strpos($name, 'kitchen') !== false || strpos($name, 'dapur') !== false) {
+                                            $fnbItems[] = $item;
+										} elseif (strpos($name, 'apotek') !== false || strpos($name, 'peracikan') !== false || strpos($name, 'pengambilan') !== false) {
+											$apotekItems[] = $item;
+										} else {
+											$otherDisplayItems[] = $item;
+										}
+									}
+
+									$newDisplaySubmenu = [];
+									
+									// Masukkan item F&B
+									if (count($fnbItems) > 0 && $jenisUsaha != 'Apotek' && $jenisUsaha != 'Klinik') {
+										foreach ($fnbItems as $fnb) {
+											$newDisplaySubmenu[] = $fnb;
+										}
+									}
+									
+									// Masukkan item Apotek
+									if (count($apotekItems) > 0) {
+										if ($jenisUsaha == 'Klinik') {
+											// Do NOT put apotek displays into klinik menu, put them into display menu
+											foreach ($apotekItems as $apt) {
+												$newDisplaySubmenu[] = $apt;
+											}
+											// Tambahkan submenu khusus klinik di sini sebagai placeholder
+											$premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Siklus Klinik',
+												'Link' => 'klinik-dashboard',
+												'Icon' => 'fas fa-project-diagram',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+											$premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Kunjungan / Antrean',
+												'Link' => 'klinik-appointments',
+												'Icon' => 'fas fa-calendar-check',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+											$premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Master Pasien',
+												'Link' => 'klinik-patients',
+												'Icon' => 'fas fa-users',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+											$premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Jadwal Dokter',
+												'Link' => 'klinik-doctors',
+												'Icon' => 'fas fa-user-md',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+											$premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Rekam Medis (EMR)',
+												'Link' => 'klinik-emr',
+												'Icon' => 'fas fa-notes-medical',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+                                            $premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Jasa Medis',
+												'Link' => 'klinik-jasa',
+												'Icon' => 'fas fa-stethoscope',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+                                            $premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Master Poli',
+												'Link' => 'klinik-poli',
+												'Icon' => 'fas fa-clinic-medical',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+                                            $premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Master Asuransi',
+												'Link' => 'klinik-asuransi',
+												'Icon' => 'fas fa-shield-alt',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+                                            $premiumCategories['klinik']['submenu'][] = [
+												'PermissionName' => 'Pengaturan BPJS',
+												'Link' => 'klinik-bpjs',
+												'Icon' => 'fas fa-heartbeat',
+												'submenu' => [],
+												'ParentType' => 0
+											];
+										} elseif ($jenisUsaha == 'Apotek') {
+											foreach ($apotekItems as $apt) {
+												$newDisplaySubmenu[] = $apt;
+											}
+										}
+									}
+									
+									// Masukkan sisa menu display (misal Customer Display POS, Bengkel, dll)
+									foreach ($otherDisplayItems as $item) {
+										// Hide Queue Lapangan if not Billiard/Lapangan/Booking etc
+										if (strtolower(trim($item['PermissionName'])) == 'queue lapangan') {
+											if (in_array($jenisUsaha, ['Apotek', 'Klinik', 'Retail', 'Bengkel', 'Resto'])) {
+												continue; // Skip Queue Lapangan for these business types
+											}
+										}
+										$newDisplaySubmenu[] = $item;
+									}
+
+									$premiumCategories['display']['submenu'] = $newDisplaySubmenu;
+									// ---> END REORGANIZE <---
+
+									// Filter out categories that are empty
+									$activePremiumCategories = [];
+									foreach ($premiumCategories as $key => $cat) {
+										if (!empty($cat['submenu'])) {
+											$activePremiumCategories[$key] = $cat;
+										}
+									}
+
+									// Specific filters based on business type
+									if (isset($cData[0]['JenisUsaha'])) {
+										$jenisUsahaHeader = $cData[0]['JenisUsaha'];
+										
+										// Sembunyikan Resto & Billiard untuk Bengkel
+										if (false /* disabled Bengkel filter */) {
+											unset($activePremiumCategories['resto']);
+											unset($activePremiumCategories['billiard']);
+										} else {
+											// Sembunyikan Bengkel & Dealer untuk selain Bengkel
+											unset($activePremiumCategories['bengkel']);
+											unset($activePremiumCategories['dealer']);
+										}
+									}
+									// Untuk usaha Parkir: sembunyikan semua menu yang tidak relevan
+									if (false /* disabled Parkir filter */) {
+										$keysToRemove = ['pos', 'billiard', 'booking', 'display', 'resto', 'inventory', 'consignment', 'purchasing', 'crm', 'finance', 'accounting', 'reports_sales', 'reports_accounting', 'bengkel', 'dealer'];
+										foreach ($keysToRemove as $removeKey) {
+											unset($activePremiumCategories[$removeKey]);
+										}
+									}
+									// Untuk usaha TiketGate: sembunyikan semua menu yang tidak relevan
+									if (false /* disabled TiketGate filter 2 */) {
+										$keysToRemove = ['booking', 'resto', 'inventory', 'consignment', 'purchasing', 'crm', 'bengkel', 'dealer'];
+										foreach ($keysToRemove as $removeKey) {
+											unset($activePremiumCategories[$removeKey]);
+										}
+									}
+									// Untuk usaha Retail / Apotek: sembunyikan semua menu yang tidak relevan
+									if (false /* disabled Retail filter */) {
+										$keysToRemove = ['billiard', 'booking', 'resto', 'bengkel', 'dealer'];
+										// Khusus Retail biasa, sembunyikan display. Tapi Apotek/Klinik butuh display.
+										if ($cData[0]['JenisUsaha'] == 'Retail') {
+											$keysToRemove[] = 'display';
+										}
+										foreach ($keysToRemove as $removeKey) {
+											unset($activePremiumCategories[$removeKey]);
+										}
+									}
+									// Untuk usaha FnB: sembunyikan semua menu yang tidak relevan
+									if (false /* disabled FnB filter */) {
+										$keysToRemove = ['bengkel', 'dealer'];
+										foreach ($keysToRemove as $removeKey) {
+											unset($activePremiumCategories[$removeKey]);
+										}
+									}
+
+									$sectionGroups = [
+										'front_office' => [
+											'label' => 'OPERASIONAL (FRONT-OFFICE)',
+											'keys' => ['pos', 'billiard', 'booking', 'display', 'dealer']
+										],
+										'back_office' => [
+											'label' => 'MANAJEMEN & INVENTORI (BACK-OFFICE)',
+											'keys' => ['bengkel', 'klinik', 'resto', 'inventory', 'consignment', 'purchasing', 'crm', 'hrd']
+										],
+										'financial' => [
+											'label' => 'KEUANGAN & LAPORAN',
+											'keys' => ['finance', 'accounting', 'reports_sales', 'reports_accounting']
+										],
+										'system' => [
+											'label' => 'PENGATURAN & SISTEM',
+											'keys' => ['system']
+										]
+									];
+								?>
+
+								<!-- Render Categorized Sidebar Menu -->
+								<?php $__currentLoopData = $sectionGroups; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sKey => $sec): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+									<?php
+										$hasActiveCats = false;
+										foreach ($sec['keys'] as $cKey) {
+											if (isset($activePremiumCategories[$cKey])) {
+												$hasActiveCats = true;
+												break;
+											}
+										}
+									?>
+									
+									@if($hasActiveCats)
+										<li class="menu-section mt-4 mb-2" style="list-style-type: none;">
+											<span class="menu-section-text text-uppercase font-weight-bold" style="font-size: 0.65rem; letter-spacing: 1.5px; padding-left: 25px; color: #8a8a9e; display: block;">
+												{{ $sec['label'] }}
+
+											</span>
+										</li>
+										
+										<?php $__currentLoopData = $sec['keys']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cKey): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+											@if(isset($activePremiumCategories[$cKey]))
+												<?php
+													$lv1 = $activePremiumCategories[$cKey];
+													$lv1ExactActive = is_nav_exact_active($lv1);
+													$lv1ChildActive = is_nav_child_active($lv1);
+												?>
+												<li class="nav-item {{ $lv1ExactActive ? 'active' : '' }}">
+													<a class="nav-link {{ ($lv1ExactActive || $lv1ChildActive) ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="javascript:void(0)" data-bs-target="#{{ $cKey }}" role="button" aria-expanded="{{ ($lv1ExactActive || $lv1ChildActive) ? 'true' : 'false' }}" aria-controls="{{ $cKey }}">
+														<span class="svg-icon nav-icon">
+															<i class="{{ $lv1['Icon'] }} font-size-h4"></i>
+														</span>
+														<span class="nav-text">{{ $lv1['PermissionName'] }}</span>
+														<i class="fas fa-chevron-right fa-rotate-90"></i>
+													</a>
+												</li>
+
+												<div class="collapse nav-collapse {{ ($lv1ExactActive || $lv1ChildActive) ? 'show' : '' }}" id="{{ $cKey }}" data-bs-parent="#accordion">
+													<div id="accordion_{{ $cKey }}">
+														<ul class="nav flex-column">
+															@if(count($lv1['submenu']) > 0)
+																<?php $__currentLoopData = $lv1['submenu']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lv2): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+																	@if(isset($lv2['ParentType']) && $lv2['ParentType'] == 1)
+																		<?php 
+																			$lv2ExactActive = is_nav_exact_active($lv2);
+																			$lv2ChildActive = is_nav_child_active($lv2);
+																		?>
+																		<li class="nav-item {{ $lv2ExactActive ? 'active' : '' }}">
+																			<a class="nav-link sub-nav-link {{ ($lv2ExactActive || $lv2ChildActive) ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#sub_{{ str_replace([' ', '.'],'',$lv2['PermissionName']) }}" role="button" aria-expanded="{{ ($lv2ExactActive || $lv2ChildActive) ? 'true' : 'false' }}" aria-controls="sub_{{ str_replace([' ', '.'],'',$lv2['PermissionName']) }}">
+																				<span class="svg-icon nav-icon d-flex justify-content-center">
+																					<svg xmlns="http://www.w3.org/2000/svg" width="10px" height="10px" fill="currentColor" class="bi bi-circle" viewBox="0 0 16 16">
+																						<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+																					</svg>
+																				</span>
+																				<span class="nav-text">{{ $lv2['PermissionName'] }}</span>
+																				<i class="fas fa-chevron-right fa-rotate-90"></i>
+																			</a>
+
+																			<div class="collapse nav-collapse {{ ($lv2ExactActive || $lv2ChildActive) ? 'show' : '' }}" id="sub_{{ str_replace([' ', '.'],'',$lv2['PermissionName']) }}" data-bs-parent="#accordion_{{ $cKey }}">
+																				<ul class="nav flex-column">
+																					@if(count($lv2['submenu']) > 0)
+																						<?php $__currentLoopData = $lv2['submenu']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lv3): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+																							<li class="nav-item {{ is_nav_exact_active($lv3) ? 'active' : '' }}">
+																								<a href="{{ Route::has($lv3['Link']) ? route($lv3['Link']) : url($lv3['Link']) }}" class="nav-link mini-sub-nav-link">
+																									<span class="nav-text">{{ $lv3['PermissionName'] }}</span>
+																								</a>
+																							</li>
+																						@endforeach
+																					@endif
+																				</ul>
+																			</div>
+																		</li>
+																	@else
+																		<li class="nav-item {{ is_nav_exact_active($lv2) ? 'active' : '' }}">
+																			<a href="{{ url($lv2['Link']) }}" class="nav-link sub-nav-link">
+																				<span class="svg-icon nav-icon d-flex justify-content-center">
+																					<svg xmlns="http://www.w3.org/2000/svg" width="10px" height="10px" fill="currentColor" class="bi bi-circle" viewBox="0 0 16 16">
+																						<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+																					</svg>
+																				</span>
+																				<span class="nav-text">{{ $lv2['PermissionName'] }}</span>
+																			</a>
+																		</li>
+																	@endif
+																@endforeach
+															@endif
+														</ul>
+													</div>
+												</div>
+											@endif
+										@endforeach
+									@endif
+								@endforeach
+							</ul>
+						</div>
+						<!--end::Menu Nav-->
+					</div>
+					<!--end::Menu Container-->
+				</div>
+				<!--end::Aside Menu-->
+			</div>
+		</div>
+
+		<!--begin::Aside-->
+		
+		<div class="aside-overlay"></div>
+		<!--end::Aside-->
+		<!--begin::Wrapper-->
+		<div class="d-flex flex-column flex-row-fluid wrapper" id="tc_wrapper">
+			<!--begin::Header-->
+			<div id="tc_header" class="header header-fixed">
+				<!--begin::Container-->
+				<div class="container-fluid d-flex align-items-stretch justify-content-between">
+					<!--begin::Header Menu Wrapper-->
+					<div class="header-menu-wrapper header-menu-wrapper-left" id="tc_header_menu_wrapper">
+						<!--begin::Header Menu-->
+						<div id="tc_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
+							<!--begin::Header Nav-->
+							<ul class="menu-nav">
+
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active p-0"
+									data-menu-toggle="click" aria-haspopup="true">
+									<!--begin::Toggle-->
+									<div class="btn  btn-clean btn-dropdown mr-0 p-0" id="tc_aside_toggle"> 
+										<span class="svg-icon svg-icon-xl svg-icon-primary">
+
+											<svg width="24px" height="24px" viewBox="0 0 16 16" class="bi bi-list"
+												fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+												<path fill-rule="evenodd"
+													d="M2.5 11.5A.5.5 0 0 1 3 11h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 3h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+											</svg>
+										</span>
 									</div>
-									<span class="badge bg-light-primary text-primary px-3 py-1 rounded-pill font-weight-bold" style="font-size: 0.75rem;">
-										<span id="_totalCatalogItems">0</span> Items Available
+									
+									<div class="topbar">
+										<div class="dropdown btn btn-danger">
+											<div class="topbar-item">
+												<div class="btn btn-icon w-auto btn-clean d-flex align-items-center pr-1 ps-3">
+													<span class="symbol symbol-35 symbol-light-success">
+															@if(!empty($cData[0]['icon']))
+																<img src="{{ $cData[0]['icon'] }}" width="20px" height="20px">
+															@else
+																<i class="bi bi-shop text-white" style="font-size: 1.2rem;"></i>
+															@endif
+													</span>
+													<label></label>
+													<a href="{{ url('companysetting') }}" class="text-dark-50 font-size-base d-none d-xl-inline me-3"> {{ $cData[0]['NamaPartner'] }}</a>
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<!--end::Toolbar-->
+								</li>
+
+							</ul>
+							<!--end::Header Nav-->
+						</div>
+						<!--end::Header Menu-->
+					</div>
+					<!--end::Header Menu Wrapper-->
+					<!--begin::Topbar-->
+
+					
+						
+
+					<div class="topbar">	
+						
+						<div class="posicon d-lg-flex d-none">
+							@if(isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] === 'TiketGate')
+								<a href="{{ url('gate/logs') }}" class="btn btn-info white me-2">Log Gate</a>
+								<a href="{{ url('fpenjualan/pos') }}" class="btn btn-primary white me-2">POS Tiket</a>
+							@elseif(isset($cData[0]['JenisUsaha']) && in_array($cData[0]['JenisUsaha'], ['Bengkel', 'Servis']))
+								<a href="{{ url('fpenjualan/bengkelpos') }}" class="btn btn-primary white me-2">
+									<i class="fas fa-cash-register mr-1"></i> POS Kasir
+								</a>
+							@else
+								<a href="{{ url('fpenjualan/pos') }}" class="btn btn-primary white me-2">
+									<i class="fas fa-cash-register mr-1"></i> POS Kasir
+								</a>
+							@endif
+							<a href="#" class="btn btn-warning btn-update-notification d-flex align-items-center justify-content-center white me-2 pulse-update" style="display: none !important; font-weight: bold; background-color: #ffc107; color: #000;">
+								<i class="fas fa-exclamation-circle text-dark me-2"></i> Update Tersedia
+							</a>
+
+                            <?php
+                                $licenseWarn = false;
+                                $licenseDaysLeft = 0;
+                                $licensePath = storage_path('app/offline_license.json');
+                                if (file_exists($licensePath)) {
+                                    $lData = json_decode(file_get_contents($licensePath), true);
+                                    if (isset($lData['valid_until'])) {
+                                        $diff = \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($lData['valid_until']), false);
+                                        if ($diff <= 7 && $diff >= 0) {
+                                            $licenseWarn = true;
+                                            $licenseDaysLeft = (int)$diff;
+                                        }
+                                    }
+                                }
+                            ?>
+
+                            @if($licenseWarn)
+							<a href="#" class="btn btn-danger d-flex align-items-center justify-content-center white me-2" title="Segera hubungi Admin Pusat untuk perpanjangan." style="font-weight: bold;">
+								<i class="fas fa-clock text-white me-2"></i> Lisensi Habis {{ $licenseDaysLeft == 0 ? 'Hari Ini' : "H-{$licenseDaysLeft}" }}
+
+							</a>
+                            @endif
+						</div>
+
+						<!--begin::Quick Actions-->
+						<div class="dropdown">
+
+							<div class="topbar-item" data-bs-toggle="dropdown" data-offset="10px,0px">
+								<div id="kt_open_fullscreen" class="btn btn-icon btn-clean btn-dropdown me-1"
+									onclick="openFullscreen();">
+									<span class="svg-icon svg-icon-xl svg-icon-primary">
+
+										<svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-fullscreen"
+											fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+											<path fill-rule="evenodd"
+												d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
+										</svg>
+
+
+
+									</span>
+
+								</div>
+
+								<div id="kt_close_fullscreen" class="btn btn-icon btn-clean btn-dropdown me-1"
+									onclick="closeFullscreen();" style="display: none;">
+									<span class="svg-icon svg-icon-xl svg-icon-primary">
+										<svg width="20px" height="20px" viewBox="0 0 16 16"
+											class="bi bi-fullscreen-exit" fill="currentColor"
+											xmlns="http://www.w3.org/2000/svg">
+											<path fill-rule="evenodd"
+												d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
+										</svg>
 									</span>
 								</div>
 							</div>
-							<div class="input-group">
-								<span class="input-group-text bg-light border-end-0" style="border-radius: 14px 0 0 14px !important; height: 40px; padding: 0.5rem 0.75rem !important;">
-									<i class="fas fa-search text-muted"></i>
-								</span>
-								<input type="text" class="form-control border-start-0" id="_CatalogSearch" placeholder="Cari nama barang atau barcode..." style="border-radius: 0 14px 14px 0 !important; background-color: #f8fafc !important; height: 40px; padding-left: 0 !important; padding-top: 0.5rem !important; padding-bottom: 0.5rem !important;">
-							</div>
-							<!-- Scrollable Category Menu -->
-							<div class="d-flex gap-2 overflow-auto py-1 scrollbar-1" style="white-space: nowrap;">
-								<button class="btn btn-sm btn-primary rounded-pill px-4 cat-pill active" data-category="ALL" style="font-weight: 700; font-size: 0.8rem; background: var(--primary) !important;">All Items</button>
-								<button class="btn btn-sm btn-outline-secondary rounded-pill px-4 cat-pill" data-category="BARANG" style="font-weight: 700; font-size: 0.8rem;">Barang</button>
-								<button class="btn btn-sm btn-outline-secondary rounded-pill px-4 cat-pill" data-category="JASA" style="font-weight: 700; font-size: 0.8rem;">Jasa / Service</button>
-							</div>
-						</div>
-						<div class="card-body p-3 flex-grow-1 overflow-auto scrollbar-1" style="background: rgba(79, 70, 229, 0.015); border-radius: 0 0 24px 24px;">
-							<div class="row g-2" id="_productGridContainer">
-								<div class="col-12 text-center py-5">
-									<div class="spinner-border text-primary" role="status"></div>
-									<p class="text-muted mt-2">Memuat Katalog Produk...</p>
-								</div>
-							</div>
-						</div>
-					</div>
 
-					<!-- Alfamart style Keyboard Action Helper Button Grid -->
-					<div class="card card-custom gutter-b bg-white border-0 p-3 mb-0" style="height: 140px; flex-shrink: 0; border-radius: 24px !important; display: flex; flex-direction: column; justify-content: center;">
-						<div class="d-flex align-items-center justify-content-between mb-2">
-							<span class="text-muted font-weight-bold" style="font-size: 0.85rem;">
-								<i class="fas fa-keyboard text-primary me-1"></i> Cashier Interactive Keyboard Shortcuts
-							</span>
-							<span class="badge bg-light text-muted font-weight-normal" style="font-size: 0.7rem;">Click to trigger</span>
-						</div>
-						<div class="alfamart-shortcut-grid">
-							<button type="button" class="btn-alfamart-tile tile-f6" onclick="openTarikPKB()">
-								<kbd>F8</kbd>
-								<span>Tarik PKB</span>
-							</button>
-							<button type="button" class="btn-alfamart-tile tile-f2" onclick="jQuery(document).trigger(jQuery.Event('keydown', {which: 113}));">
-								<kbd>F2</kbd>
-								<span>Edit Qty</span>
-							</button>
-							<button type="button" class="btn-alfamart-tile tile-f3" onclick="jQuery(document).trigger(jQuery.Event('keydown', {which: 114}));">
-								<kbd>F3</kbd>
-								<span>Diskon (%)</span>
-							</button>
-							<button type="button" class="btn-alfamart-tile tile-f4" onclick="jQuery(document).trigger(jQuery.Event('keydown', {which: 115}));">
-								<kbd>F4</kbd>
-								<span>Diskon (Rp)</span>
-							</button>
-							<button type="button" class="btn-alfamart-tile tile-f5" onclick="jQuery('#btBayar').click();">
-								<kbd>F5</kbd>
-								<span>Bayar (Pay)</span>
-							</button>
-							<button type="button" class="btn-alfamart-tile tile-f6" onclick="jQuery('#btDraft').click();">
-								<kbd>F6</kbd>
-								<span>Simpan Draft</span>
-							</button>
-							<button type="button" class="btn-alfamart-tile tile-f7" onclick="jQuery('#btshippingcost').click();">
-								<kbd>F7</kbd>
-								<span>Tambah Jasa</span>
-							</button>
-							<button type="button" class="btn-alfamart-tile tile-f9" onclick="openAdvisorPopup()">
-								<kbd>F9</kbd>
-								<span>Advisor</span>
-							</button>
-							<button type="button" class="btn-alfamart-tile tile-del" onclick="jQuery('#btBatal').click();">
-								<kbd>DEL</kbd>
-								<span>Batal Transaksi</span>
-							</button>
-						</div>
-					</div>
-				</div>
 
-				<!-- COLUMN 2: Business Partner Area & Touch NumPad (Alfamart layout style) -->
-				<div class="col-xl-3 col-lg-3 col-md-12 d-flex flex-column" style="height: calc(100vh - 105px) !important; margin-bottom: 0px !important;">
-					<!-- Tactile Glowing Barcode Scanner Card (Shifted to Column 2 for spacious cart) -->
-					<div class="card card-custom gutter-b bg-white border-0 mb-3 flex-shrink-0" style="height: auto !important; border-radius: 24px !important;">
-						<div class="card-body p-2 px-3">
-							<div class="row g-2">
-								<div class="col-12 mb-0">
-									<div class="barcode-wrapper">
-										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-qr-code-scan barcode-icon" viewBox="0 0 16 16">
-											<path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5M.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 10 14.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5"/>
-										</svg>
-										<input type="text" class="form-control" id="_Barcode" placeholder="Scan Barcode saja (Fokus)..." style="padding-left: 50px !important; height: 36px;">
-									</div>
-								</div>
-								<div class="col-6">
-									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1;">Kuantitas (Qty)</label>
-									<input type="number" class="form-control border-dark" id="_Qty" value="0" style="height: 28px; padding: 2px 6px !important; font-size: 0.8rem;">
-								</div>
-								<div class="col-6">
-									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1;">Diskon (Rp / %)</label>
-									<input type="number" class="form-control border-dark" id="_Diskon" value="0" style="height: 28px; padding: 2px 6px !important; font-size: 0.8rem;">
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Hidden Sales Input (Automatically handled via user account role) -->
-					<input type="hidden" id="KodeSales" value="{{ Auth::user()->KodeSales ?? '' }}">
-
-					<!-- Business Partner Selector Card (Compact - containing only Pilih Pelanggan) -->
-					<div class="card card-custom gutter-b bg-white border-0 mb-3 flex-shrink-0" style="height: auto !important; border-radius: 24px !important;">
-						<div class="card-header align-items-center border-0 py-2">
-							<div class="card-title mb-0 d-flex align-items-center gap-2">
-								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-people-fill text-primary" viewBox="0 0 16 16">
-									<path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
-								</svg>
-								<h4 class="font-weight-bold text-dark mb-0" style="font-size: 1rem;">Business Partner</h4>
-							</div>
-						</div>
-						<div class="card-body pt-0 pb-2">
-							<div class="mb-2">
-								<fieldset class="form-group mb-0 d-flex align-items-center gap-1">
-									<div style="flex: 1; min-width: 0;">
-										<select class="js-example-basic-single js-states form-control bg-transparent" id="KodePelanggan" name="KodePelanggan" style="width: 100%;">
-											<option value="">-- Pelanggan Umum --</option>
-											@foreach($pelanggan as $ko)
-												<option value="{{ $ko->KodePelanggan }}">
-													{{ $ko->NamaPelanggan }}
-												</option>
-											@endforeach
-										</select>
-									</div>
-									<button class="btn btn-primary d-flex align-items-center justify-content-center px-3" style="height: 40px; border-radius: 14px !important; background: var(--primary) !important;" id="btSearchCustomer" title="Cari Member">
-										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-											<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-										</svg>
-									</button>
-									<button class="btn btn-secondary d-flex align-items-center justify-content-center px-3" style="height: 40px; border-radius: 14px !important; background: #e2e8f0 !important; color: #475569 !important; border: 1px solid #cbd5e1 !important;" id="btAddCustomer" title="Tambah Member Baru">
-										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-											<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
-										</svg>
-									</button>
-								</fieldset>
-							</div>
-							
-							<!-- Input Plat Nomor -->
-							<div class="mb-2">
-								<fieldset class="form-group mb-0 d-flex align-items-center gap-1">
-									<div style="flex: 1; min-width: 0;">
-										<input type="text" class="form-control" id="PlatNomor" name="PlatNomor" placeholder="Plat Nomor" style="width: 100%; height: 40px; border-radius: 14px; padding-left: 15px; font-weight: 600; text-transform: uppercase;">
-									</div>
-								</fieldset>
-							</div>
-							
-							<!-- Pilihan Mekanik -->
-							<div class="mb-0">
-								<fieldset class="form-group mb-0 d-flex align-items-center gap-1">
-									<div style="flex: 1; min-width: 0;">
-										<select class="js-example-basic-single js-states form-control bg-transparent" id="KodeMekanik" name="KodeMekanik" style="width: 100%;">
-											<option value="">-- Pilih Mekanik --</option>
-											@foreach($mekanik as $m)
-												<option value="{{ $m->KodeMekanik }}">
-													{{ $m->NamaMekanik }}
-												</option>
-											@endforeach
-										</select>
-									</div>
-								</fieldset>
-							</div>
 
 						</div>
-					</div>
+						<!--end::Quick Actions-->
 
-					<!-- Tactile Dark Touch Keyboard (Alfamart layout style) -->
-					<div class="card card-custom gutter-b bg-white border-0 p-2 px-3 mb-0" style="flex-grow: 1; border-radius: 24px !important; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;">
-						<div class="d-flex align-items-center justify-content-between mb-2">
-							<h4 class="font-weight-bold text-dark mb-0" style="font-size: 0.95rem;">Touch Keyboard</h4>
-							<div class="btn-group" role="group" style="background: #e2e8f0; border-radius: 10px; padding: 3px;">
-								<button type="button" class="btn active" id="btnToggleNum" onclick="toggleKeypadMode('NUM')" style="font-size: 0.95rem !important; font-weight: 900 !important; border-radius: 8px; border: none; transition: all 0.2s; padding: 6px 16px !important;">123</button>
-								<button type="button" class="btn" id="btnToggleAlpha" onclick="toggleKeypadMode('ALPHA')" style="font-size: 0.95rem !important; font-weight: 900 !important; border-radius: 8px; border: none; transition: all 0.2s; padding: 6px 16px !important;">ABC</button>
-							</div>
-						</div>
-						
-						<!-- Active Input Indicator / Status Banner -->
-						<div id="keypadIndicatorContainer" class="d-flex gap-2 mb-2">
-							<div class="flex-grow-1">
-								<div id="_activeInputIndicator" class="badge bg-light-primary text-primary w-100 py-2 font-weight-bold" style="font-size: 0.85rem; border-radius: 12px; letter-spacing: 0.5px;">
-									Kuantitas (Qty)
-								</div>
-							</div>
-						</div>
+						<!--begin::user-->
+						<div class="dropdown">
 
-						<!-- NUMPAD VIEW -->
-						<div class="numpad-grid" id="numpadViewContainer">
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('7')">
-								<span class="numpad-num">7</span>
-								<span class="numpad-sub">PQRS</span>
-							</button>
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('8')">
-								<span class="numpad-num">8</span>
-								<span class="numpad-sub">TUV</span>
-							</button>
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('9')">
-								<span class="numpad-num">9</span>
-								<span class="numpad-sub">WXYZ</span>
-							</button>
-							<button type="button" class="btn btn-numpad-action" id="_btnNumpadQty" onclick="switchActiveInput('QTY')">Qty</button>
-							
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('4')">
-								<span class="numpad-num">4</span>
-								<span class="numpad-sub">GHI</span>
-							</button>
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('5')">
-								<span class="numpad-num">5</span>
-								<span class="numpad-sub">JKL</span>
-							</button>
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('6')">
-								<span class="numpad-num">6</span>
-								<span class="numpad-sub">MNO</span>
-							</button>
-							<button type="button" class="btn btn-numpad-action" id="_btnNumpadDiscP" onclick="switchActiveInput('DISC_P')">%</button>
-							
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('1')">
-								<span class="numpad-num">1</span>
-								<span class="numpad-sub">.,-</span>
-							</button>
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('2')">
-								<span class="numpad-num">2</span>
-								<span class="numpad-sub">ABC</span>
-							</button>
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('3')">
-								<span class="numpad-num">3</span>
-								<span class="numpad-sub">DEF</span>
-							</button>
-							<button type="button" class="btn btn-numpad-action" id="_btnNumpadDiscR" onclick="switchActiveInput('DISC_R')">Rp</button>
-							
-							<button type="button" class="btn btn-numpad-clear" onclick="pressNumpad('C')">C</button>
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('0')">
-								<span class="numpad-num">0</span>
-								<span class="numpad-sub">SPACE</span>
-							</button>
-							<button type="button" class="btn btn-numpad" onclick="pressNumpad('00')">
-								<span class="numpad-num">00</span>
-								<span class="numpad-sub">00</span>
-							</button>
-							<button type="button" class="btn btn-numpad-enter" onclick="pressNumpad('ENTER')"><i class="fas fa-check"></i></button>
-						</div>
-
-						<!-- ALPHANUMERIC QWERTY VIEW (Initially Hidden) -->
-						<div id="qwertyViewContainer" class="d-none flex-grow-1" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-							<div class="qwerty-grid" style="display: grid; grid-template-rows: repeat(4, 1fr); gap: 6px; height: 100%;">
-								<!-- Row 1 -->
-								<div class="d-flex gap-1 justify-content-center">
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('q')">Q</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('w')">W</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('e')">E</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('r')">R</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('t')">T</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('y')">Y</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('u')">U</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('i')">I</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('o')">O</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('p')">P</button>
-								</div>
-								<!-- Row 2 -->
-								<div class="d-flex gap-1 justify-content-center" style="padding-left: 8px; padding-right: 8px;">
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('a')">A</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('s')">S</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('d')">D</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('f')">F</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('g')">G</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('h')">H</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('j')">J</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('k')">K</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('l')">L</button>
-								</div>
-								<!-- Row 3 -->
-								<div class="d-flex gap-1 justify-content-center">
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('z')">Z</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('x')">X</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('c')">C</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('v')">V</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('b')">B</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('n')">N</button>
-									<button type="button" class="btn btn-qwerty" onclick="pressQwerty('m')">M</button>
-									<button type="button" class="btn btn-qwerty btn-qwerty-action" onclick="pressQwerty('BACKSPACE')" style="min-width: 48px; background-color: #f1f5f9 !important;"><i class="fas fa-backspace" style="font-size: 0.8rem;"></i></button>
-								</div>
-								<!-- Row 4 -->
-								<div class="d-flex gap-1 justify-content-center">
-									<button type="button" class="btn btn-qwerty btn-qwerty-action" onclick="pressQwerty('SPACE')" style="flex-grow: 1; background-color: #f1f5f9 !important; font-weight: 700 !important; font-size: 0.72rem !important; letter-spacing: 0.5px;">SPACE</button>
-									<button type="button" class="btn btn-qwerty btn-qwerty-enter" onclick="pressQwerty('ENTER')" style="min-width: 65px; background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%) !important; color: white !important; font-weight: 900 !important; font-size: 0.75rem !important;">ENTER</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- COLUMN 3: Cart grid workspace, Price tag totals & Checkout widget (HashMicro + Alfamart) -->
-				<div class="col-xl-3 col-lg-3 col-md-12 d-flex flex-column" style="height: calc(100vh - 105px) !important; margin-bottom: 0px !important;">
-					<div class="receipt-tape p-3" style="height: 100% !important; border-radius: 24px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.04) !important; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; margin-bottom: 0px !important;">
-						<!-- DevExpress DataGrid list (Current Order Cart) -->
-						<div class="table-datapos px-1 mb-2" style="flex: 1 1 auto; min-height: 100px; overflow-y: auto;">
-							<div class="dx-viewport demo-container">
-								<div id="data-grid-demo">
-									<div id="gridContainerDetail" style="height: calc(100vh - 365px); min-height: 100px;"></div>
-								</div>
-							</div>
-						</div>
-
-						<!-- Live Bill Calculation Metrics -->
-						<div class="resulttable-pos px-1" style="margin-top: auto !important;">
-							<table class="table right-table mb-0">
-								<tbody>
-									<tr class="d-flex align-items-center justify-content-between" style="padding: 1px 0 !important; margin: 0 !important; line-height: 1.1; border-bottom: 1px dashed rgba(0,0,0,0.06);">
-										<th class="border-0 mb-0 p-0" style="font-size: 0.95rem !important; font-weight: 800 !important; color: #475569 !important; letter-spacing: 0.2px;">Total Items</th>
-										<td class="border-0 justify-content-end d-flex p-0">
-											<input type="text" name="_TotalItem" id="_TotalItem" value="0" class="TotalText" readonly style="font-size: 1.05rem !important; height: 20px !important; padding: 0 !important; width: 100px; text-align: right; border: none !important; background: transparent !important; font-weight: 900 !important; color: #0b57d0 !important; box-shadow: none !important; outline: none !important; pointer-events: none;">
-										</td>
-									</tr>
-									
-									<tr class="d-flex align-items-center justify-content-between" style="padding: 1px 0 !important; margin: 0 !important; line-height: 1.1; border-bottom: 1px dashed rgba(0,0,0,0.06);">
-										<th class="border-0 mb-0 p-0" style="font-size: 0.95rem !important; font-weight: 800 !important; color: #475569 !important; letter-spacing: 0.2px;">Subtotal</th>
-										<td class="border-0 justify-content-end d-flex p-0">
-											<input type="text" name="_SubTotal" id="_SubTotal" value="0" class="TotalText" readonly style="font-size: 1.05rem !important; height: 20px !important; padding: 0 !important; width: 150px; text-align: right; border: none !important; background: transparent !important; font-weight: 900 !important; color: #0b57d0 !important; box-shadow: none !important; outline: none !important; pointer-events: none;">
-										</td>
-									</tr>
-									
-									<tr class="d-flex align-items-center justify-content-between" style="padding: 1px 0 !important; margin: 0 !important; line-height: 1.1; border-bottom: 1px dashed rgba(0,0,0,0.06);">
-										<th class="border-0 mb-0 p-0" style="font-size: 0.95rem !important; font-weight: 800 !important; color: #475569 !important; letter-spacing: 0.2px;">Discount</th>
-										<td class="border-0 justify-content-end d-flex p-0">
-											<input type="text" name="_TotalDiskon" id="_TotalDiskon" value="0" class="TotalText" readonly style="font-size: 1.05rem !important; height: 20px !important; padding: 0 !important; width: 150px; text-align: right; border: none !important; background: transparent !important; font-weight: 900 !important; color: #0b57d0 !important; box-shadow: none !important; outline: none !important; pointer-events: none;">
-										</td>
-									</tr>
-
-									<tr class="d-flex align-items-center justify-content-between" style="padding: 2px 0 !important; margin: 0 !important; line-height: 1.1; border-bottom: 1px dashed rgba(0,0,0,0.06);">
-										<th class="border-0 d-flex align-items-center gap-1.5 p-0" style="font-size: 0.95rem !important; font-weight: 800 !important; color: #475569 !important; letter-spacing: 0.2px;">
-											Voucher
-										</th>
-										<td class="border-0 justify-content-end d-flex align-items-center p-0">
-											<div class="input-group" style="width: 150px; height: 26px;">
-												<input type="text" name="_VoucherCode" id="_VoucherCode" placeholder="KODE" class="form-control text-uppercase" style="font-size: 0.75rem !important; height: 26px !important; padding: 2px 6px !important; border: 1.2px solid rgba(11, 87, 208, 0.3) !important; border-radius: 6px 0 0 6px !important; font-weight: 700 !important; background: rgba(11, 87, 208, 0.02) !important;">
-												<button class="btn btn-primary d-flex align-items-center justify-content-center px-2" type="button" id="btnApplyVoucher" style="height: 26px !important; border-radius: 0 6px 6px 0 !important; background: var(--primary) !important; font-size: 0.7rem; font-weight: 800; border: none;">
-													Cek
-												</button>
-											</div>
-										</td>
-									</tr>
-
-									<tr class="d-flex align-items-center justify-content-between" style="padding: 1px 0 !important; margin: 0 !important; line-height: 1.1; border-bottom: 1px dashed rgba(0,0,0,0.06);">
-										<th class="border-0 mb-0 p-0" style="font-size: 0.95rem !important; font-weight: 800 !important; color: #475569 !important; letter-spacing: 0.2px;">Diskon Voucher</th>
-										<td class="border-0 justify-content-end d-flex p-0">
-											<input type="text" name="_VoucherDiscount" id="_VoucherDiscount" value="0" class="TotalText" readonly style="font-size: 1.05rem !important; height: 20px !important; padding: 0 !important; width: 150px; text-align: right; border: none !important; background: transparent !important; font-weight: 900 !important; color: #ef4444 !important; box-shadow: none !important; outline: none !important; pointer-events: none;">
-										</td>
-									</tr>
-									
-									<tr class="d-flex align-items-center justify-content-between" style="padding: 1px 0 !important; margin: 0 !important; line-height: 1.1; border-bottom: 1px dashed rgba(0,0,0,0.06);">
-										<th class="border-0 mb-0 p-0" style="font-size: 0.95rem !important; font-weight: 800 !important; color: #475569 !important; letter-spacing: 0.2px;">Tax</th>
-										<td class="border-0 justify-content-end d-flex p-0">
-											<input type="text" name="_TotalTax" id="_TotalTax" value="0" class="TotalText" readonly style="font-size: 1.05rem !important; height: 20px !important; padding: 0 !important; width: 150px; text-align: right; border: none !important; background: transparent !important; font-weight: 900 !important; color: #0b57d0 !important; box-shadow: none !important; outline: none !important; pointer-events: none;">
-										</td>
-									</tr>
-									
-									<tr class="d-flex align-items-center justify-content-between" style="padding: 1px 0 !important; margin: 0 !important; line-height: 1.1;">
-										<th class="border-0 d-flex align-items-center gap-1.5 p-0" style="font-size: 0.95rem !important; font-weight: 800 !important; color: #475569 !important; letter-spacing: 0.2px;">
-											Services
-											<span class="badge bg-light-primary text-primary rounded-circle cursor-pointer" id="btshippingcost" style="width: 18px; height: 18px; display: inline-flex; justify-content: center; align-items: center; padding: 0; border: 1px solid rgba(11, 87, 208, 0.3);">
-												<i class="fas fa-plus" style="font-size: 8px;"></i>
-											</span>
-										</th>
-										<td class="border-0 justify-content-end d-flex align-items-center p-0">
-											<input type="text" name="_TotalServices" id="_TotalServices" value="0" class="form-control TotalText" style="font-size: 1.05rem !important; height: 26px !important; padding: 2px 6px !important; width: 110px; text-align: right; font-weight: 900 !important; border: 1.2px solid rgba(11, 87, 208, 0.3) !important; border-radius: 6px !important; color: #0b57d0 !important; background: rgba(11, 87, 208, 0.02) !important;">
-											<a href="#" id="btResetServices" class="text-danger font-weight-bold ms-2" style="font-size: 0.85rem; text-decoration: none;">
-												<i class="fas fa-undo"></i>
-											</a>
-										</td>
-									</tr>
-
-									<!-- Massive LED Neon Glowing Total Tagihan Panel (Simplified half-height horizontal bar) - Placed directly below Services -->
-									<tr class="item-price">
-										<th colspan="2" class="border-0 px-0">
-											<div class="premium-total-card mt-1" style="padding: 0.35rem 0.85rem !important; border-radius: 16px !important; border: 1.5px solid rgba(0, 255, 196, 0.65) !important; background: linear-gradient(135deg, #0f172a 0%, #030712 100%) !important;">
-												<div class="d-flex justify-content-between align-items-center w-100">
-													<span class="text-white font-weight-bold" style="font-size: 0.75rem; letter-spacing: 0.8px; opacity: 0.8;">TOTAL TAGIHAN</span>
-													<input type="text" name="_GrandTotal" id="_GrandTotal" value="0" class="form-control TotalText" style="font-family: 'Courier New', Courier, monospace !important; font-size: 1.85rem !important; font-weight: 950 !important; width: 65%; text-align: right; background: transparent; border: none; padding: 0 !important; color: #00ffc4 !important; text-shadow: 0 0 10px rgba(0, 255, 196, 0.8); pointer-events: none;" readonly>
-												</div>
-											</div>
-										</th>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-						<!-- Alfamart Checkout Action Row -->
-						<div class="d-flex justify-content-start align-items-center flex-column buttons-cash px-1" style="margin-top: 6px !important;">
-							<div class="w-100"> 
-								<!-- F5 Pay Button takes full width but slightly more compact height: 44px -->
-								<button type="button" class="btn btn-primary white w-100 d-flex align-items-center justify-content-center gap-2 mb-2" id="btBayar" style="height: 45px; font-size: 0.95rem; font-weight: 850; border-radius: 14px !important; background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; border:none; box-shadow: 0 4px 12px rgba(16,185,129,0.25) !important;">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wallet2" viewBox="0 0 16 16">
-										<path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9A1.5 1.5 0 0 1 1.5 3H2V1.78a1.5 1.5 0 0 1 1.864-1.454zM5.585 1.862A.5.5 0 0 0 5.176 2V3h4.648V2a.5.5 0 0 0-.41-.497zM2 4.5v9a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5"/>
-									</svg>
-									Bayar Sekarang (F5)
-								</button>
-								
-								<!-- F6 Draft and DEL Batal side by side to save 50px vertical height! -->
-								<div class="row g-2 mb-2">
-									<div class="col-12">
-										<button type="button" class="btn btn-warning white w-100 d-flex align-items-center justify-content-center gap-1.5" id="btTarikPKB2" onclick="openTarikPKB()" style="height: 38px; font-size: 0.85rem; font-weight: 800; border-radius: 12px !important; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; border:none; box-shadow: 0 4px 10px rgba(245,158,11,0.2) !important; padding: 4px !important; color: white;">
-											<i class="fas fa-file-invoice" style="font-size: 1rem;"></i> Tarik PKB (F8)
-										</button>
-									</div>
-								</div>
-								<div class="row g-2">
-									<div class="col-6">
-										<button type="button" class="btn btn-secondary white w-100 d-flex align-items-center justify-content-center gap-1.5" id="btDraft" style="height: 38px; font-size: 0.8rem; font-weight: 800; border-radius: 12px !important; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; border:none; box-shadow: 0 4px 10px rgba(59,130,246,0.2) !important; padding: 4px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-											<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="bi bi-folder-symlink" viewBox="0 0 16 16">
-												<path d="m11.798 8.271-3.182 1.97-.27.166a.77.77 0 0 1-.36.089c-.212 0-.42-.08-.55-.238A.73.73 0 0 1 7.3 9.8V7.9H1.5C.672 7.9 0 7.228 0 6.4V2.5c0-.828.672-1.5 1.5-1.5h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H10v-1.1h3.174a.9.9 0 0 0 .895-.818l.637-7a.9.9 0 0 0-.895-.981H9.828a3 3 0 0 1-2.12-.879l-.83-.828A1 1 0 0 0 6.174 2H1.5a.4.4 0 0 0-.4.4v3.9a.4.4 0 0 0 .4.4H7.3V4.9c0-.182.068-.359.18-.497.13-.158.338-.238.55-.238c.13 0 .254.03.36.088l.27.167 3.182 1.97a.71.71 0 0 1 .37.62.71.71 0 0 1-.369.621z"/>
+							<div class="topbar-item" data-bs-toggle="dropdown" data-display="static">
+								<div class="btn btn-icon w-auto btn-clean d-flex align-items-center pr-1 ps-3">
+									<span class="text-dark-50 font-size-base d-none d-xl-inline me-3">{{ Auth::user()->name }}</span>
+									<span class="symbol symbol-35 symbol-light-success">
+										<span class="symbol-label font-size-h5 ">
+											<svg width="20px" height="20px" viewBox="0 0 16 16"
+												class="bi bi-person-fill" fill="currentColor"
+												xmlns="http://www.w3.org/2000/svg">
+												<path fill-rule="evenodd"
+													d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
 											</svg>
-											Draft (F6)
-										</button>
-									</div>
-									<div class="col-6">
-										<button type="button" class="btn btn-danger white w-100 d-flex align-items-center justify-content-center gap-1.5" id="btBatal" style="height: 38px; font-size: 0.8rem; font-weight: 800; border-radius: 12px !important; background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important; border:none; box-shadow: 0 4px 10px rgba(239,68,68,0.2) !important; padding: 4px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-											<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-												<path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-											</svg>
-											Batal (DEL)
-										</button>
-									</div>
+										</span>
+									</span>
 								</div>
 							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-   </div>
 
-   <div class="modal fade text-left" id="payment-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel11" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-lg" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h3 class="modal-title" id="myModalLabel11">Payment</h3>
-			<button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
-			  <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				  <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
-			  </svg>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<table class="table right-table">
-				<tbody>
-				  <tr class="d-flex align-items-center justify-content-between">
-					<th class="border-0 px-0 font-size-lg mb-0 font-size-bold text-primary">
-						<h1>Total Transaksi</h1>
-					</th>
-					<td class="border-0 justify-content-end d-flex text-primary font-size-lg font-size-bold px-0 font-size-lg mb-0 font-size-bold text-primary">
-						<input type="hidden" name="_TotalTagihan" id="_TotalTagihan">
-						<h1 id="_TotalTagihanFormated">Rp. </h1>
-					</td>
-				  </tr>
+							<div class="dropdown-menu dropdown-menu-right" style="min-width: 150px;">
 
-				  <tr class="d-flex align-items-center justify-content-between" id="rowPaymentVoucher" style="display: none !important;">
-					<th class="border-0 px-0 font-size-lg mb-0 font-size-bold text-danger">
-						<h1 id="lblPaymentVoucher">Voucher</h1>
-					</th>
-					<td class="border-0 justify-content-end d-flex text-danger font-size-lg font-size-bold px-0 font-size-lg mb-0 font-size-bold text-danger">
-						<h1 id="valPaymentVoucher">- Rp. 0</h1>
-					</td>
-				  </tr>
-
-				  <tr class="d-flex align-items-center justify-content-between" id="rowTukarPoin" style="display: none !important;">
-					<th class="border-0 px-0 font-size-lg mb-0 font-size-bold text-success">
-						<h1 id="lblTukarPoin">Poin <button class="btn btn-sm btn-outline-success ml-2" type="button" id="btnTukarPoin">Tukar Poin</button></h1>
-					</th>
-					<td class="border-0 justify-content-end d-flex text-success font-size-lg font-size-bold px-0 font-size-lg mb-0 font-size-bold text-success">
-                        <input type="hidden" name="_NilaiTukarPoin" id="_NilaiTukarPoin" value="0">
-                        <input type="hidden" name="_PoinDitukar" id="_PoinDitukar" value="0">
-						<h1 id="valTukarPoin">- Rp. 0</h1>
-					</td>
-				  </tr>
-
-				  <tr class="d-flex align-items-center justify-content-between">
-					<th class="border-0 px-0 font-size-lg mb-0 font-size-bold text-primary">
-						<h1>Pembulatan</h1>
-					</th>
-					<td class="border-0 justify-content-end d-flex text-primary font-size-lg font-size-bold px-0 font-size-lg mb-0 font-size-bold text-primary">
-						<input type="hidden" name="_Pembulatan" id="_Pembulatan">
-						<h1 id="_PembulatanFormated">Rp. </h1>
-					</td>
-				  </tr>
-
-				  <tr class="d-flex align-items-center justify-content-between">
-					<th class="border-0 px-0 font-size-lg mb-0 font-size-bold text-primary">
-						<h1>Total Bayar</h1>
-					</th>
-					<td class="border-0 justify-content-end d-flex text-primary font-size-lg font-size-bold px-0 font-size-lg mb-0 font-size-bold text-primary">
-						<input type="hidden" name="_TotalNetBayar" id="_TotalNetBayar">
-						<h1 id="_TotalNetBayarFormated">Rp. </h1>
-					</td>
-				  </tr>
-				</tbody>
-			</table>	  
-				<div class="form-group row">
-					<div class="col-md-12">
-						<div class="col-lg-12">
-							<div class="card card-custom gutter-b bg-white border-0">
-								<div class="card-header align-items-center  border-0">
-									<div class="card-title mb-0">
-										<h3 class="card-label text-body font-weight-bold mb-0">Pilih Metode Pembayaran
-										</h3>
-									</div>
-								</div>
-
-								<div class="card-body px-0">
-									<div class="scroll-container list-group scrollbar-1">
-										<ul class="horizontal-list">
-
-											@foreach($metodepembayaran as $ko)
-												<li class="list-group-item list-group-item-action border-0 d-flex align-items-center justify-content-between py-2" StsPyment="{{$ko->Active}}" id="{{ $ko->id }}" CaraVerifikasi="{{$ko->MetodeVerifikasi}}" TipePembayaran="{{$ko->TipePembayaran}}">
-													<div class="list-left d-flex align-items-center">
-														<span class="d-flex align-items-center justify-content-center rounded svg-icon w-45px h-45px bg-light-dark text-white me-2">
-															<img src="{{ $ko->Image }}" class="bi bi-lightning-fill" width="80%" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktY2FzaCIgdmlld0JveD0iMCAwIDE2IDE2Ij4gPHBhdGggZD0iTTggMTBhMiAyIDAgMTAwLTQgMiAyIDAgMDAwIDR6Ii8+IDxwYXRoIGQ9Ik0wIDRhMiAyIDAgMDExMiAwaDFhMiAyIDAgMDExMiAwdjFIMHYtMXptMTUtMmEyIDIgMCAwMTAgNGgxYTIgMiAwIDAxMCA0djFoLTE1di0xaDFhMiAyIDAgMDEwLTRIMHYtMWgxNXYxeiIvPiA8L3N2Zz4=';">
-														</span>
-													  <div class="list-content">
-														<span class="list-title text-body">{{ $ko->NamaMetodePembayaran}}</span>
-													  </div>
-													</div>
-												</li>
-											@endforeach
-								        </ul>
-									</div>
-								</div>
+								<a href="{{ route('logout') }}" class="dropdown-item">
+									<span class="svg-icon svg-icon-xl svg-icon-primary me-2">
+										<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px"
+											viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+											stroke-linecap="round" stroke-linejoin="round"
+											class="feather feather-power">
+											<path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+											<line x1="12" y1="2" x2="12" y2="12"></line>
+										</svg>
+									</span>
+									Logout
+								</a>
 							</div>
+
 						</div>
+						<!--end::user-->
+
+
 					</div>
+					<!--end::Topbar-->
 				</div>
-				<div class="form-group row">
-					<div class="col-md-12">
-						<label  class="text-body">Jumlah Bayar</label>
-						<fieldset class="form-label-group ">
-							<input type="text" name="JumlahBayar" id="JumlahBayar" class="form-control CenterText" size="300" style="height: : 50px; font-size: 50px">
-						</fieldset>
-					</div>
-					<div class="col-md-12">
-						<label  class="text-body">Nomor Refrensi</label>
-						<fieldset class="form-label-group ">
-							<input type="text" name="NomorRefrensiPembayaran" id="NomorRefrensiPembayaran" class="form-control CenterText">
-						</fieldset>
-					</div>
-				</div>
-				<div class="form-group row justify-content-end mb-0">
-					<div class="col-md-6  text-end">
-						<button class="btn btn-primary" id="btSimpanPembayaran">Submit</button>
-					</div>
-				</div>
-		  </div>
-		</div>
-	</div>	  	  
-	</div>
-   <div class="modal fade text-left" id="folderpop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel14" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg " role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h3 class="modal-title" id="myModalLabel14">Draft Orders</h3>
-			<button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
-			  <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				  <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
-			  </svg>
-			</button>
-		  </div>
-		  <div class="modal-body pos-ordermain">
-				<div id="_draftOrderList">
-			  		
-				</div>
-		  </div>
-		</div>
-	</div>	  	  
-</div>	
-
-<div class="modal fade text-left" id="shippingcost" tabindex="1" role="dialog" aria-labelledby="shippingcost" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-lg" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h3 class="modal-title" id="myModalLabel1444">Tambah Biaya Tambhan</h3>
-			<button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
-			  <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				  <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
-			  </svg>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div class="form-group row">
-				<div class="col-md-12">
-					<label  class="text-body">Item Jasa</label>
-					<fieldset class="form-group mb-12">
-						<select class="arabic-select select-down Select2-Selector" id="KodeItemJasa" name="KodeItemJasa" tabindex="-1">
-							<option value="">Pilih Jasa</option>
-							@foreach($itemServices as $ko)
-								<option value="{{ $ko->KodeItem }}">
-	                                {{ $ko->NamaItem }}
-	                            </option>
-							@endforeach
-						</select>
-					</fieldset>
-				</div>
+				<!--end::Container-->
 			</div>
-			<div class="form-group row">
-				<div class="col-md-12">
-					<label  class="text-body">Jumlah</label>
-					<fieldset class="form-group mb-3">
-						<input type="text" class="form-control" name="JumlahJasa" id="JumlahJasa" value="0">
-					</fieldset>
-				</div>
+			<!--end::Header-->
+			<!--begin::Content-->
+			<div class="content d-flex flex-column flex-column-fluid" id="tc_content">
+				{!! $__env->yieldContent('content') !!}
 			</div>
-			<div class="form-group row">
-				<div class="col-md-12">
-					<label  class="text-body">Keterangan</label>
-					<fieldset class="form-group mb-3">
-						<input type="text" class="form-control" name="KeteranganJasa" id="KeteranganJasa">
-					</fieldset>
-				</div>
-			</div>
-			<div class="form-group row justify-content-end mb-0">
-				<div class="col-md-6  text-end">
-					<button id="btLookupBiaya" class="btn btn-primary">Update Order</button>
-				</div>
-			</div>
-		  </div>
-		</div>
-	</div>	  	  
-</div>
-
-
-<div class="modal fade text-left" id="LookupItem" tabindex="-1" role="dialog" aria-labelledby="LookupItem" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h3 class="modal-title" id="myModalLabel1444">Add Shipping Cost</h3>
-			<button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
-			  <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				  <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
-			  </svg>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div class="col-md-12">
-				<div class="dx-viewport demo-container">
-                	<div id="data-grid-demo">
-                  		<div id="gridLookupItem"></div>
-                	</div>
-              	</div>
-			</div>
-			<hr>
-			<div class="form-group row justify-content-end mb-0">
-				<div class="col-md-6  text-end">
-					<button type="button" class="btn btn-primary" id="btPilihLookupData">Pilih Data</button>
-				</div>
-			</div>
-		  </div>
-		</div>
-	</div>	  	  
-</div>
-
-<div class="modal fade text-left" id="LookupCustomer" tabindex="-1" role="dialog" aria-labelledby="LookupCustomer" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h3 class="modal-title" id="myModalLabel1444">Cari Member / Pelanggan</h3>
-			<button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
-			  <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				  <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
-			  </svg>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div class="col-md-12">
-				<div class="dx-viewport demo-container">
-                	<div id="data-grid-demo">
-                  		<div id="gridLookupCustomer"></div>
-                	</div>
-              	</div>
-			</div>
-			<hr>
-			<div class="form-group row justify-content-end mb-0">
-				<div class="col-md-6  text-end">
-					<button type="button" class="btn btn-primary" id="btPilihCustomer">Pilih Data</button>
-				</div>
-			</div>
-		  </div>
-		</div>
-	</div>	  	  
-</div>
-
-
-<div class="modal fade text-left" id="LookupAddCustomer" tabindex="-1" role="dialog" aria-labelledby="LookupAddCustomer" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h3 class="modal-title" id="myModalLabel1444">Tambah Member / Pelanggan</h3>
-			<button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
-			  <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				  <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
-			  </svg>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div class="col-md-12">
-				<div class="form-group row">
-					<div class="col-md-12">
-            			<label  class="text-body">Kode Pelanggan</label>
-            			<fieldset class="form-group mb-3">
-            				<input type="text" class="form-control" id="ModalKodePelanggan" name="ModalKodePelanggan" placeholder="<AUTO>" readonly="" >
-            			</fieldset>
-            			
-            		</div>
-            		
-            		<div class="col-md-12">
-            			<label  class="text-body">Nama Pelanggan</label>
-            			<fieldset class="form-group mb-3">
-            				<input type="text" class="form-control" id="ModalNamaPelanggan" name="ModalNamaPelanggan" placeholder="Masukan Nama Pelanggan" required="">
-            			</fieldset>
-            			
-            		</div>
-
-            		<div class="col-md-6">
-            			<label  class="text-body">Grup Pelanggan</label>
-            			<fieldset class="form-group mb-3">
-            				<select name="ModalKodeGrupPelanggan" id="ModalKodeGrupPelanggan" class="js-example-basic-single js-states form-control bg-transparent" name="state" required="">
-								<option value="">Pilih Kelompok Pelanggan</option>
-								@foreach($gruppelanggan as $ko)
-									<option value="{{ $ko->KodeGrup }}">
-                                        {{ $ko->NamaGrup }}
-                                    </option>
-								@endforeach
-								
-							</select>
-            			</fieldset>
-            			
-            		</div>
-
-            		<div class="col-md-6">
-            			<label  class="text-body">Limit Piutang</label>
-            			<fieldset class="form-group mb-3">
-            				<input type="number" class="form-control" id="ModalLimitPiutang" name="ModalLimitPiutang" placeholder="Masukan Limit Piutang" value="0">
-            			</fieldset>
-            			
-            		</div>
-
-            		<div class="col-md-3">
-            			<label  class="text-body">Provinsi</label>
-            			<fieldset class="form-group mb-3">
-            				<select name="ModalProvID" id="ModalProvID" class="js-example-basic-single js-states form-control bg-transparent" name="state" >
-								<option value="-1">Pilih Provinsi</option>
-								@foreach($provinsi as $ko)
-									<option value="{{ $ko->prov_id }}">
-                                        {{ $ko->prov_name }}
-                                    </option>
-								@endforeach
-								
-							</select>
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-3">
-            			<label  class="text-body">Kota</label>
-            			<fieldset class="form-group mb-3">
-            				<select name="ModalKotaID" id="ModalKotaID" class="js-example-basic-single js-states form-control bg-transparent" name="state" >
-								<option value="-1">Pilih Kota</option>
-							</select>
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-3">
-            			<label  class="text-body">Kecamatan</label>
-            			<fieldset class="form-group mb-3">
-            				<select name="ModalKecID" id="ModalKecID" class="js-example-basic-single js-states form-control bg-transparent" name="state" >
-								<option value="-1">Pilih Kecamatan</option>
-							</select>
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-3">
-            			<label  class="text-body">Kelurahan</label>
-            			<fieldset class="form-group mb-3">
-            				<select name="ModalKelID" id="ModalKelID" class="js-example-basic-single js-states form-control bg-transparent" name="state" >
-								<option value="-1">Pilih Kelurahan</option>
-							</select>
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-12">
-            			<label  class="text-body">Alamat</label>
-            			<fieldset class="form-group mb-12">
-            				<textarea class="form-control" id="ModalAlamat" name="ModalAlamat" rows="3" placeholder="Masukan Alamat"></textarea>
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-6">
-            			<label  class="text-body">Email</label>
-            			<fieldset class="form-group mb-3">
-            				<input type="mail" class="form-control" id="ModalEmail" name="ModalEmail" placeholder="Masukan Email" >
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-3">
-            			<label  class="text-body">NoTlp</label>
-            			<fieldset class="form-group mb-3">
-            				<input type="number" class="form-control" id="ModalNoTlp1" name="ModalNoTlp1" placeholder="621325058258" required="">
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-3">
-            			<label  class="text-body">Kontak Lain</label>
-            			<fieldset class="form-group mb-3">
-            				<input type="number" class="form-control" id="ModalNoTlp2" name="ModalNoTlp2" placeholder="621325058258" >
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-12">
-            			<label  class="text-body">Keterangan Lain</label>
-            			<fieldset class="form-group mb-12">
-            				<textarea class="form-control" id="ModalKeterangan" name="ModalKeterangan" rows="3" placeholder="Masukan Keterangan"></textarea>
-            			</fieldset>
-            		</div>
-
-            		<div class="col-md-12">
-            			<label  class="text-body">Status</label>
-            			<fieldset class="form-group mb-3">
-            				<select name="ModalStatus" id="ModalStatus" class="js-example-basic-single js-states form-control bg-transparent" name="state" >
-								<option value="1">Active</option>
-								<option value="0">Inactive</option>
-							</select>
-            			</fieldset>
-            			
-            		</div>
-				</div>
-			</div>
-			<hr>
-			<div class="form-group row justify-content-end mb-0">
-				<div class="col-md-6  text-end">
-					<button type="button" class="btn btn-primary" id="btSaveAddCustomer">Simpan Data</button>
-				</div>
-			</div>
-		  </div>
-		</div>
-	</div>	  	  
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ asset('js/plugin.bundle.min.js')}}"></script>
-<script src="{{ asset('js/bootstrap.bundle.min.js')}}"></script>
-<!-- <script src="http://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script> -->
-<!-- <script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script> -->
-<!-- <script src="{{ asset('js/sweetalert.js')}}"></script> -->
-<!-- <script src="{{ asset('js/sweetalert1.js')}}"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{asset('api/jqueryvalidate/jquery.validate.min.js')}}"></script>
-<script src="{{asset('api/mcustomscrollbar/jquery.mCustomScrollbar.concat.min.js')}}"></script>
-<script src="{{asset('api/datatable/jquery.dataTables.min.js')}}"></script>
-<script src="{{ asset('js/script.bundle.js')}}"></script>
-<link href="{{ asset('devexpress/dx.light.css')}}" rel="stylesheet" type="text/css" />
-<script src="{{asset('devexpress/dx.all.js')}}"></script>
-<script src="{{asset('api/select2/select2.min.js')}}"></script>
-@if (env('MIDTRANS_IS_PRODUCTION') == 'false')
-<script src="{{ env('MIDTRANS_DEV_URL') }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
-@else
-<script src="{{ env('MIDTRANS_PROD_URL') }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
-@endif
-
-
-<script>
-    var _globalBarcodeScannerBuffer = "";
-    var _globalBarcodeScannerTimer = null;
-    var _KodeMetodePembayaran = -1;
-    var _MetodeVerifikasiPembayaran = "";
-    var _TipePembayaran = "";
-    
-    $(document).on("keypress", function(e) {
-        if (e.target.id === "_Barcode") return; // Ignore if already focused on barcode
-        
-        if (e.key && e.key.length === 1 && !e.ctrlKey && !e.altKey) {
-            _globalBarcodeScannerBuffer += e.key;
-            
-            if (_globalBarcodeScannerTimer) clearTimeout(_globalBarcodeScannerTimer);
-            
-            _globalBarcodeScannerTimer = setTimeout(function() {
-                _globalBarcodeScannerBuffer = "";
-            }, 60); // Scanner types very fast
-            
-        } else if (e.key === "Enter" || e.keyCode === 13) {
-            if (_globalBarcodeScannerBuffer.length >= 3) {
-                // It's a scanner!
-                e.preventDefault();
-                $('#_Barcode').val(_globalBarcodeScannerBuffer);
-                _globalBarcodeScannerBuffer = "";
-                $('#_Barcode').focus();
-                
-                var eEnter = $.Event('keypress');
-                eEnter.which = 13;
-                eEnter.keyCode = 13;
-                $('#_Barcode').trigger(eEnter);
-            } else {
-                _globalBarcodeScannerBuffer = "";
-            }
-        }
-    });
-</script>
-<script type="text/javascript">
-	var _LastInputed = '';
-	var _VoucherDiscountPercent = 0;
-	var _VoucherMaximalDiscount = 0;
-	var _VoucherAppliedCode = "";
-	var _TipeDiskon = '';
-	var _ServicesData = [];
-	var _DiskonGrupCustomer = 0;
-	var _DiskonMemberPersen = 0;
-	var _SisaGratisOngkir = 0;
-	var _PoinLoyalti = 0;
-	var _TerminPelanggan = '';
-
-	var _Tanggal = '';
-	var _Jam = '';
-	var _Company = [];
-	var _Printer = [];
-	var _Pelanggan = [];
-	var _KodeMetodePembayaran = -1;
-	var _MetodeVerifikasiPembayaran = '';
-	var _TipePembayaran = '';
-	let customerDisplayWindow;
-
-	// Tactile Cashier Hybrid Controller State
-	var _AllProducts = [];
-	var _ActiveNumpadField = 'QTY'; // QTY, DISC_P, DISC_R
-	var _QwertyTarget = null;
-	var _ActiveCategory = 'ALL';
-
-	function loadCatalogProducts() {
-		$.ajax({
-			type: 'post',
-			url: "{{route('itemmaster-ViewJson')}}",
-			headers: {
-				'X-CSRF-TOKEN': '{{ csrf_token() }}'
-			},
-			data: {
-				'KodeJenis' : '',
-				'Merk' 		: '',
-				'TipeItem' 	: '',
-				'Active' 	: 'Y',
-				'Scan'		: '',
-				'TipeItemIN' : '1,3,4,5,Barang,Jasa'
-			},
-			dataType: 'json',
-			success: function(response) {
-				if(response && response.data) {
-					_AllProducts = response.data;
-					$('#_totalCatalogItems').text(_AllProducts.length);
-					renderCatalog(_AllProducts);
-				}
-			},
-			error: function() {
-				$('#_productGridContainer').html('<div class="col-12 text-center text-danger py-4"><i class="fas fa-exclamation-triangle"></i> Gagal memuat produk.</div>');
-			}
-		});
-	}
-
-	function renderCatalog(products) {
-		var container = $('#_productGridContainer');
-		container.empty();
-		if(products.length === 0) {
-			container.html('<div class="col-12 text-center text-muted py-5">Tidak ada produk yang cocok.</div>');
-			return;
-		}
-		
-		products.forEach(function(item) {
-			var priceFormatted = parseFloat(item.HargaJual || 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 			
-			var imgUrl = item.Gambar ? (item.Gambar.startsWith('http://') || item.Gambar.startsWith('https://') || item.Gambar.startsWith('data:') ? item.Gambar : `{{ asset('assets/img/item') }}/${item.Gambar}`) : `https://placehold.co/150x100/e2e8f0/475569?text=${encodeURIComponent(item.NamaItem)}`;
-
-			var cardHtml = `
-				<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-6 mb-2 px-1">
-					<div class="catalog-product-card" onclick="addProductToCartDirectly('${item.KodeItem}')" style="padding: 5px !important; height: 165px; display: flex; flex-direction: column; justify-content: flex-start; gap: 4px;">
-						<div class="catalog-product-img-wrapper" style="height: 82px; width: 100%; border-radius: 8px; overflow: hidden; background: #f8fafc; position: relative; flex-shrink: 0;">
-							<img src="${imgUrl}" onerror="this.src='https://placehold.co/150x100/e2e8f0/475569?text=Product'" style="height: 100%; width: 100%; object-fit: cover; transition: transform 0.3s ease;">
-							<span class="catalog-product-badge" style="position: absolute; right: 5px; top: 5px; background: rgba(79, 70, 229, 0.9); color: white; padding: 1px 4px; font-size: 0.52rem; border-radius: 4px; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">${item.NamaSatuan || 'PCS'}</span>
-						</div>
-						<div class="catalog-product-details-wrapper" style="display: flex; flex-direction: column; gap: 0.5px; padding: 2px 1px 0 1px; overflow: hidden; justify-content: flex-start;">
-							<div class="catalog-product-title" title="${item.NamaItem}" style="font-size: 0.7rem; font-weight: 750; color: #1e293b; line-height: 1.2; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-height: 2.4em; min-height: 1.2em; margin-bottom: 0px;">${item.NamaItem}</div>
-							<div class="catalog-product-info-footer" style="display: flex; flex-direction: column; line-height: 1; margin-top: 0px;">
-								<span class="catalog-product-code" style="font-size: 0.58rem; color: #94a3b8; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1;">${item.KodeItem}</span>
-								<span class="catalog-product-price" style="font-size: 0.74rem; font-weight: 850; color: #059669; line-height: 1.1; margin-top: 1px;">${priceFormatted}</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			`;
-			container.append(cardHtml);
-		});
-	}
-
-	function filterCatalog() {
-		var searchQuery = $('#_CatalogSearch').val().toLowerCase();
-		var filtered = _AllProducts.filter(function(item) {
-			var matchesCategory = true;
-			if (_ActiveCategory === 'BARANG') {
-				matchesCategory = (item.TypeItem == 1 || item.TypeItem == 3 || item.TypeItem == 5);
-			} else if (_ActiveCategory === 'JASA') {
-				matchesCategory = (item.TypeItem == 4);
-			}
-			
-			var matchesSearch = true;
-			if (searchQuery) {
-				var name = (item.NamaItem || '').toLowerCase();
-				var code = (item.KodeItem || '').toLowerCase();
-				var barcode = (item.Barcode || '').toLowerCase();
-				matchesSearch = (name.indexOf(searchQuery) !== -1 || code.indexOf(searchQuery) !== -1 || barcode.indexOf(searchQuery) !== -1);
-			}
-			
-			return matchesCategory && matchesSearch;
-		});
-		renderCatalog(filtered);
-	}
-
-	function addProductToCartDirectly(kodeItem) {
-		$('#_Barcode').val(kodeItem);
-		var e = jQuery.Event("keypress");
-		e.keyCode = 13;
-		e.which = 13;
-		$('#_Barcode').trigger(e);
-		$('#_Barcode').val('').focus();
-	}
-
-	function switchActiveInput(field) {
-		_ActiveNumpadField = field;
-		_QwertyTarget = null;
-		$('.btn-numpad-action').removeClass('active');
-		
-		if (field === 'QTY') {
-			$('#_btnNumpadQty').addClass('active');
-			$('#_activeInputIndicator').text('Kuantitas (Qty)').removeClass('bg-light-danger bg-light-success bg-light-info text-danger text-success text-info').addClass('bg-light-primary text-primary');
-			$('#_TipeDiskon').text('');
-			$('#_Qty').focus().select();
-		} else if (field === 'DISC_P') {
-			$('#_btnNumpadDiscP').addClass('active');
-			$('#_activeInputIndicator').text('Diskon Persen (%)').removeClass('bg-light-primary bg-light-danger bg-light-success text-primary text-danger text-success').addClass('bg-light-info text-info');
-			$('#_TipeDiskon').text('(%)');
-			$('#_Diskon').focus().select();
-		} else if (field === 'DISC_R') {
-			$('#_btnNumpadDiscR').addClass('active');
-			$('#_activeInputIndicator').text('Diskon Rupiah (Rp)').removeClass('bg-light-primary bg-light-info bg-light-success text-primary text-info text-success').addClass('bg-light-danger text-danger');
-			$('#_TipeDiskon').text('(Rp)');
-			$('#_Diskon').focus().select();
-		}
-	}
-
-	function pressNumpad(key) {
-		var inputEl;
-
-		if (_QwertyTarget && _QwertyTarget.length && !_QwertyTarget.is('#_Qty') && !_QwertyTarget.is('#_Diskon')) {
-			inputEl = _QwertyTarget;
-			var currentVal = inputEl.val() || '';
-			if (key === 'C') {
-				inputEl.val(currentVal.substring(0, currentVal.length - 1));
-			} else if (key === 'ENTER') {
-				var e = $.Event('keypress');
-				e.keyCode = 13;
-				inputEl.trigger(e);
-			} else {
-				inputEl.val(currentVal + key);
-			}
-			inputEl.trigger('input').trigger('keyup');
-			if(inputEl.length > 0 && inputEl[0].dispatchEvent) {
-				inputEl[0].dispatchEvent(new Event('input', { bubbles: true }));
-			}
-			return;
-		}
-
-		if (_ActiveNumpadField === 'QTY') {
-			inputEl = $('#_Qty');
-		} else {
-			inputEl = $('#_Diskon');
-		}
-
-		var currentVal = inputEl.val() || '0';
-
-		if (key === 'C') {
-			inputEl.val('0');
-		} else if (key === 'ENTER') {
-			$('#_Barcode').focus();
-			switchActiveInput('QTY');
-		} else {
-			if (currentVal === '0') {
-				inputEl.val(key);
-			} else {
-				inputEl.val(currentVal + key);
-			}
-		}
-		
-		inputEl.trigger('change').trigger('input');
-	}
-
-
-	jQuery(document).on('click', '.horizontal-list li', function() {
-	    var item = this;
-	    jQuery('.horizontal-list li').removeClass('active');
-	    
-	    var Sts = jQuery(item).attr('StsPyment') || jQuery(item).attr('stspyment');
-		_MetodeVerifikasiPembayaran = jQuery(item).attr('CaraVerifikasi') || jQuery(item).attr('caraverifikasi');
-		_TipePembayaran = jQuery(item).attr('TipePembayaran') || jQuery(item).attr('tipepembayaran');
-		
-		console.log('Clicked Payment Method:', item.id, Sts);
-		
-	    if (Sts =='Y' || Sts == '1' || Sts == 1 || Sts == true || Sts == 'true' || !Sts) {
-	    	jQuery(item).addClass('active');
-	    	_KodeMetodePembayaran = item.id;
-			if (_TipePembayaran == "NON") {
-				let netVal = parseFloat(jQuery('#_TotalNetBayar').attr("originalvalue") || 0);
-				formatCurrency($('#JumlahBayar'), netVal);
-			}
-			else{
-				formatCurrency($('#JumlahBayar'), 0);
-			}
-	    	$('#JumlahBayar').focus();
-			SetEnableCommand();
-	    }
-	});
-
-	jQuery(document).ready(function() {
-		SetEnableCommand();
-	});
-	jQuery(function () {
-		jQuery(document).ready(function() {
-
-			$('#_Barcode').focus();
-
-			$('#btnApplyVoucher').click(function() {
-				var code = $('#_VoucherCode').val().trim().toUpperCase();
-				if (!code) {
-					Swal.fire({
-						icon: "warning",
-						title: "Perhatian",
-						text: "Silakan masukkan kode voucher terlebih dahulu.",
-					});
-					return;
-				}
-
-				var kodePartner = _Company[0]['KodePartner'];
-				var encodedId = btoa(kodePartner);
-
-				$.ajax({
-					type: 'GET',
-					url: `/booking/${encodedId}/get-DiscountVoucher`,
-					data: {
-						code: code,
-						kodePartner: kodePartner
-					},
-					success: function(response) {
-						if (response.success) {
-							// Validate expiry date
-							var today = new Date();
-							var startDate = new Date(response.startDate);
-							var endDate = new Date(response.endDate);
-							today.setHours(0, 0, 0, 0);
-							startDate.setHours(0, 0, 0, 0);
-							endDate.setHours(23, 59, 59, 999);
-
-							if (today < startDate) {
-								Swal.fire({
-									icon: "error",
-									title: "Voucher Belum Aktif",
-									text: `Voucher ini baru bisa digunakan mulai tanggal ${response.startDate}.`,
-								});
-								return;
-							}
-
-							if (today > endDate) {
-								Swal.fire({
-									icon: "error",
-									title: "Voucher Kedaluwarsa",
-									text: "Voucher ini sudah tidak berlaku lagi.",
-								});
-								return;
-							}
-
-							if (response.discountQuota <= 0) {
-								Swal.fire({
-									icon: "error",
-									title: "Kuota Habis",
-									text: "Voucher ini sudah kehabisan kuota penggunaan.",
-								});
-								return;
-							}
-
-							// Voucher is valid!
-							_VoucherDiscountPercent = parseFloat(response.discountPercent) || 0;
-							_VoucherMaximalDiscount = parseFloat(response.maximalDiscount) || 0;
-							_VoucherAppliedCode = code;
-
-							Swal.fire({
-								icon: "success",
-								title: "Voucher Berhasil Digunakan!",
-								text: `Diskon sebesar ${response.discountPercent}% berhasil diterapkan.`,
-							});
-
-							CalculateTotal();
-						} else {
-							Swal.fire({
-								icon: "error",
-								title: "Gagal",
-								text: response.message || "Voucher tidak valid.",
-							});
-						}
-					},
-					error: function(xhr) {
-						var msg = "Voucher tidak valid atau tidak ditemukan.";
-						if (xhr.responseJSON && xhr.responseJSON.message) {
-							msg = xhr.responseJSON.message;
-						}
-						Swal.fire({
-							icon: "error",
-							title: "Gagal",
-							text: msg,
-						});
-					}
-				});
-			});
-
-			// Advanced global barcode scanner redirector
-			var barcodePressedKeys = [];
-			
-			jQuery(document).on('keydown', function(e) {
-				// Do not intercept if a modal is open (like payment popup, shipping cost, etc.)
-				if (jQuery('.modal.show').length > 0) return;
+			<div class="footer bg-white py-4 d-flex flex-lg-column" id="tc_footer">
 				
-				// Ignore control keys, function keys, shift, alt, etc.
-				if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt') {
-					return;
-				}
-				
-				// If already focused on barcode, let it type naturally
-				if (document.activeElement.id === '_Barcode') {
-					return;
-				}
-				
-				// Track key and timestamp
-				var timeStamp = new Date().getTime();
-				barcodePressedKeys.push({
-					key: e.key,
-					time: timeStamp
-				});
-				
-				// Keep buffer clean: only keys within the last 300ms
-				barcodePressedKeys = barcodePressedKeys.filter(function(item) {
-					return (timeStamp - item.time) < 300;
-				});
-				
-				// Detect hardware barcode scanner (very rapid key sequences)
-				if (barcodePressedKeys.length >= 3) {
-					// Check if they are just repeating a single held-down key (e.g. 'aaaa')
-					var allIdentical = true;
-					for (var i = 1; i < barcodePressedKeys.length; i++) {
-						if (barcodePressedKeys[i].key !== barcodePressedKeys[0].key) {
-							allIdentical = false;
-							break;
-						}
-					}
+				<div
+					class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
 					
-					if (!allIdentical) {
-						var totalInterval = 0;
-						for (var i = 1; i < barcodePressedKeys.length; i++) {
-							totalInterval += (barcodePressedKeys[i].time - barcodePressedKeys[i - 1].time);
-						}
-						var avgInterval = totalInterval / (barcodePressedKeys.length - 1);
-						
-						if (avgInterval < 45) { // Average key interval under 45ms indicates hardware scanner
-							var barcodeInput = jQuery('#_Barcode');
-							if (barcodeInput.length) {
-								var currentActive = document.activeElement;
-								var currentActiveId = currentActive.id;
-								
-								// Shift focus to barcode input
-								barcodeInput.focus();
-								
-								// Extract scanned characters from key history
-								var scannedString = barcodePressedKeys.map(function(item) {
-									return item.key.length === 1 ? item.key : '';
-								}).join('');
-								
-								// Clean up accidentally modified inputs
-								if (currentActiveId === '_Qty') {
-									var val = jQuery(currentActive).val() || '';
-									var cleanVal = val;
-									for (var k = 0; k < scannedString.length; k++) {
-										cleanVal = cleanVal.replace(scannedString[k], '');
-									}
-									jQuery(currentActive).val(cleanVal || '0');
-								} else if (currentActiveId === '_Diskon') {
-									var val = jQuery(currentActive).val() || '';
-									var cleanVal = val;
-									for (var k = 0; k < scannedString.length; k++) {
-										cleanVal = cleanVal.replace(scannedString[k], '');
-									}
-									jQuery(currentActive).val(cleanVal || '0');
-								} else if (currentActiveId === '_CatalogSearch') {
-									var val = jQuery(currentActive).val() || '';
-									var cleanVal = val;
-									for (var k = 0; k < scannedString.length; k++) {
-										cleanVal = cleanVal.replace(scannedString[k], '');
-									}
-									jQuery(currentActive).val(cleanVal);
-								}
-								
-								// Append scanned string to barcode input
-								barcodeInput.val(barcodeInput.val() + scannedString);
-								
-								// Clear buffer to prevent double triggers
-								barcodePressedKeys = [];
-								e.preventDefault();
-							}
-						}
-					}
+					<div class="text-dark order-2 order-md-1">
+						<span class="text-muted font-weight-bold me-2">2024©</span>
+						<a href="https://dstechsmart.com/" target="_blank" class="text-dark-75 text-hover-primary">dstechsmart.com</a>
+					</div>
+
+					<div class="nav nav-dark">
+						<a href="https://api.whatsapp.com/send/?phone=6282258493130&text=Saya%20ada%20kendala%20di%20PoS&type=phone_number&app_absent=0" target="_blank" class="nav-link pl-0 pr-0">Contact</a>
+						<a href="{{ route('faqUser') }}" class="nav-link pl-0 pr-0">Support & FaQ</a>
+					</div>
+
+				</div>
+
+			</div>
+			<!--end::Footer-->
+		</div>
+		<!--end::Wrapper-->
+	</div>
+	<!--end::Page-->
+<!-- </div> -->
+<!--end::Main-->
+	<ul class="sticky-toolbar nav flex-column bg-primary" title="Setting" style="display: none;">
+
+		<li class="nav-item" id="kt_demo_panel_toggle" data-bs-toggle="tooltip" title="" data-bs-placement="right"
+			data-original-title="Check out more demos">
+			<a class="btn btn-sm btn-icon text-white" href="#">
+				<svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-gear fa-spin" fill="currentColor"
+					xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd"
+						d="M8.837 1.626c-.246-.835-1.428-.835-1.674 0l-.094.319A1.873 1.873 0 0 1 4.377 3.06l-.292-.16c-.764-.415-1.6.42-1.184 1.185l.159.292a1.873 1.873 0 0 1-1.115 2.692l-.319.094c-.835.246-.835 1.428 0 1.674l.319.094a1.873 1.873 0 0 1 1.115 2.693l-.16.291c-.415.764.42 1.6 1.185 1.184l.292-.159a1.873 1.873 0 0 1 2.692 1.116l.094.318c.246.835 1.428.835 1.674 0l.094-.319a1.873 1.873 0 0 1 2.693-1.115l.291.16c.764.415 1.6-.42 1.184-1.185l-.159-.291a1.873 1.873 0 0 1 1.116-2.693l.318-.094c.835-.246.835-1.428 0-1.674l-.319-.094a1.873 1.873 0 0 1-1.115-2.692l.16-.292c.415-.764-.42-1.6-1.185-1.184l-.291.159A1.873 1.873 0 0 1 8.93 1.945l-.094-.319zm-2.633-.283c.527-1.79 3.065-1.79 3.592 0l.094.319a.873.873 0 0 0 1.255.52l.292-.16c1.64-.892 3.434.901 2.54 2.541l-.159.292a.873.873 0 0 0 .52 1.255l.319.094c1.79.527 1.79 3.065 0 3.592l-.319.094a.873.873 0 0 0-.52 1.255l.16.292c.893 1.64-.902 3.434-2.541 2.54l-.292-.159a.873.873 0 0 0-1.255.52l-.094.319c-.527 1.79-3.065 1.79-3.592 0l-.094-.319a.873.873 0 0 0-1.255-.52l-.292.16c-1.64.893-3.433-.902-2.54-2.541l.159-.292a.873.873 0 0 0-.52-1.255l-.319-.094c-1.79-.527-1.79-3.065 0-3.592l.319-.094a.873.873 0 0 0 .52-1.255l-.16-.292c-.892-1.64.902-3.433 2.541-2.54l.292.159a.873.873 0 0 0 1.255-.52l.094-.319z" />
+					<path fill-rule="evenodd"
+						d="M8 5.754a2.246 2.246 0 1 0 0 4.492 2.246 2.246 0 0 0 0-4.492zM4.754 8a3.246 3.246 0 1 1 6.492 0 3.246 3.246 0 0 1-6.492 0z" />
+				</svg>
+			</a>
+		</li>
+	</ul>
+	<div id="kt_color_panel" class="offcanvas offcanvas-right kt-color-panel p-5">
+		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-3">
+			<h4 class="font-size-h4 font-weight-bold m-0">Theme Config
+			</h4>
+			<a href="#" class="btn btn-sm btn-icon btn-light btn-hover-primary" id="kt_color_panel_close">
+				<svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor"
+					xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd"
+						d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+				</svg>
+			</a>
+		</div>
+		<hr>
+		<div class="offcanvas-content">
+			<!-- Theme options starts -->
+			<div id="customizer-theme-layout" class="customizer-theme-layout">
+
+				<h5 class="mt-1">Theme Layout</h5>
+				<div class="theme-layout">
+					<div class="d-flex justify-content-start">
+						<div class="my-3">
+							<div class="btn-group btn-group-toggle">
+								<label class="btn btn-primary p-2 active">
+									<input type="radio" name="layoutOptions" value="false" id="radio-light" checked="">
+									Light
+								</label>
+								<label class="btn btn-primary p-2">
+									<input type="radio" name="layoutOptions" value="false" id="radio-dark"> Dark
+								</label>
+
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+				<hr>
+				<h5 class="mt-1">RTL Layout</h5>
+				<div class="rtl-layout">
+					<div class="d-flex justify-content-start">
+						<div class="my-3 btn-rtl">
+							<div class="toggle">
+								<span class="circle"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr>
+
+			<!-- Theme options starts -->
+			<div id="customizer-theme-colors" class="customizer-theme-colors">
+				<h5>Theme Colors</h5>
+				<!-- <input id="ColorPicker1" class="colorpicker-theme" type="color" value="#ae69f5" name="Background"> -->
+				<ul class="list-inline unstyled-list d-flex">
+					<li class="color-box me-2">
+						<div id="color-theme-default" class="d-flex rounded w-20px h-20px" style="background-color: #ae69f5d9;">
+						</div>
+					</li>
+					<li class="color-box me-2">
+						<div id="color-theme-blue" class="d-flex rounded w-20px h-20px" style="background-color: blue;">
+						</div>
+					</li>
+					<li class="color-box me-2">
+						<div id="color-theme-red" class="d-flex rounded w-20px h-20px" style="background-color: red;">
+						</div>
+					</li>
+					<li class="color-box me-2">
+						<div id="color-theme-green" class="d-flex rounded w-20px h-20px" style="background-color: green;">
+						</div>
+					</li>
+					<li class="color-box me-2">
+						<div id="color-theme-yellow" class="d-flex rounded w-20px h-20px" style="background-color: #ffc107;">
+						</div>
+					</li>
+					<li class="color-box me-2">
+						<div id="color-theme-navy-blue" class="d-flex rounded w-20px h-20px" style="background-color: #000080;">
+						</div>
+					</li>
+
+				</ul>
+				<hr>
+			</div>
+
+
+		</div>
+	</div>
+
+	<script>
+		// Fallback for InlineEditor to prevent ReferenceError in script.bundle.js
+		window.InlineEditor = window.InlineEditor || {
+			create: function(element, config) {
+				if (!element) return Promise.resolve();
+				if (typeof ClassicEditor !== 'undefined') {
+					return ClassicEditor.create(element, config);
 				}
-				
-				// Standard redirect: if not focused on any text input, redirect single keypress instantly
-				var activeTag = document.activeElement.tagName.toLowerCase();
-				var activeType = document.activeElement.type ? document.activeElement.type.toLowerCase() : '';
-				var isTextFocused = (activeTag === 'input' && (activeType === 'text' || activeType === 'number' || activeType === 'search')) || activeTag === 'textarea' || activeTag === 'select';
-				
-				if (!isTextFocused) {
-					var barcodeInput = jQuery('#_Barcode');
-					if (barcodeInput.length) {
-						barcodeInput.focus();
-					}
-				}
-			});
-
-			bindGrid([]);
-
-			var xdata = <?php echo $itemServices ?>;
-			// console.log(xdata);
-
-			jQuery('.Select2-Selector').select2({
-				dropdownParent: $('#shippingcost')
-			});
-
-			jQuery('.js-example-basic-single').select2({
-				dropdownParent: $('#LookupAddCustomer')
-			});
-
-			jQuery('#KodePelanggan').select2({ width: '100%' });
-
-			var now = new Date();
-	    	var day = ("0" + now.getDate()).slice(-2);
-	    	var month = ("0" + (now.getMonth() + 1)).slice(-2);
-	    	var hours = now.getHours().toString().padStart(2, '0');
-			var minutes = now.getMinutes().toString().padStart(2, '0');
-			var seconds = now.getSeconds().toString().padStart(2, '0');
-
-	    	var firstDay = now.getFullYear()+"-"+month+"-01";
-	    	var NowDay = now.getFullYear()+"-"+month+"-"+day;
-
-	    	_Tanggal = NowDay;
-	    	_Jam = hours+":"+minutes+":"+seconds;
-
-	    	_Company = <?php echo $company ?>;
-	    	_Pelanggan = <?php echo $pelanggan ?>;
-			_Printer = <?php echo $printer ?>;
-
-			let url = new URL("{{ url('') }}");
-	    	LoadDraftOrderList();
-	    	bindGridLookupCustomer(_Pelanggan);
-
-	    	jQuery('#_NoTransaksi').text("<OTOMATIS>");
-
-			updateCustomerDisplay({data: [], Total: 0, Discount: 0, VoucherDiscount: 0, Net: 0, Tax: 0, Customer: '-', Vehicle: '-'});
-
-			// Initialize Cashier Hybrid Interactive Features
-			switchActiveInput('QTY');
-			loadCatalogProducts();
-
-			// Bind Category Pills Click
-			$(document).on('click', '.cat-pill', function() {
-				$('.cat-pill').removeClass('active btn-primary').addClass('btn-outline-secondary').css('background', 'transparent');
-				$(this).addClass('active btn-primary').removeClass('btn-outline-secondary').css('background', 'var(--primary)');
-				_ActiveCategory = $(this).attr('data-category');
-				filterCatalog();
-			});
-
-			// Bind Search Catalog Query
-			$('#_CatalogSearch').on('input', function() {
-				filterCatalog();
-			});
-		});
-
-		window.UpdateCurrentTime = function UpdateCurrentTime() {
-			var now = new Date();
-			var day = ("0" + now.getDate()).slice(-2);
-			var month = ("0" + (now.getMonth() + 1)).slice(-2);
-			var hours = now.getHours().toString().padStart(2, '0');
-			var minutes = now.getMinutes().toString().padStart(2, '0');
-			var seconds = now.getSeconds().toString().padStart(2, '0');
-
-			var NowDay = now.getFullYear() + "-" + month + "-" + day;
-			_Tanggal = NowDay;
-			_Jam = hours + ":" + minutes + ":" + seconds;
-		}
-
-
-
-		$('#_Barcode').on("keypress", function(e) {
-			// console.log(e)
-	        if (e.keyCode == 13) {
-	            $.ajax({
-		            async:false,
-		            type: 'post',
-		            url: "{{route('itemmaster-ViewJson')}}",
-		            headers: {
-		                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-		            },
-		            data: {
-		                'KodeJenis' : '',
-		                'Merk' 		: '',
-		                'TipeItem' 	: '',
-		                'Active' 	: 'Y',
-		                'Scan'		: jQuery('#_Barcode').val(),
-		                'TipeItemIN' : '1,3,4,5,Barang,Jasa'
-		            },
-		            dataType: 'json',
-		            success: function(response) {
-		            	console.log(response);
-		            	var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-      					var allRowsData  = dataGridInstance.getDataSource().items();
-
-		            	if (false) { // Disabled shipping/product lookup modal since catalog is already visible on the side
-		            		bindGridLookup(response.data);
-		            		jQuery('#LookupItem').modal({backdrop: 'static', keyboard: false})
-		            		jQuery('#LookupItem').modal('show');
-		            	}
-		            	else{
-		            		var barcodeVal = jQuery('#_Barcode').val().trim().toLowerCase();
-		            		var exactMatches = response.data.filter(function(item) {
-		            			return (item.Barcode || '').toLowerCase() === barcodeVal || (item.KodeItem || '').toLowerCase() === barcodeVal;
-		            		});
-
-		            		if (exactMatches.length > 0) {
-								
-		            			var objIndex = allRowsData.findIndex(obj => obj.KodeItem == exactMatches[0]['KodeItem']);
-
-								var inputQty = parseFloat(jQuery('#_Qty').val()) || 0;
-								if (inputQty === 0) {
-									inputQty = 1;
-								}
-								var inputDiskon = parseFloat(jQuery('#_Diskon').val()) || 0;
-								
-								var customDiskonPersen = 0;
-								var customDiskonRp = 0;
-								if (inputDiskon > 0) {
-									if (_ActiveNumpadField === 'DISC_R') {
-										customDiskonRp = inputDiskon;
-									} else if (_ActiveNumpadField === 'DISC_P') {
-										customDiskonPersen = inputDiskon;
-									} else {
-										// Fallback if not active but filled: if <= 100 it is percentage, else rupiah
-										if (inputDiskon <= 100) {
-											customDiskonPersen = inputDiskon;
-										} else {
-											customDiskonRp = inputDiskon;
-										}
-									}
-								}
-
-			            		// console.log(objIndex);
-			            		// console.log(allRowsData)
-			            		if (objIndex != -1) {
-			            			var oDiskon = CalculateDiskon(exactMatches[0]['KodeItem'],1);
-
-			            			allRowsData[objIndex].DiskonPersen = (oDiskon.DiskonType) == 'P' ? oDiskon.Diskon : 0;
-			            			allRowsData[objIndex].DiskonRp = (oDiskon.DiskonType) == 'N' ? oDiskon.Diskon : 0;
-
-			            			if (_DiskonGrupCustomer > 0) {
-								    	allRowsData[objIndex].DiskonPersen += _DiskonGrupCustomer;
-								    }
-
-									// Custom Discount overrides or adds to it
-									if (customDiskonPersen > 0) {
-										allRowsData[objIndex].DiskonPersen = customDiskonPersen;
-										allRowsData[objIndex].DiskonRp = 0;
-									} else if (customDiskonRp > 0) {
-										allRowsData[objIndex].DiskonRp = customDiskonRp;
-										allRowsData[objIndex].DiskonPersen = 0;
-									}
-
-			            			allRowsData[objIndex].Qty = allRowsData[objIndex].Qty + inputQty;
-
-			            			bindGrid(allRowsData);
-			            			dataGridInstance.refresh();
-			            		}
-			            		else{
-			            			var dataSource = dataGridInstance.getDataSource();
-			            			var oDiskon = CalculateDiskon(exactMatches[0]['KodeItem'],1);
-			            			var Diskoncust = 0;
-
-			            			if (_DiskonGrupCustomer > 0) {
-								    	Diskoncust = _DiskonGrupCustomer;
-								    }
-
-									var finalDiskonPersen = ((oDiskon.DiskonType) == 'P' ? oDiskon.Diskon : 0) + Diskoncust;
-									var finalDiskonRp = (oDiskon.DiskonType) == 'N' ? oDiskon.Diskon : 0;
-
-									if (customDiskonPersen > 0) {
-										finalDiskonPersen = customDiskonPersen;
-										finalDiskonRp = 0;
-									} else if (customDiskonRp > 0) {
-										finalDiskonRp = customDiskonRp;
-										finalDiskonPersen = 0;
-									}
-
-			            			var item = {
-				            			'LineNumber' 	: allRowsData.length +1,
-				            			'KodeItem' 	 	: exactMatches[0]['KodeItem'],
-				            			'NamaItem'	 	: exactMatches[0]['NamaItem'],
-				            			'Qty'	 	 	: inputQty,
-				            			'QtyKonversi'	: exactMatches[0]['QtyKonversi'],
-				            			'Satuan'		: exactMatches[0]['Satuan'],
-				            			'Harga' 	 	: exactMatches[0]['HargaJual'],
-				            			'DiskonPersen' 	: finalDiskonPersen,
-				            			'DiskonRp' 	 	: finalDiskonRp,
-				            			'Total' 	 	: 0,
-										'VatPercent'	: exactMatches[0]['VatPercent'],
-										'HargaPokokPenjualan'	: exactMatches[0]['HargaPokokPenjualan'],
-				            		}
-
-				            		allRowsData.push(item);
-
-				     //        		dataGridInstance.option("dataSource", [...dataGridInstance.option("dataSource"), item]);
-									// dataGridInstance.refresh();
-			            		}
-			            		_LastInputed = exactMatches[0]['KodeItem'];
-
-								// Reset Qty & Diskon to default values
-								jQuery('#_Qty').val('0');
-								jQuery('#_Diskon').val('0');
-								switchActiveInput('QTY');
-		            		}
-		            		else{
-		            			Swal.fire({
-			                      icon: "error",
-			                      title: "Error",
-			                      text: "Data Tidak ditemukan",
-			                    }).then((result) => {
-								  // location.reload();
-								  $('#_Barcode').val("")
-								  $('#_Barcode').focus()
-								});	
-		            		}
-		            	}
-		            }
-		        });
-
-				$('#_Barcode').val("")
-				$('#_Barcode').focus()
-				CalculateTotal();
-	        }
-		});
-
-	function openAdvisorPopup() {
-		$('#advisorIframe').attr('src', "{{ route('service-advisor') }}?popup=1");
-		jQuery('#modalAdvisorIframe').modal('show');
-	}
-
-	window.addEventListener('message', function(event) {
-		if (event.data === 'advisorSuccess') {
-			jQuery('#modalAdvisorIframe').modal('hide');
-		}
-	});
-
-		// Global Document keyboard event listener for cashier interactive shortcuts (F1-F7, DEL)
-		$(document).on("keydown", function(e) {
-			var key = e.which || e.keyCode;
-
-			// Intercept F1 - F7 and DEL (46)
-			if (key === 112 || key === 113 || key === 114 || key === 115 || key === 116 || key === 117 || key === 118 || key === 119 || key === 120 || key === 46) {
-				e.preventDefault(); // Prevent standard browser behaviors (help, search, reload, address bar focus)
-
-				if (key === 119) { // F8: Tarik PKB
-					openTarikPKB();
-				}
-				else if (key === 120) { // F9: Service Advisor
-					openAdvisorPopup();
-				}
-				else if (key === 112) { // F1: Focus Barcode Scanner
-					$('#_Barcode').focus().select();
-				}
-				else if (key === 113) { // F2: Edit Qty
-					if (_LastInputed != "") {
-						$('#_Qty').focus().select();
-					}
-				}
-				else if (key === 114) { // F3: Diskon %
-					if (_LastInputed != "") {
-						$('#_Diskon').focus().select();
-						$('#_TipeDiskon').text(" (%)");
-						_TipeDiskon = "%";
-					}
-				}
-				else if (key === 115) { // F4: Diskon Rp
-					if (_LastInputed != "") {
-						$('#_Diskon').focus().select();
-						$('#_TipeDiskon').text(" (Rp)");
-						_TipeDiskon = "Rp";
-					}
-				}
-				else if (key === 116) { // F5: Bayar Sekarang
-					$('#btBayar').click();
-				}
-				else if (key === 117) { // F6: Simpan Draft
-					$('#btDraft').click();
-				}
-				else if (key === 118) { // F7: Tambah Jasa
-					$('#btshippingcost').click();
-				}
-				else if (key === 46) { // DEL: Batal Transaksi
-					$('#btBatal').click();
-				}
+				console.warn('CKEditor not found.');
+				return Promise.resolve();
 			}
-		});
-
-		$('#_Qty').on("keypress", function(e) {
-			var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-      		var allRowsData  = dataGridInstance.getDataSource().items();
-
-			if (e.keyCode == 13) {
-				var objIndex = allRowsData.findIndex(obj => obj.KodeItem == _LastInputed);
-
-        		// console.log(objIndex);
-        		// console.log(allRowsData)
-        		if (objIndex != -1) {
-        			var oDiskon = CalculateDiskon(_LastInputed,$('#_Qty').val());
-        			allRowsData[objIndex].DiskonPersen = (oDiskon.DiskonType) == 'P' ? oDiskon.Diskon : 0;
-        			allRowsData[objIndex].DiskonRp = (oDiskon.DiskonType) == 'N' ? oDiskon.Diskon : 0;
-        			console.log(_DiskonGrupCustomer);
-
-        			if (_DiskonGrupCustomer > 0) {
-				    	allRowsData[objIndex].DiskonPersen += _DiskonGrupCustomer;
-				    }
-
-        			allRowsData[objIndex].Qty = parseFloat($('#_Qty').val());
-
-        			bindGrid(allRowsData);
-        			dataGridInstance.refresh();
-
-        			$('#_Qty').val(0);
-        			$('#_Barcode').focus();
-        		}
-
-        		CalculateTotal();
-			}
-		});
-
-		$('#_Diskon').on("keypress", function(e) {
-			var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-      		var allRowsData  = dataGridInstance.getDataSource().items();
-
-			if (e.keyCode == 13) {
-				var objIndex = allRowsData.findIndex(obj => obj.KodeItem == _LastInputed);
-
-        		// console.log(objIndex);
-        		// console.log(allRowsData)
-        		if (objIndex != -1) {
-        			if (_TipeDiskon == "%" && allRowsData[objIndex].DiskonRp == 0) {
-        				allRowsData[objIndex].DiskonPersen = parseFloat($('#_Diskon').val());
-        			}
-        			else if (_TipeDiskon == "Rp" && allRowsData[objIndex].DiskonPersen == 0) {
-        				allRowsData[objIndex].DiskonRp = parseFloat($('#_Diskon').val());
-        			}
-
-        			bindGrid(allRowsData);
-        			dataGridInstance.refresh();
-
-        			$('#_Diskon').val(0);
-        			$('#_Diskon').focus();
-        		}
-
-        		CalculateTotal();
-			}
-		});
-
-		$('#btPilihLookupData').click(function () {
-			var dataGridInstance = jQuery('#gridLookupItem').dxDataGrid('instance');
-			var selectedRows = dataGridInstance.getSelectedRowsData();
-
-			if (selectedRows.length > 0) {
-				jQuery('#LookupItem').modal('hide');
-				$('#_Barcode').val(selectedRows[0]['KodeItem']);
-				$('#_Barcode').focus();
-
-				var e = $.Event('keypress');
-				e.keyCode = 13;
-				$('#_Barcode').trigger(e);
-			}
-
-		});
-
-		$('#btBatal').click(function () {
-			location.reload()
-		});
-
-		$('#btshippingcost').click(function () {
-			// bindGridLookupServices(_ServicesData);
-			$('#KodeItemJasa').val('').trigger('change');
-			$('#JumlahJasa').val('0');
-			$('#KeteranganJasa').val('');
-			jQuery('#shippingcost').modal({backdrop: 'static', keyboard: false})
-		    jQuery('#shippingcost').modal('show');
-		})
-
-		$('#btLookupBiaya').click(function () {
-			jQuery('#shippingcost').modal('hide');
-
-			var item ={
-				'KodeItem'  : $('#KodeItemJasa').val(),
-				'Jumlah'	: $('#JumlahJasa').attr("originalvalue"),
-				'Keterangan': $('#KeteranganJasa').val()
-			}
-
-			_ServicesData.push(item);
-
-			CalculateTotal();
-		});
-
-		$('#JumlahJasa').focusout(function(){
-			formatCurrency($("#JumlahJasa"), $("#JumlahJasa").val());
-		});
-
-		$('#JumlahBayar').focusout(function(){
-			formatCurrency($("#JumlahBayar"), $("#JumlahBayar").val());
-			SetEnableCommand();
-		});
-
-		$('#JumlahBayar').on('input', function(){
-			let rawVal = $(this).val();
-			let cleanAmount = rawVal.replace(/Rp\.?\s*/i, '');
-			let commaCount = (cleanAmount.match(/,/g) || []).length;
-			let dotCount = (cleanAmount.match(/\./g) || []).length;
-			
-			if (commaCount > 0 && dotCount > 0) {
-				if (cleanAmount.indexOf(',') < cleanAmount.indexOf('.')) {
-					cleanAmount = cleanAmount.replace(/,/g, '');
-				} else {
-					cleanAmount = cleanAmount.replace(/\./g, '').replace(/,/g, '.');
-				}
-			} else if (commaCount > 0) {
-				let parts = cleanAmount.split(',');
-				if (parts.length === 2 && parts[1].length <= 2) {
-					cleanAmount = cleanAmount.replace(/,/g, '.');
-				} else {
-					cleanAmount = cleanAmount.replace(/,/g, '');
-				}
-			} else if (dotCount > 0) {
-				let parts = cleanAmount.split('.');
-				if (parts.length === 2 && parts[1].length <= 2) {
-					// Standar desimal
-				} else {
-					cleanAmount = cleanAmount.replace(/\./g, '');
-				}
-			}
-			let parsedAmount = parseFloat(cleanAmount);
-			if (isNaN(parsedAmount)) parsedAmount = 0;
-			$(this).attr("originalvalue", parsedAmount);
-			SetEnableCommand();
-		});
-
-		jQuery('#KodePelanggan').change(function () {
-			$.ajax({
-	            async:false,
-	            type: 'post',
-	            url: "{{route('pelanggan-viewJson')}}",
-	            headers: {
-	                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-	            },
-	            data: {
-	                'KodePelanggan' : $('#KodePelanggan').val(),
-	                'GrupPelanggan' : ''
-	            },
-	            dataType: 'json',
-	            success: function(response) {
-	            	var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-      				var allRowsData  = dataGridInstance.getDataSource().items();
-
-	            	if (response.data.length > 0) {
-	            		_DiskonGrupCustomer = response.data[0]['DiskonPersen'];
-	            		_TerminPelanggan = response.data[0]['DiskonPersen'];
-
-                        _DiskonMemberPersen = parseFloat(response.data[0]['DiskonMemberPersen'] || 0);
-                        _DiskonGrupCustomer = parseFloat(_DiskonGrupCustomer || 0) + _DiskonMemberPersen;
-                        _SisaGratisOngkir = parseFloat(response.data[0]['SisaGratisOngkir'] || 0);
-                        _PoinLoyalti = parseFloat(response.data[0]['PoinLoyalti'] || 0);
-	            		// console.log(response.data[0]);
-
-	            		if (allRowsData.length > 0) {
-	            			for (var i = 0; i < allRowsData.length; i++) {
-	            				allRowsData[i]["DiskonPersen"] = _DiskonGrupCustomer;
-	            			}
-
-	            			bindGrid(allRowsData);
-	            			CalculateTotal();
-	            		}
-	            	}
-	            }
-	        });
-		});
-
-		$('#btDraft').click(function () {
-			SaveData('T',$('#btDraft'),'Simpan Sementara');
-		});
-
-		$('#btBayar').click(function () {
-			// payment-popup
-			jQuery('#payment-popup').modal({backdrop: 'static', keyboard: false})
-		    jQuery('#payment-popup').modal('show');
-
-		    var TotalPenjualan = parseFloat($('#_GrandTotal').attr('originalvalue') || 0);
-		    $('#_TotalTagihan').val(TotalPenjualan);
-		    $('#_TotalTagihanFormated').text($('#_GrandTotal').val())
-
-		    // Voucher details in Payment Modal
-		    var voucherDiscount = parseFloat($('#_VoucherDiscount').attr('originalvalue') || 0);
-		    if (voucherDiscount > 0) {
-		    	$('#lblPaymentVoucher').text('Voucher: ' + _VoucherAppliedCode);
-		    	$('#valPaymentVoucher').text('- ' + $('#_VoucherDiscount').val());
-		    	$('#rowPaymentVoucher').attr('style', 'display: flex !important;');
-		    } else {
-		    	$('#rowPaymentVoucher').attr('style', 'display: none !important;');
-		    }
-
-			// Poin Loyalti
-			if (_PoinLoyalti > 0 && _Company.length > 0 && (_Company[0]['NilaiTukarPoin'] || 0) > 0) {
-				$('#rowTukarPoin').attr('style', 'display: flex !important;');
-				$('#btnTukarPoin').show();
-				$('#lblTukarPoin').html('Poin (' + _PoinLoyalti + ') <button class="btn btn-sm btn-outline-success ml-2" type="button" id="btnTukarPoin">Tukar</button>');
-				
-				// Reset previously redeemed points on open if needed
-				// $('#_NilaiTukarPoin').val(0);
-				// $('#_PoinDitukar').val(0);
-				// $('#valTukarPoin').text('- Rp. 0');
-			} else {
-				$('#rowTukarPoin').attr('style', 'display: none !important;');
-			}
-
-			// Pembulatan
-			var TotalPembulatan = Math.ceil(TotalPenjualan);
-			var NilaiPembulatan = TotalPembulatan - TotalPenjualan;
-			// console.log(NilaiPembulatan)
-			// formatCurrency($('#_TotalServices'), _tempTotalServices);
-			// $('#_Pembulatan').val();
-			formatCurrency($('#_Pembulatan'), NilaiPembulatan)
-		    $('#_PembulatanFormated').text($('#_Pembulatan').val())
-
-			// Total Penjualan
-			// $('#_TotalNetBayar').val();
-			formatCurrency($('#_TotalNetBayar'), TotalPembulatan)
-		    $('#_TotalNetBayarFormated').text($('#_TotalNetBayar').val())
-		});
-
-		$('#payment-popup').on('shown.bs.modal', function () {
-			var current = JSON.parse(localStorage.getItem('PoSData') || '{}');
-			current.isCheckout = true;
-			localStorage.setItem('PoSData', JSON.stringify(current));
-		});
-
-		$('#payment-popup').on('hidden.bs.modal', function () {
-			var current = JSON.parse(localStorage.getItem('PoSData') || '{}');
-			current.isCheckout = false;
-			localStorage.setItem('PoSData', JSON.stringify(current));
-		});
-
-		$('#btnTukarPoin').click(function () {
-			Swal.fire({
-				title: 'Tukar Poin Loyalti',
-				text: "Anda memiliki " + _PoinLoyalti + " poin. Berapa poin yang ingin ditukar? (Tiap 1 Poin = Rp. " + parseFloat(_Company[0]['NilaiTukarPoin'] || 0).toLocaleString('id-ID') + ")",
-				icon: 'question',
-				input: 'number',
-				inputAttributes: {
-					min: 1,
-					max: _PoinLoyalti,
-					step: 1
-				},
-				showCancelButton: true,
-				confirmButtonText: 'Tukar',
-				cancelButtonText: 'Batal',
-				inputValidator: (value) => {
-					if (!value || parseInt(value) <= 0) {
-						return 'Masukkan jumlah poin yang valid!'
-					}
-					if (parseInt(value) > _PoinLoyalti) {
-						return 'Poin tidak mencukupi!'
-					}
-				}
-			}).then((result) => {
-				if (result.isConfirmed) {
-					var poinTukar = parseInt(result.value);
-					if (poinTukar > 0 && poinTukar <= _PoinLoyalti) {
-						var nilaiTukar = poinTukar * parseFloat(_Company[0]['NilaiTukarPoin'] || 0);
-						$('#_NilaiTukarPoin').val(nilaiTukar);
-						$('#_PoinDitukar').val(poinTukar);
-						$('#valTukarPoin').text('- Rp. ' + nilaiTukar.toLocaleString('id-ID'));
-						$('#btnTukarPoin').hide();
-						
-						// Recalculate total bayar
-						var TotalPenjualan = parseFloat($('#_GrandTotal').attr('originalvalue') || 0);
-						var TotalPembulatan = Math.ceil(TotalPenjualan);
-						var finalBayar = TotalPembulatan - nilaiTukar;
-						if (finalBayar < 0) finalBayar = 0;
-						formatCurrency($('#_TotalNetBayar'), finalBayar);
-						$('#_TotalNetBayarFormated').text($('#_TotalNetBayar').val());
-					}
-				}
-			});
-		});
-
-		$('#btSimpanPembayaran').click(function () {
-			// PaymentGateWay();
-
-			if (_MetodeVerifikasiPembayaran == "AUTO") {
-				PaymentGateWay('C',$('#btSimpanPembayaran'),'Submit');
-			}
-			else{
-				SaveData('C',$('#btSimpanPembayaran'),'Submit');
-			}
-		});
-
-		$('#btSearchCustomer').click(function () {
-			jQuery('#LookupCustomer').modal({backdrop: 'static', keyboard: false})
-			jQuery('#LookupCustomer').modal('show');
-		});
-
-		$('#btPilihCustomer').click(function () {
-			var dataGridInstance = jQuery('#gridLookupCustomer').dxDataGrid('instance');
-			var selectedRows = dataGridInstance.getSelectedRowsData();
-
-			// console.log(selectedRows);
-			if (selectedRows.length > 0) {
-				jQuery('#LookupCustomer').modal('hide');
-				jQuery('#KodePelanggan').val(selectedRows[0]['KodePelanggan']).trigger('change');
-			}
-		});
-
-		jQuery('#btAddCustomer').click(function () {
-			jQuery('#LookupAddCustomer').modal({backdrop: 'static', keyboard: false})
-			jQuery('#LookupAddCustomer').modal('show');
-		})
-
-		jQuery('#ModalProvID').change(function () {
-			$.ajax({
-                async   : false,
-                type    : "post",
-                url     : "{{route('demografipelanggan')}}",
-                data    : {
-                            'Table' : 'dem_kota',
-                            'Field' : 'prov_id',
-                            'Value' : jQuery('#ModalProvID').val(),
-                            '_token': '{{ csrf_token() }}',
-                        },
-                dataType: "json",
-                success: function (response) {
-                    // console.log(response);
-                    if (response.data.length > 0) {
-                    	$('#ModalKotaID').empty();
-                    	var newOption = $('<option>', {
-			            	value: -1,
-			            	text: "Pilih Kota"
-			          	});
-			          	$('#ModalKotaID').append(newOption); 
-			          	$.each(response.data,function (k,v) {
-				            var newOption = $('<option>', {
-				            	value: v.city_id,
-				            	text: v.city_name
-				        	});
-
-				        	$('#ModalKotaID').append(newOption);
-				        });
-                    }
-                }
-            });
-		});
-
-
-		jQuery('#ModalKotaID').change(function () {
-			// console.log('Test masuk')
-			$.ajax({
-                async   : false,
-                type    : "post",
-                url     : "{{route('demografipelanggan')}}",
-                data    : {
-                            'Table' : 'dem_kecamatan',
-                            'Field' : 'kota_id',
-                            'Value' : $('#ModalKotaID').val(),
-                            '_token': '{{ csrf_token() }}',
-                        },
-                dataType: "json",
-                success: function (response) {
-                    // console.log(response);
-                    if (response.data.length > 0) {
-                    	$('#ModalKecID').empty();
-                    	var newOption = $('<option>', {
-			            	value: -1,
-			            	text: "Pilih Kecamatan"
-			          	});
-			          	$('#ModalKecID').append(newOption); 
-			          	$.each(response.data,function (k,v) {
-				            var newOption = $('<option>', {
-				            	value: v.dis_id,
-				            	text: v.dis_name
-				        	});
-
-				        	$('#ModalKecID').append(newOption);
-				        });
-                    }
-                }
-            });
-		});
-
-
-		jQuery('#ModalKecID').change(function () {
-			// console.log('Test masuk')
-			$.ajax({
-                async   : false,
-                type    : "post",
-                url     : "{{route('demografipelanggan')}}",
-                data    : {
-                            'Table' : 'dem_kelurahan',
-                            'Field' : 'kec_id',
-                            'Value' : $('#ModalKecID').val(),
-                            '_token': '{{ csrf_token() }}',
-                        },
-                dataType: "json",
-                success: function (response) {
-                    // console.log(response);
-                    if (response.data.length > 0) {
-                    	$('#ModalKelID').empty();
-                    	var newOption = $('<option>', {
-			            	value: -1,
-			            	text: "Pilih Kelurahan"
-			          	});
-			          	$('#ModalKelID').append(newOption); 
-			          	$.each(response.data,function (k,v) {
-				            var newOption = $('<option>', {
-				            	value: v.subdis_id,
-				            	text: v.subdis_name
-				        	});
-
-				        	$('#ModalKelID').append(newOption);
-				        });
-                    }
-                }
-            });
-		});
-
-		jQuery('#btSaveAddCustomer').click(function () {
-			$.ajax({
-                async   : false,
-                type    : "post",
-                url     : "{{route('pelanggan-storeJson')}}",
-                headers: {
-	                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-	            },
-                data    : {
-                	'NamaPelanggan' : jQuery('#ModalNamaPelanggan').val(),
-                	'KodeGrupPelanggan' : jQuery('#ModalKodeGrupPelanggan').val(),
-                	'LimitPiutang' : jQuery('#ModalLimitPiutang').val(),
-                	'ProvID' : jQuery('#ModalProvID').val(),
-                	'KotaID' : jQuery('#ModalKotaID').val(),
-                	'KelID' : jQuery('#ModalKelID').val(),
-                	'KecID' : jQuery('#ModalKecID').val(),
-                	'Email' : jQuery('#ModalEmail').val(),
-                	'NoTlp1' : jQuery('#ModalNoTlp1').val(),
-                	'NoTlp2' : jQuery('#ModalNoTlp2').val(),
-                	'Alamat' : jQuery('#ModalAlamat').val(),
-                	'Keterangan' : jQuery('#ModalKeterangan').val(),
-                	'Status' : jQuery('#ModalStatus').val()
-                },
-                dataType: "json",
-                success: function (response) {
-                    // console.log(response);
-                    if (response.success == true) {
-                    	jQuery('#LookupAddCustomer').modal('hide');
-                    	var newOption = $('<option>', {
-			            	value: response.LastTRX,
-			            	text: jQuery('#ModalNamaPelanggan').val()
-			          	});
-			          	jQuery('#KodePelanggan').append(newOption);
-			          	jQuery('#KodePelanggan').val(response.LastTRX).trigger('change');
-                    }
-                    else{
-                    	Swal.fire({
-	                      icon: "error",
-	                      title: "Opps...",
-	                      text: response.message,
-	                    });
-                    }
-                }
-            });
-		});
-
-		$('#btOpenCustDisplay').click(function(){
-			openCustomerDisplay();
-		});
-	});
-
-	function LoadDraftOrderList() {
-		$.ajax({
-			async:false,
-			url: "{{route('fpenjualan-readheader')}}",
-			type: 'POST',
-			headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-            },
-            data: {
-            	'TglAwal':'1999-01-01',
-            	'TglAkhir' : _Tanggal,
-            	'KodePelanggan' : '',
-            	'Status' : 'T'
-           	},
-            success: function(response) {
-            	// console.log(response);
-            	jQuery('#_draftCount').text(response.data.length);
-
-            	if (response.data.length > 0) {
-            		jQuery('#_draftOrderList').empty();
-            		var xHTML = '<div class="row">';
-            		$.each(response.data,function (k,v) {
-            			var xNoTransaksi = "'"+v.NoTransaksi+"'";
-            			xHTML += '<div class="col-lg-4">';
-            			xHTML += '	<div class="pos-order">';
-            			xHTML += '		<center><h4 class="pos-order-title" >'+v.NoTransaksi+'</h4></center>';
-            			xHTML += '			<div class="orderdetail-pos">';
-            			xHTML += '				<p><strong>Customer Name</strong> '+v.NamaPelanggan+'</p>';
-            			xHTML += '				<p><strong>Payment Status</strong> Pending</p>';
-            			xHTML += '				<p><strong>Total Item</strong> '+v.TotalItems+' Items</p>';
-            			xHTML += '				<p><strong>Total Transaksi</strong> '+new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(v.TotalHutang).replace("Rp", "Rp. ").trim()+'</p>';
-            			xHTML += '			</div>';
-            			xHTML += '			<div class="d-flex justify-content-end">';
-            			xHTML += '				<a class="confirm-delete ms-3" title="Edit" onClick = "editDraft('+xNoTransaksi+')"><i class="fas fa-edit"></i></a>';
-            			xHTML += '				<a class="confirm-delete ms-3" title="Delete" onClick = "deleteDraft('+xNoTransaksi+')"><i class="fas fa-trash-alt"></i></a>';
-            			xHTML += '			</div>';
-            			xHTML += '	</div>';
-            			xHTML += '</div>';
-            			
-            		});
-
-            		xHTML += '</div>';
-
-            		// console.log(xHTML);
-
-            			jQuery('#_draftOrderList').html(xHTML);
-            	}
-            }
-		});
-	}
-
-	function PrintStruk(NoTransaksi) {
-
-		if(_Company[0]["NamaPosPrinter"] == ""){
-			Swal.fire({
-				icon: "error",
-				title: "Opps...",
-				text: "Printer Belum ditentukan, Silahkan melakukan setting di menu Master -> Pengaturan Toko -> Perusahaan",
-			});
-			return;
-		}
-
-		if(_Company[0]["LebarKertas"] == ""){
-			Swal.fire({
-				icon: "error",
-				title: "Opps...",
-				text: "Lebar Kertas Belum ditentukan, Silahkan melakukan setting di menu Master -> Pengaturan Toko -> Perusahaan",
-			});
-			return;
-		}
-
-		if(_Printer["PrinterInterface"] == "Bluetooth"){
-			$.ajax({
-				async:false,
-				url: "{{route('print-retail')}}",
-				type: 'POST',
-				headers: {
-					'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-				},
-				data: {'NoTransaksi':NoTransaksi},
-				success: function(response) {
-					if (response.success == true) {
-						Swal.fire({
-						icon: "success",
-						title: "Sukses",
-						text: "Data Penjualan Berhasil Disimpan",
-						}).then((result) => {
-							location.reload();
-						});
-					}
-					else{
-						Swal.fire({
-							icon: "error",
-							title: "Opps...",
-							text: response.message,
-						});
-					}
-				}
-			});
-		}
-		else if(_Printer["PrinterInterface"] == "USB"){
-			// var link = "fpenjualan/printthermal/"+cellInfo.data.NoTransaksi;
-			let url = "{{ url('') }}";
-            // url.searchParams.append('NoTransaksi', NoTransaksi);
-			url += "/fpenjualan/printthermal/"+NoTransaksi;
-			// console.log(url);
-			// // window.location.href = url.toString();
-			window.open(url, "_blank");
-			location.reload();
-		}
-		else {
-			let url = "{{ url('') }}";
-			url += "/fpenjualan/printthermal/"+NoTransaksi;
-			window.open(url, "_blank");
-			location.reload();
-		}
-	}
-
-	function GetItemInfo(KodeItem) {
-		var oReturnData = {};
-
-		$.ajax({
-            async:false,
-            type: 'post',
-            url: "{{route('itemmaster-ViewJson')}}",
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-            },
-            data: {
-                'KodeJenis' : '',
-			    'Merk' 		: '',
-			    'TipeItem' 	: '',
-				'Active' 	: 'Y',
-				'Scan'		: KodeItem,
-				'TipeItemIN' : '1,3,4,5,Barang,Jasa'
-            },
-            dataType: 'json',
-            success: function(response) {
-            	if (response.data.length > 0) {
-            		oReturnData = response.data;
-            	}
-            }
-        });
-
-        return oReturnData;
-	}
-
-	function CalculateDiskon(KodeItem, Qty) {
-		var DiskReturn = {};
-
-		$.ajax({
-            async:false,
-            type: 'post',
-            url: "{{route('fpenjualan-getDiskon')}}",
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-            },
-            data: {
-                'KodeItem' : KodeItem,
-                'Qty' 		: Qty
-            },
-            dataType: 'json',
-            success: function(response) {
-            	DiskReturn ={
-            		Diskon : response.Diskon,
-            		DiskonType : response.TipeDiskon
-            	}
-            }
-        });
-
-		return DiskReturn;
-	}
-
-	
-
-	function bindGridLookupServices(data) {
-		var dataGridInstance = jQuery("#gridLookupServices").dxDataGrid({
-			allowColumnResizing: true,
-			dataSource: data,
-			keyExpr: "NoUrut",
-			showBorders: true,
-            allowColumnResizing: true,
-            columnAutoWidth: true,
-            showBorders: true,
-            paging: {
-                enabled: true,
-                pageSize: 30
-            },
-            editing: {
-                mode: "row",
-                allowUpdating: true,
-                allowDeleting: true,
-                texts: {
-                    confirmDeleteMessage: ''  
-                }
-            },
-            columns: [
-            	{
-                    dataField: "NoUrut",
-                    caption: "#",
-                    allowEditing:false,
-                    allowSorting: false 
-                },
-                {
-                    dataField: "KodeItem",
-                    caption: "Jasa",
-                    lookup: {
-					    dataSource: <?php echo $itemServices ?>,
-					    valueExpr: 'KodeItem',
-					    displayExpr: 'NamaItem',
-				    },
-				    allowSorting: false,
-				    allowEditing:true
-                },
-                {
-                    dataField: "Jumlah",
-                    caption: "Jumlah",
-                    allowEditing:true,
-                    format: { type: 'fixedPoint', precision: 2 },
-                    allowSorting: false 
-                },
-                {
-                    dataField: "Keterangan",
-                    caption: "Keterangan",
-                    allowEditing:true,
-                    allowSorting: false 
-                },
-            ],
-            onContentReady: function(e) {
-	            var rowData = dataGridInstance.option("dataSource");
-	            if (rowData.length == 1) {
-	            	dataGridInstance.editRow(0)	
-	            }
-	        },
-	        onCellClick:function (e) {
-	            var rowData = dataGridInstance.option("dataSource");
-	            var columnIndex = e.columnIndex;
-	            // console.log(e)
-	        	if (columnIndex >= 1 && columnIndex <= 5) {
-	                dataGridInstance.editRow(e.rowIndex)	
-	            }
-	            dataGridInstance.option("focusedColumnIndex", columnIndex);	
-	        },
-		}).dxDataGrid('instance');
-
-		var allRowsData  = dataGridInstance.option("dataSource");
-    	var newData = { NoUrut: allRowsData.length + 1,KodeItem:"", Jumlah: 0, Keterangan:'' }
-    	dataGridInstance.option("dataSource", [...dataGridInstance.option("dataSource"), newData]);
-    	dataGridInstance.refresh();
-
-    	dataGridInstance.on('rowUpdated', function(e) {
-    		// console.log(e)
-    		CalculateTotal();
-    	});
-
-    	dataGridInstance.on('editorPreparing',function (e) {
-    		if (e.parentType === "dataRow" && e.dataField === "KodeItem") {
-    			e.editorOptions.onFocusOut = (x) => {
-    				var rowIndex = dataGridInstance.getRowIndexByKey(e.row.key);
-
-    				dataGridInstance.cellValue(rowIndex, "Jumlah", 0);
-		            dataGridInstance.cellValue(rowIndex, "Keterangan", '');
-		            // dataGridInstance.cellValue(rowIndex, "Qty", 1);
-
-		            dataGridInstance.refresh();
-
-		            dataGridInstance.saveEditData();
-
-		            var allRowsData  = dataGridInstance.option("dataSource");
-                    var newData = { NoUrut: allRowsData.length + 1,KodeItem:"", Jumlah: 0, Keterangan:'' }
-    				dataGridInstance.option("dataSource", [...dataGridInstance.option("dataSource"), newData]);
-    				dataGridInstance.refresh();
-    			}
-    		}
-    		else if (e.parentType === "dataRow" && e.dataField === "Jumlah") {
-		    	e.editorOptions.onFocusOut = (x) => {
-		    		dataGridInstance.saveEditData();
-		    		CalculateTotal();
-		    	}
-		    }
-		    else if (e.parentType === "dataRow" && e.dataField === "Keterangan") {
-		    	e.editorOptions.onFocusOut = (x) => {
-		    		dataGridInstance.saveEditData();
-		    	}
-		    }
-    	})
-	}
-
-	function bindGridLookup(data) {
-		// gridLookupItem
-		var dataGridInstance = jQuery("#gridLookupItem").dxDataGrid({
-			allowColumnResizing: true,
-			dataSource: data,
-			keyExpr: "KodeItem",
-			showBorders: true,
-            allowColumnResizing: true,
-            columnAutoWidth: true,
-            showBorders: true,
-            paging: {
-                enabled: true,
-                pageSize: 30
-            },
-            editing: {
-                mode: "row",
-                texts: {
-                    confirmDeleteMessage: ''  
-                }
-            },
-            selection: {
-                mode: "single" // Enable single selection mode
-            },
-            searchPanel: {
-	            visible: true,
-	            width: 240,
-	            placeholder: "Search..."
-	        },
-            columns: [
-            	{
-                    dataField: "KodeItem",
-                    caption: "Kode Item",
-                    allowSorting: true,
-                    allowEditing : false
-                },
-                {
-                    dataField: "Barcode",
-                    caption: "Barcode",
-                    allowSorting: true,
-                    allowEditing : false
-                },
-                {
-                    dataField: "NamaItem",
-                    caption: "Nama Item",
-                    allowSorting: true,
-                    allowEditing : false
-                },
-                {
-                    dataField: "Stock",
-                    caption: "Stock",
-                    allowSorting: true,
-                    allowEditing : false,
-                    format: { type: 'fixedPoint', precision: 2 },
-                },
-                {
-                    dataField: "Satuan",
-                    caption: "Sat",
-                    allowSorting: true,
-                    allowEditing : false
-                },
-            ]
-		}).dxDataGrid('instance');
-	}
-	function bindGrid(data) {
-		var dataGridInstance = jQuery("#gridContainerDetail").dxDataGrid({
-			allowColumnResizing: true,
-			dataSource: data,
-			keyExpr: "LineNumber",
-			showBorders: true,
-            allowColumnResizing: true,
-            columnAutoWidth: true,
-            showBorders: true,
-            paging: {
-                enabled: false,
-                pageSize: 30
-            },
-            editing: {
-                mode: "row",
-                // allowAdding:true,
-                allowUpdating: true,
-                allowDeleting: true,
-                texts: {
-                    confirmDeleteMessage: ''  
-                }
-            },
-            columns: [
-            	{
-                    dataField: "LineNumber",
-                    caption: "#",
-                    allowSorting: false,
-                    visible:false,
-                },
-                {
-                    dataField: "KodeItem",
-                    caption: "Item",
-				    allowSorting: false,
-				    allowEditing:false,
-				    visible:false
-                },
-                {
-                    dataField: "NamaItem",
-                    caption: "Item",
-				    allowSorting: false,
-				    allowEditing:false,
-				    width: "45%",
-				    minWidth: 180
-                },
-                {
-                    dataField: "Qty",
-                    caption: "Qty",
-				    allowSorting: false,
-				    allowEditing:true,
-				    format: { type: 'fixedPoint', precision: 2 },
-                },
-                {
-                    dataField: "QtyKonversi",
-                    caption: "QtyKonversi",
-				    allowSorting: false,
-				    allowEditing:true,
-				    format: { type: 'fixedPoint', precision: 2 },
-				    visible:false
-                },
-                {
-                    dataField: "Satuan",
-                    caption: "#",
-				    allowSorting: false,
-				    allowEditing:false,
-				    visible: false
-                },
-                {
-                    dataField: "Harga",
-                    caption: "Harga",
-				    allowSorting: false,
-				    allowEditing:false,
-				    format: { type: 'fixedPoint', precision: 2 },
-                },
-                {
-                    dataField: "DiskonPersen",
-                    caption: "Diskon(%)",
-				    allowSorting: false,
-				    allowEditing:true,
-				    format: { type: 'fixedPoint', precision: 2 },
-					visible: false
-                },
-                {
-                    dataField: "DiskonRp",
-                    caption: "Diskon(Rp)",
-				    allowSorting: false,
-				    allowEditing:true,
-				    format: { type: 'fixedPoint', precision: 2 },
-					visible: false
-                },
-				{
-                    dataField: "VatPercent",
-                    caption: "PPN(%)",
-				    allowSorting: false,
-				    allowEditing:true,
-				    format: { type: 'fixedPoint', precision: 2 },
-					visible: false
-                },
-				{
-                    dataField: "HargaPokokPenjualan",
-                    caption: "HPP",
-				    allowSorting: false,
-				    allowEditing:true,
-				    format: { type: 'fixedPoint', precision: 2 },
-				    visible: false
-                },
-                {
-                    dataField: "Total",
-                    caption: "Total",
-				    allowSorting: false,
-				    allowEditing:false,
-				    format: { type: 'fixedPoint', precision: 2 },
-				    calculateCellValue:function (rowData) {
-                    	var HargaNet = 0;
-                    	var HargaGross = 0;
-
-                    	if (rowData.DiskonPersen > 0) {
-                    		HargaGross = rowData.Qty * rowData.Harga;
-                    		var diskon = HargaGross * rowData.DiskonPersen / 100;
-                    		HargaNet = HargaGross - diskon;
-                    	}
-                    	else if (rowData.DiskonRp > 0) {
-                    		HargaGross = rowData.Qty * rowData.Harga;
-                    		HargaNet = HargaGross - rowData.DiskonRp;
-                    	}
-                    	else{
-                    		HargaNet = rowData.Qty * rowData.Harga;
-                    		HargaGross = rowData.Qty * rowData.Harga;
-                    	}
-
-                    	return HargaNet
-                    },
-                },
-				{
-					type: "buttons",
-					width: 50,
-					buttons: [
-						{
-							name: "delete",
-							icon: "trash",
-							hint: "Hapus Item",
-							cssClass: "text-danger"
-						}
-					]
-				},
-            ],
-            onCellClick:function (e) {
-	        	// console.log(dataGridInstance.option("dataSource"))
-	            var rowData = dataGridInstance.option("dataSource");
-	            var columnIndex = e.columnIndex;
-	            // console.log(e)
-	        	if (columnIndex >= 1 && columnIndex <= 5) {
-	                dataGridInstance.editRow(e.rowIndex)	
-	            }
-	            dataGridInstance.option("focusedColumnIndex", columnIndex);	
-	        },
-	        onEditorPreparing: function(e) {
-                if (e.parentType === 'dataRow' && e.dataField === 'DiskonRp') {
-                    if (e.row.data.DiskonPersen > 0) {
-                        e.editorOptions.disabled = true;
-                    }
-                    else if (e.row.data.DiskonRp > 0) {
-                    	e.editorOptions.disabled = true;
-                    }
-                }
-            },
-            onRowRemoved: function(e) {
-		        CalculateTotal();
-		    }
-		}).dxDataGrid('instance');
-
-		dataGridInstance.on('rowUpdated', function(e) {
-    		// console.log(e)
-    		CalculateTotal();
-    	})
-	}
-
-	function bindGridLookupCustomer(data) {
-		// gridLookupItem
-		var dataGridInstance = jQuery("#gridLookupCustomer").dxDataGrid({
-			allowColumnResizing: true,
-			dataSource: data,
-			keyExpr: "KodePelanggan",
-			showBorders: true,
-            allowColumnResizing: true,
-            columnAutoWidth: true,
-            showBorders: true,
-            paging: {
-                enabled: true,
-                pageSize: 30
-            },
-            editing: {
-                mode: "row",
-                texts: {
-                    confirmDeleteMessage: ''  
-                }
-            },
-            selection: {
-                mode: "single" // Enable single selection mode
-            },
-            searchPanel: {
-	            visible: true,
-	            width: 240,
-	            placeholder: "Search..."
-	        },
-            columns: [
-            	{
-                    dataField: "KodePelanggan",
-                    caption: "Kode Pelanggan",
-                    allowSorting: true,
-                    allowEditing : false
-                },
-                {
-                    dataField: "NamaPelanggan",
-                    caption: "Nama Pelanggan",
-                    allowSorting: true,
-                    allowEditing : false
-                },
-                {
-                    dataField: "NoTlpConcat",
-                    caption: "No. HP",
-                    allowSorting: true,
-                    allowEditing : false
-                },
-            ]
-		}).dxDataGrid('instance');
-	}
-	
-	function SaveData(Status, ButonObject, ButtonDefaultText) {
-		UpdateCurrentTime();
-		ButonObject.text('Tunggu Sebentar.....');
-  		ButonObject.attr('disabled',true);
-
-  		var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-  		var allRowsData  = dataGridInstance.getDataSource().items();
-
-  		var NoTransaksi = "";
-  		if (jQuery('#_NoTransaksi').text() != "<OTOMATIS>") {
-  			NoTransaksi = jQuery('#_NoTransaksi').text();
-  		}
-  		// console.log(allRowsData)
-  		var oDetail = [];
-
-  		for (var i = 0; i < allRowsData.length; i++) {
-  			// Things[i]
-  			if (allRowsData[i]['KodeItem'] != "") {
-  				// var oItemMaster = GetItemInfo(allRowsData[i]['KodeItem']);
-  				var oDisk = 0;
-
-  				if (allRowsData[i]['DiskonPersen'] > 0) {
-  					oDisk += (allRowsData[i]['Qty'] * allRowsData[i]['Harga']) * allRowsData[i]['DiskonPersen'] / 100;
-  				}
-
-  				if (allRowsData[i]['DiskonRp'] > 0) {
-  					oDisk += allRowsData[i]['DiskonRp'];
-  				}
-
-  				// console.log(oItemMaster[0].Satuan);
-
-  				var oItem = {
-  					'NoUrut' : allRowsData[i]['LineNumber'],
-					'KodeItem' : allRowsData[i]['KodeItem'],
-					'Qty' : allRowsData[i]['Qty'] * allRowsData[i]['QtyKonversi'],
-					'QtyKonversi' : allRowsData[i]['QtyKonversi'],
-					'Satuan' : allRowsData[i]['Satuan'],
-					'Harga' : allRowsData[i]['Harga'],
-					'Discount' : oDisk,
-					'HargaNet' : (allRowsData[i]['Qty'] * allRowsData[i]['Total']) - oDisk,
-					'BaseReff' : 'POS',
-					'BaseLine' : -1,
-					'KodeGudang' : _Company[0]['GudangPoS'],
-					'LineStatus': Status,
-					'VatPercent' : allRowsData[i]['VatPercent'],
-					'HargaPokokPenjualan' : allRowsData[i]['HargaPokokPenjualan'],
-  				}
-  				
-  				oDetail.push(oItem)
-  			}
-  		}
-
-  		if (_ServicesData.length > 0) {
-            var remainingGratisOngkir = _SisaGratisOngkir;
-  			for (var i = 0; i < _ServicesData.length; i++) {
-                var currentSvcBiaya = parseFloat(_ServicesData[i]['Jumlah']);
-                if (remainingGratisOngkir > 0 && currentSvcBiaya > 0) {
-                    if (remainingGratisOngkir >= currentSvcBiaya) {
-                        remainingGratisOngkir -= currentSvcBiaya;
-                        currentSvcBiaya = 0;
-                    } else {
-                        currentSvcBiaya -= remainingGratisOngkir;
-                        remainingGratisOngkir = 0;
-                    }
-                }
-
-  				var oItem = {
-  					'NoUrut' : oDetail.length + 1,
-					'KodeItem' : _ServicesData[i]['KodeItem'],
-					'Qty' : 1,
-					'Satuan' : '',
-					'Harga' : currentSvcBiaya,
-					'Discount' : 0,
-					'HargaNet' : currentSvcBiaya,
-					'BaseReff' : '',
-					'BaseLine' : -1,
-					'KodeGudang' : 'UMM',
-					'LineStatus': Status,
-  				}
-  				
-  				oDetail.push(oItem)
-  			}
-  		}
-
-  		// jQuery('#_NoTransaksi').text()
-  		var oData = {
-			'NoPKB' : jQuery('#_NoPKBTarik').val() || '',
-			'NoTransaksi' : NoTransaksi,
-			'TglTransaksi' : _Tanggal + " " + _Jam,
-			'TglJatuhTempo' : _Tanggal,
-			'NoReff' : 'POS',
-			'KodeSales' : jQuery('#KodeSales').val(),
-			'KodePelanggan' : jQuery('#KodePelanggan').val() ? jQuery('#KodePelanggan').val() : 'CASH',
-			'PlatNomor' : jQuery('#PlatNomor').val(),
-			'KodeMekanik' : jQuery('#KodeMekanik').val(),
-			'KodeTermin' : _Company[0]['TerminBayarPoS'],
-			'Termin' : 0,
-			'TotalTransaksi' : jQuery('#_SubTotal').attr("originalvalue"),
-			'Potongan' : parseFloat(jQuery('#_TotalDiskon').attr("originalvalue") || 0) + parseFloat(jQuery('#_VoucherDiscount').attr("originalvalue") || 0) + parseFloat($('#_NilaiTukarPoin').val() || 0),
-			'PoinDitukar' : $('#_PoinDitukar').val() || 0,
-			'Pajak' : 0,
-			'Pembulatan' : (Status == 'T' ? 0 : jQuery('#_Pembulatan').attr("originalvalue")),
-			'TotalPembelian' : (Status == 'T' ? (parseFloat(jQuery('#_SubTotal').attr("originalvalue") || 0) - parseFloat(jQuery('#_TotalDiskon').attr("originalvalue") || 0) - parseFloat(jQuery('#_VoucherDiscount').attr("originalvalue") || 0)) : jQuery('#_TotalNetBayar').attr("originalvalue")),
-			'TotalRetur' : 0,
-			'TotalPembayaran' : (Status) == 'T' ? 0 : jQuery('#JumlahBayar').attr("originalvalue"),
-			'Status' : Status,
-			'Keterangan' : _VoucherAppliedCode ? 'Voucher: ' + _VoucherAppliedCode : '',
-			'MetodeBayar' : _KodeMetodePembayaran,
-			'ReffPembayaran' : $('#NomorRefrensiPembayaran').val(),
-			'Detail' : oDetail
-		}
-
-		// Save Data
-
-		$.ajax({
-			async:false,
-			url: (NoTransaksi) == "" ? "{{route('fpenjualan-retailPos')}}" : "{{route('fpenjualan-editJson')}}",
-			type: 'POST',
-			contentType: 'application/json',
-			headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-            },
-            data: JSON.stringify(oData),
-            success: function(response) {
-            	if (response.success == true) {
-            		if(Status == 'T'){
-            			Swal.fire({
-	                      icon: "success",
-	                      title: "Sukses",
-	                      text: "Data Berhasil disimpan",
-	                    }).then((result) => {
-						  location.reload();
-						});
-            		}else{
-            			let valToFormat = parseFloat(response.Kembalian); if (isNaN(valToFormat)) valToFormat = 0; let formattedAmount = "Rp. " + parseFloat(valToFormat).toLocaleString("id-ID", {minimumFractionDigits: 0, maximumFractionDigits: 0});
-	            		Swal.fire({
-						  title: "KEMBALIAN "+formattedAmount,
-						  text: "Cetak Struk ?",
-						  icon: "warning",
-						  showCancelButton: true,
-						  confirmButtonColor: "#3085d6",
-						  cancelButtonColor: "#d33",
-						  confirmButtonText: "Cetak",
-						  cancelButtonText: "Tidak Cetak"
-						}).then((result) => {
-						  if (result.isConfirmed) {
-						    PrintStruk(response.LastTRX);
-						  }
-						  else{
-						  	location.reload();
-						  }
-						});
-            		}
-            	}
-            	else{
-            		Swal.fire({
-                      icon: "error",
-                      title: "Opps...",
-                      text: response.message,
-                    })
-                    ButonObject.text(ButtonDefaultText);
-  					ButonObject.attr('disabled',false);
-            	}
-            }
-		});
-
-		ButonObject.text(ButtonDefaultText);
-  		ButonObject.attr('disabled',false);
-	}
-
-	function PaymentGateWay(Status, ButonObject, ButtonDefaultText) {
-		UpdateCurrentTime();
-		var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-  		var allRowsData  = dataGridInstance.getDataSource().items();
-
-  		var NoTransaksi = "";
-  		if (jQuery('#_NoTransaksi').text() != "<OTOMATIS>") {
-  			NoTransaksi = jQuery('#_NoTransaksi').text();
-  		}
-  		// console.log(allRowsData)
-  		var oDetail = [];
-
-  		for (var i = 0; i < allRowsData.length; i++) {
-  			// Things[i]
-  			if (allRowsData[i]['KodeItem'] != "") {
-  				// var oItemMaster = GetItemInfo(allRowsData[i]['KodeItem']);
-  				var oDisk = 0;
-
-  				if (allRowsData[i]['DiskonPersen'] > 0) {
-  					oDisk += (allRowsData[i]['Qty'] * allRowsData[i]['Harga']) * allRowsData[i]['DiskonPersen'] / 100;
-  				}
-
-  				if (allRowsData[i]['DiskonRp'] > 0) {
-  					oDisk += allRowsData[i]['DiskonRp'];
-  				}
-
-  				// console.log(oItemMaster[0].Satuan);
-
-  				var oItem = {
-  					'NoUrut' : allRowsData[i]['LineNumber'],
-					'KodeItem' : allRowsData[i]['KodeItem'],
-					'Qty' : allRowsData[i]['Qty'] * allRowsData[i]['QtyKonversi'],
-					'QtyKonversi' : allRowsData[i]['QtyKonversi'],
-					'Satuan' : allRowsData[i]['Satuan'],
-					'Harga' : allRowsData[i]['Harga'],
-					'Discount' : oDisk,
-					'HargaNet' : (allRowsData[i]['Qty'] * allRowsData[i]['Total']) - oDisk,
-					'BaseReff' : 'POS',
-					'BaseLine' : -1,
-					'KodeGudang' : _Company[0]['GudangPoS'],
-					'LineStatus': Status,
-					'VatPercent' : allRowsData[i]['VatPercent'],
-					'HargaPokokPenjualan' : allRowsData[i]['HargaPokokPenjualan'],
-  				}
-  				
-  				oDetail.push(oItem)
-  			}
-  		}
-
-  		if (_ServicesData.length > 0) {
-  			for (var i = 0; i < _ServicesData.length; i++) {
-  				var oItem = {
-  					'NoUrut' : oDetail.length + 1,
-					'KodeItem' : _ServicesData[i]['KodeItem'],
-					'Qty' : 1,
-					'Satuan' : '',
-					'Harga' : _ServicesData[i]['Jumlah'],
-					'Discount' : 0,
-					'HargaNet' : _ServicesData[i]['Jumlah'],
-					'BaseReff' : '',
-					'BaseLine' : -1,
-					'KodeGudang' : 'UMM',
-					'LineStatus': Status,
-  				}
-  				
-  				oDetail.push(oItem)
-  			}
-  		}
-
-  		// jQuery('#_NoTransaksi').text()
-  		var oData = {
-			'NoPKB' : jQuery('#_NoPKBTarik').val() || '',
-			'NoTransaksi' : NoTransaksi,
-			'TglTransaksi' : _Tanggal + " " + _Jam,
-			'TglJatuhTempo' : _Tanggal,
-			'NoReff' : 'POS',
-			'KodeSales' : jQuery('#KodeSales').val(),
-			'KodePelanggan' : jQuery('#KodePelanggan').val() ? jQuery('#KodePelanggan').val() : 'CASH',
-			'PlatNomor' : jQuery('#PlatNomor').val(),
-			'KodeMekanik' : jQuery('#KodeMekanik').val(),
-			'KodeTermin' : _Company[0]['TerminBayarPoS'],
-			'Termin' : 0,
-			'TotalTransaksi' : jQuery('#_SubTotal').attr("originalvalue"),
-			'Potongan' : parseFloat(jQuery('#_TotalDiskon').attr("originalvalue") || 0) + parseFloat(jQuery('#_VoucherDiscount').attr("originalvalue") || 0),
-			'Pajak' : 0,
-			'Pembulatan' : jQuery('#_Pembulatan').attr("originalvalue"),
-			'TotalPembelian' : jQuery('#_TotalNetBayar').attr("originalvalue"),
-			'TotalRetur' : 0,
-			'TotalPembayaran' : (Status) == 'T' ? 0 : jQuery('#JumlahBayar').attr("originalvalue"),
-			'Status' : Status,
-			'Keterangan' : _VoucherAppliedCode ? 'Voucher: ' + _VoucherAppliedCode : '',
-			'MetodeBayar' : _KodeMetodePembayaran,
-			'ReffPembayaran' : $('#NomorRefrensiPembayaran').val(),
-			'Detail' : oDetail
-		}
-		
-		fetch( "{{route('pembayaranpenjualan-createpayment')}}", {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRF-TOKEN': '{{ csrf_token() }}'
-			},
-			body: JSON.stringify(oData)
-		})
-		.then(response => response.json())
-		.then(data => {
-			if (data.provider == 'xendit' && data.qr_string) {
-                Swal.fire({
-                    title: 'Scan QRIS',
-                    html: '<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(data.qr_string) + '" /><br><br><p>Tunggu hingga Pelanggan berhasil membayar.</p>',
-                    showCancelButton: true,
-                    confirmButtonText: 'Selesai & Tutup Transaksi',
-                    cancelButtonText: 'Batal',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $('#NomorRefrensiPembayaran').val(data.order_id);
-                        SaveData(Status, ButonObject, ButtonDefaultText);
-                    } else {
-                        Swal.fire('Dibatalkan', 'Transaksi dibatalkan', 'error');
-                    }
-                });
-            } else if (data.snap_token) {
-                snap.pay(data.snap_token, {
-					onSuccess: function(result){
-						// console.log(result);
-						if(result.transaction_status == "cancel"){
-							Swal.fire({
-								icon: "error",
-								title: "Opps...",
-								text: "Pembayaran Dibatalkan",
-							})
-						}
-						else{
-							// order_id
-							$('#NomorRefrensiPembayaran').val(result.order_id)
-							SaveData(Status, ButonObject, ButtonDefaultText)
-						}
-						// Proses pembayaran sukses
-					},
-					onPending: function(result){
-						// console.log(result);
-						// Pembayaran tertunda
-					},
-					onError: function(result){
-						// console.log(result);
-						Swal.fire({
-							icon: "error",
-							title: "Opps...",
-							text: result,
-						})
-						// Pembayaran gagal
-					},
-					onClose: function(){
-						console.log('customer closed the popup without finishing the payment');
-					}
-				});
-			} else {
-				// alert('Error: ' + data.error);
-				Swal.fire({
-					icon: "error",
-					title: "Opps...",
-					text: data.error,
-				})
-			}
-		})
-		.catch(error => console.error('Error:', error));
-	}
-
-	function formatCurrency(input, amount) {
-		let cleanAmount = amount;
-		if (typeof cleanAmount === 'string') {
-			cleanAmount = cleanAmount.replace(/Rp\.?\s*/i, '');
-			
-			let commaCount = (cleanAmount.match(/,/g) || []).length;
-			let dotCount = (cleanAmount.match(/\./g) || []).length;
-			
-			if (commaCount > 0 && dotCount > 0) {
-				if (cleanAmount.indexOf(',') < cleanAmount.indexOf('.')) {
-					cleanAmount = cleanAmount.replace(/,/g, '');
-				} else {
-					cleanAmount = cleanAmount.replace(/\./g, '').replace(/,/g, '.');
-				}
-			} else if (commaCount > 0) {
-				let parts = cleanAmount.split(',');
-				if (parts.length === 2 && parts[1].length <= 2) {
-					cleanAmount = cleanAmount.replace(/,/g, '.');
-				} else {
-					cleanAmount = cleanAmount.replace(/,/g, '');
-				}
-			} else if (dotCount > 0) {
-				let parts = cleanAmount.split('.');
-				if (parts.length === 2 && parts[1].length <= 2) {
-					// Standar desimal
-				} else {
-					cleanAmount = cleanAmount.replace(/\./g, '');
-				}
-			}
-		}
-		
-		let parsedAmount = parseFloat(cleanAmount);
-		if (isNaN(parsedAmount)) parsedAmount = 0;
-		
-		input.attr("originalvalue", parsedAmount);
-		
-		let valToFormat = parsedAmount; if (isNaN(valToFormat)) valToFormat = 0; let formattedAmount = "Rp. " + parseFloat(valToFormat).toLocaleString("id-ID", {minimumFractionDigits: 0, maximumFractionDigits: 0});
-
-		input.val(formattedAmount);
-	}
-
-	function CalculateTotal() {
-		var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-  		var allRowsData  = dataGridInstance.getDataSource().items();
-  		// ßß(allRowsData)
-
-  		var _tempTotalItem = 0;
-  		var _tempSubTotal = 0;
-  		var _tempTotalDiskon = 0;
-  		var _tempTotalTax = 0;
-  		var _tempTotalServices = 0;
-  		var _tempGrandTotal = 0;
-		allRowsData = [];
-  		dataGridInstance.getDataSource().store().load().done(function (data) {
-  			_tempTotalItem = data.length;
-	        for (var i = 0; i < data.length; i++) {
-				allRowsData.push(data[i]);
-	        	console.log(data[i]['Diskon'])
-	        	var _Total = data[i]['Qty'] * data[i]['Harga'];
-				var _diskonPerRow = 0;
-      			_tempSubTotal += _Total;
-      			if (data[i]['DiskonPersen'] > 0) {
-      				_tempTotalDiskon += data[i]['Qty'] * data[i]['Harga'] * (data[i]['DiskonPersen'] / 100);
-					_diskonPerRow = data[i]['Qty'] * data[i]['Harga'] * (data[i]['DiskonPersen'] / 100);
-      				// console.log(_TotalDiskon)
-      			}
-      			else if (data[i]['DiskonRp'] > 0) {
-      				_tempTotalDiskon += data[i]['DiskonRp'];
-					_diskonPerRow = data[i]['DiskonRp'];
-      			}
-
-				if (parseFloat(data[i]['VatPercent']) > 0) {
-					var Gross = _Total - _diskonPerRow;
-					var tax = (parseFloat(data[i]['VatPercent']) / 100) * Gross;
-					_tempTotalTax +=  tax;
-				}
-      		}
-	    });
-
-	    // Jasa
-	    var originalTotalServices = 0;
-	    for (var i = 0; i < _ServicesData.length; i++) {
-	    	originalTotalServices += parseFloat(_ServicesData[i]['Jumlah']);
-	    }
-	    
-	    _tempTotalServices = originalTotalServices;
-	    if (_SisaGratisOngkir > 0 && _tempTotalServices > 0) {
-	        if (_SisaGratisOngkir >= _tempTotalServices) {
-	            _tempTotalServices = 0;
-	        } else {
-	            _tempTotalServices -= _SisaGratisOngkir;
-	        }
-	    }
-
-	    // Diskon Grup Customer
-
-		// console.log(_tempTotalTax)
-
-	    $('#_TotalItem').text(_tempTotalItem);
-	    formatCurrency($('#_SubTotal'), _tempSubTotal);
-	    formatCurrency($('#_TotalDiskon'), _tempTotalDiskon);
-	    formatCurrency($('#_TotalServices'), _tempTotalServices);
-	    
-	    var _tempVoucherDiscount = 0;
-	    if (_VoucherDiscountPercent > 0) {
-	    	var netSubtotal = _tempSubTotal - _tempTotalDiskon;
-	    	if (netSubtotal > 0) {
-	    		_tempVoucherDiscount = netSubtotal * (_VoucherDiscountPercent / 100);
-	    		if (_VoucherMaximalDiscount > 0 && _tempVoucherDiscount > _VoucherMaximalDiscount) {
-	    			_tempVoucherDiscount = _VoucherMaximalDiscount;
-	    		}
-	    	}
-	    }
-	    formatCurrency($('#_VoucherDiscount'), _tempVoucherDiscount);
-	    
-	    var grandTotalVal = _tempSubTotal + _tempTotalServices - _tempTotalDiskon - _tempVoucherDiscount + _tempTotalTax;
-	    formatCurrency($('#_GrandTotal'), grandTotalVal);
-		formatCurrency($('#_TotalTax'), _tempTotalTax);
-
-		// Format dynamic header grand total text
-		var formattedHeaderTotal = parseFloat(grandTotalVal).toLocaleString('id-ID', {
-			style: 'currency',
-			currency: 'IDR',
-			minimumFractionDigits: 0
-		});
-		$('#headerGrandTotal').text(formattedHeaderTotal);
-
-  		// $('#_TotalItem').text(_tempTotalItem);
-  		// $('#_SubTotal').text(_tempSubTotal);
-		var displayObject = {
-			data: allRowsData,
-			Total: _tempSubTotal + _tempTotalServices,
-			Discount: _tempTotalDiskon,
-			VoucherDiscount: _tempVoucherDiscount,
-			Net: grandTotalVal,
-			Tax: _tempTotalTax,
-			Customer: $('#KodePelanggan option:selected').text().trim(),
-			Vehicle: $('#PlatNomor').val() ? $('#PlatNomor').val().toUpperCase() : '-'
 		};
-		updateCustomerDisplay(displayObject);
-	}
-
-
-	function SetEnableCommand() {
-    	var ErrorCount = 0;
-
-    	if ($('#JumlahBayar').attr('originalvalue') == 0) {
-    		ErrorCount +=1;
-    	}
-
-    	if (_KodeMetodePembayaran == -1) {
-    		ErrorCount +=1;	
-    	}
-
-    	if (parseFloat($('#JumlahBayar').attr('originalvalue') || 0) < parseFloat($('#_TotalNetBayar').attr('originalvalue') || 0)) { ErrorCount += 1; }
-
-    	if (ErrorCount >0) {
-    		$('#btSimpanPembayaran').attr('disabled',true);
-    	}
-    	else{
-    		$('#btSimpanPembayaran').attr('disabled',false);
-    	}
-
-    }
-    function editDraft(NoTransaksi) {
-    	jQuery('#_NoTransaksi').text(NoTransaksi)
-    	var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-        // Cleared array safely
-		var allRowsData = [];
-    	// Load Header
-    	$.ajax({
-			async:false,
-			url: "{{route('fpenjualan-findheader')}}",
-			type: 'POST',
-			headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-            },
-            data: {
-            	'NoTransaksi':NoTransaksi
-           	},
-            success: function(response) {
-            	if (response.data.length > 0) {
-            		jQuery('#KodePelanggan').val(response.data[0]['KodePelanggan']).trigger('change');
-            		jQuery('#KodeSales').val(response.data[0]['KodeSales']).trigger('change');
-            	}
-            	else{
-
-            	}
-            }
-		});
-
-		// Load Detail
-		$.ajax({
-			async:false,
-			url: "{{route('fpenjualan-readdetail')}}",
-			type: 'POST',
-			headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-            },
-            data: {
-            	'NoTransaksi':NoTransaksi
-           	},
-            success: function(response) {
-            	// console.log(response)
-            	
-
-            	var xLine = 0;
-            	$.each(response.data,function (k,v) {
-            		var item = {
-	        			'LineNumber' 	: xLine,
-	        			'KodeItem' 	 	: v.KodeItem,
-	        			'NamaItem'	 	: v.NamaItem,
-	        			'Qty'	 	 	: v.Qty,
-	        			'QtyKonversi'	: v.QtyKonversi,
-	        			'Satuan'		: v.Satuan,
-	        			'Harga' 	 	: v.Harga,
-	        			'DiskonPersen' 	: 0,
-	        			'DiskonRp' 	 	: 0,
-	        			'Total' 	 	: 0
-	        		}
-
-	        		allRowsData.push(item);
-				    xLine +=1;
-        	});
-        	dataGridInstance.option('dataSource', allRowsData);
-        	dataGridInstance.refresh();
-        	CalculateTotal()
-
-            	jQuery('#folderpop').modal('hide');
-            }
-		});
-    }
-
-    function editDataTransaksi(NoTransaksi, Status) {
-    	$.ajax({
-			async:false,
-			url: "{{route('fpenjualan-editStatus')}}",
-			type: 'POST',
-			headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token in the headers
-            },
-            data: {
-            	'NoTransaksi':NoTransaksi,
-            	'Status' : Status
-           	},
-            success: function(response) {
-            	if (response.success == true) {
-            		Swal.fire({
-                      icon: "success",
-                      title: "Horray..",
-                      text: "Data Berhasil Dihapus",
-                    }).then((result) => {
-					  location.reload();
-					});
-            	}
-            	else{
-            		Swal.fire({
-                      icon: "error",
-                      title: "wooopss..",
-                      text: response.message,
-                    });
-            	}
-            }
-		});
-    }
-
-    function deleteDraft(NoTransaksi) {
-    	jQuery('#_NoTransaksi').text(NoTransaksi)
-    	// editDraft(NoTransaksi);
-    	Swal.fire({
-		  title: "Hapus Data Draff Penjualan",
-		  text: "Hapus Draft penjualan ini ?",
-		  icon: "warning",
-		  showCancelButton: true,
-		  confirmButtonColor: "#3085d6",
-		  cancelButtonColor: "#d33",
-		  confirmButtonText: "Hapus",
-		  cancelButtonText: "Jangan Hapus"
-		}).then((result) => {
-		  if (result.isConfirmed) {
-		    editDataTransaksi(NoTransaksi, 'D')
-		  }
-		  else{
-		  	location.reload();
-		  }
-		});
-    }
-
-	var _custDisplayWindow = null;
-	const posChannel = new BroadcastChannel('pos_display_channel');
-
-	function updateCustomerDisplay(displayObject) {
-		localStorage.setItem('PoSData', JSON.stringify(displayObject));
-		try {
-			posChannel.postMessage({ type: 'updateDisplay', data: displayObject });
-		} catch (e) {
-			console.error("BroadcastChannel error:", e);
-		}
-		if (window._custDisplayWindow && !window._custDisplayWindow.closed) {
-			try {
-				window._custDisplayWindow.postMessage({ type: 'updateDisplay', data: displayObject }, '*');
-			} catch (e) {
-				console.error("postMessage error:", e);
-			}
-		}
-	}
-
-	function openCustomerDisplay() {
-		// Use Laravel's url() helper to generate the URL
-		const url = "{{ url('/fpenjualan/custdisplay') }}";
-		window._custDisplayWindow = window.open(url, '_blank', 'width=1390,height=800,,scrollbars=no,toolbar=no,status=no,menubar=no');
-		setTimeout(() => {
-			var current = JSON.parse(localStorage.getItem('PoSData') || '{}');
-			updateCustomerDisplay(current);
-		}, 1000);
-	}
-
-	// Checkout popup event bindings to show checkout screen on display
-	$(document).ready(function() {
-		$('#qwertyViewContainer, #numpadViewContainer').on('mousedown', function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-		});
-
-		$(document).on('focus click', '#_Barcode, #_CatalogSearch, #PlatNomor, .select2-search__field', function() {
-			_QwertyTarget = $(this);
-		});
-
-		$('#PlatNomor').on('keyup', function() {
-			CalculateTotal();
-		});
-		$('#KodePelanggan').on('change', function() {
-			CalculateTotal();
-		});
-
-		$('#payment-popup').on('shown.bs.modal', function () {
-			var current = JSON.parse(localStorage.getItem('PoSData') || '{}');
-			current.isCheckout = true;
-			updateCustomerDisplay(current);
-		});
-
-		$('#payment-popup').on('hidden.bs.modal', function () {
-			var current = JSON.parse(localStorage.getItem('PoSData') || '{}');
-			current.isCheckout = false;
-			updateCustomerDisplay(current);
-		});
-	});
-
-	// Toggle between Numeric Keypad and QWERTY Alpha Keypad
-	function toggleKeypadMode(mode) {
-		if (mode === 'NUM') {
-			$('#btnToggleNum').addClass('active');
-			$('#btnToggleAlpha').removeClass('active');
-			$('#numpadViewContainer').removeClass('d-none');
-			$('#qwertyViewContainer').addClass('d-none');
-			$('#keypadIndicatorContainer').removeClass('d-none');
-		} else {
-			$('#btnToggleAlpha').addClass('active');
-			$('#btnToggleNum').removeClass('active');
-			$('#qwertyViewContainer').removeClass('d-none');
-			$('#numpadViewContainer').addClass('d-none');
-			$('#keypadIndicatorContainer').addClass('d-none');
-			if(_QwertyTarget && _QwertyTarget.length) {
-				_QwertyTarget.focus();
-			} else {
-				$('#_Barcode').focus();
-			}
-		}
-	}
-
-	// Alphanumeric QWERTY key presses
-	function pressQwerty(char) {
-		var targetInput = (_QwertyTarget && _QwertyTarget.length) ? _QwertyTarget : $('#_Barcode');
-		
-		if ($('#_CatalogSearch').is(':focus')) {
-			targetInput = $('#_CatalogSearch');
-		} else if ($('#PlatNomor').is(':focus')) {
-			targetInput = $('#PlatNomor');
-		} else if ($('.select2-search__field').is(':focus')) {
-			targetInput = $('.select2-search__field');
-		}
-
-		var currentVal = targetInput.val() || '';
-
-		if (char === 'BACKSPACE') {
-			targetInput.val(currentVal.substring(0, currentVal.length - 1));
-			targetInput.trigger('input');
-			targetInput.trigger('keyup');
-			if(targetInput.length > 0 && targetInput[0].dispatchEvent) {
-				targetInput[0].dispatchEvent(new Event('input', { bubbles: true }));
-			}
-		} else if (char === 'SPACE') {
-			targetInput.val(currentVal + ' ');
-			targetInput.trigger('input');
-			targetInput.trigger('keyup');
-			if(targetInput.length > 0 && targetInput[0].dispatchEvent) {
-				targetInput[0].dispatchEvent(new Event('input', { bubbles: true }));
-			}
-		} else if (char === 'ENTER') {
-			var e = $.Event('keypress');
-			e.keyCode = 13;
-			targetInput.trigger(e);
-		} else {
-			targetInput.val(currentVal + char.toUpperCase());
-			targetInput.trigger('input');
-			targetInput.trigger('keyup');
-			if(targetInput.length > 0 && targetInput[0].dispatchEvent) {
-				targetInput[0].dispatchEvent(new Event('input', { bubbles: true }));
-			}
-		}
-	}
-
-	function openTarikPKB() {
-		jQuery('#modalTarikPKB').modal('show');
-		loadPKBSelesai();
-	}
-	
-	function loadPKBSelesai() {
-		$.ajax({
-			url: "{{ url('fpenjualan/tarik-pkb') }}",
-			type: "GET",
-			success: function(res) {
-				var html = '';
-				res.data.forEach(function(d) {
-					html += `<tr>
-						<td>${d.NoPKB}</td>
-						<td>${d.PlatNomor}</td>
-						<td>${d.NamaPelanggan}</td>
-						<td>
-							<button class="btn btn-sm btn-primary" onclick="prosesTarikPKB('${d.NoPKB}')">Tarik</button>
-						</td>
-					</tr>`;
+	</script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="{{ asset('js/plugin.bundle.min.js') }}"></script>
+	<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+	<script>
+		// Shim for Bootstrap 5 compatibility with older template scripts
+		if (typeof jQuery !== 'undefined' && typeof bootstrap !== 'undefined' && !jQuery.fn.tab) {
+			jQuery.fn.tab = function (action) {
+				return this.each(function () {
+					const tab = bootstrap.Tab.getOrCreateInstance(this);
+					if (action === 'show') tab.show();
 				});
-				jQuery('#tbodyTarikPKB').html(html);
-			}
-		});
-	}
+			};
+		}
+	</script>
 	
-	function prosesTarikPKB(noPkb) {
-		$.ajax({
-			url: "{{ url('fpenjualan/tarik-pkb/store') }}/" + noPkb,
-			type: "POST",
-			data: {
-				_token: "{{ csrf_token() }}",
-			},
-			success: function(res) {
-				if(res.success) {
-					jQuery('#modalTarikPKB').modal('hide');
-					Swal.fire('Berhasil', res.message, 'success');
-					
-					if(jQuery('#_NoPKBTarik').length === 0) {
-						jQuery('body').append('<input type="hidden" id="_NoPKBTarik">');
-					}
-					jQuery('#_NoPKBTarik').val(noPkb);
-					
-					var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-					var allRowsData = dataGridInstance.getDataSource().items();
-					
-					res.data.forEach(function(item) {
-						var newLineNumber = allRowsData.length > 0 ? Math.max.apply(Math, allRowsData.map(function(o) { return o.LineNumber; })) + 1 : 1;
-						allRowsData.push({
-							"LineNumber": newLineNumber,
-							"KodeItem": item.KodeItem,
-							"NamaItem": item.NamaItem,
-							"Qty": item.Qty,
-							"QtyKonversi": 1,
-							"Harga": item.Harga,
-							"DiskonPersen": 0,
-							"DiskonRp": item.Discount || 0,
-							"Total": item.Harga,
-							"Discount": item.Discount || 0,
-							"HargaNet": item.HargaNet || item.Harga,
-							"HargaPokokPenjualan": item.HargaPokokPenjualan || item.Harga,
-							"VatPercent": 0,
-							"Stock": 9999,
-							"Layanan": 0,
-							"Satuan": item.Satuan || 'PCS'
-						});
-					});
-					
-					dataGridInstance.option('dataSource', allRowsData);
-					dataGridInstance.refresh();
-					CalculateTotal();
+	<!-- Dev Express -->
+	<link href="{{ asset('devexpress/dx.light.css') }}" rel="stylesheet" type="text/css" />
+	<script src="{{ asset('devexpress/dx.all.js') }}"></script>
+	<script src="{{ asset('devexpress/jspdf.umd.min.js') }}"></script>
+	<script src="{{ asset('devexpress/jspdf.plugin.autotable.min.js') }}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.4.0/polyfill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.1.1/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
 
-					if(res.KodePelanggan) {
-						$('#KodePelanggan').val(res.KodePelanggan).trigger('change');
-					}
-					if(res.PlatNomor) {
-						$('#PlatNomor').val(res.PlatNomor);
-					}
-					if(res.KodeMekanik) {
-						$('#KodeMekanik').val(res.KodeMekanik).trigger('change');
-					}
-				}
-			}
+	<!-- End DevExpress -->
+	<script src="{{ asset('js/slick.min.js') }}"></script>
+	<script src="{{ asset('api/jqueryvalidate/jquery.validate.min.js') }}"></script>
+	<script src="{{ asset('api/apexcharts/apexcharts.js') }}"></script>
+	<script src="{{ asset('api/pace/pace.js') }}"></script>
+	<script src="{{ asset('api/mcustomscrollbar/jquery.mCustomScrollbar.concat.min.js') }}"></script>
+	<script src="{{ asset('api/quill/quill.min.js') }}"></script>
+	<script src="{{ asset('api/editor/classic.ckeditor.js') }}"></script>
+
+	<script>var tempDefine = window.define; window.define = undefined;</script>
+	<script src="{{ asset('api/datatable/jquery.dataTables.min.js') }}"></script>
+	<script src="{{ asset('api/select2/select2.min.js') }}"></script>
+	<script src="{{ asset('api/multiple-select/multiple-select.min.js') }}"></script>
+	<script>window.define = tempDefine;</script>
+	<script src="{{ asset('js/script.bundle.js') }}"></script>
+	<script src="{{ asset('js/script-slick.js') }}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+	<script>
+		jQuery(document).ready(function() {
+			jQuery('body').addClass('color-theme-red');
+			jQuery('.js-example-basic-single').select2();
 		});
-	}
-</script>
+	</script>
+	{!! $__env->make('sweetalert::alert', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render() !!}
 
-<!-- Modal Tarik PKB -->
-<div class="modal fade" id="modalTarikPKB" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1055;">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Tarik PKB (Selesai Servis)</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>No PKB</th>
-							<th>Plat Nomor</th>
-							<th>Pelanggan</th>
-							<th>Aksi</th>
-						</tr>
-					</thead>
-					<tbody id="tbodyTarikPKB"></tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
+	{!! $__env->yieldPushContent('scripts') !!}
+    @if(!request()->is('*pos*') && !request()->is('*display*') && !request()->is('*kds*') && !request()->is('*antrean*'))
+    <style>
+        .chatbot-btn-backend {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #1bc5bd;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 9999;
+            transition: 0.3s;
+        }
+        .chatbot-btn-backend:hover {
+            transform: scale(1.1);
+        }
+        .chatbot-window-backend {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            max-width: 90vw;
+            height: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 9999;
+            overflow: hidden;
+            border: 1px solid #e4e6ef;
+        }
+        .chatbot-header-backend {
+            background: #1bc5bd;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .chatbot-header-backend h5 {
+            margin: 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        .chatbot-close-backend {
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+        }
+        .chatbot-messages-backend {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .chat-msg-backend {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .msg-bot-backend {
+            background: white;
+            color: #3f4254;
+            border: 1px solid #e4e6ef;
+            align-self: flex-start;
+        }
+        .msg-user-backend {
+            background: #1bc5bd;
+            color: white;
+            align-self: flex-end;
+        }
+        .chatbot-input-backend {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e4e6ef;
+            display: flex;
+            gap: 10px;
+        }
+        .chatbot-input-backend input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #e4e6ef;
+            border-radius: 5px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .chatbot-input-backend input:focus {
+            border-color: #1bc5bd;
+        }
+        .chatbot-input-backend button {
+            background: #1bc5bd;
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .chatbot-input-backend button:hover {
+            background: #17a2b8;
+        }
+        .typing-indicator-backend {
+            display: none;
+            align-self: flex-start;
+            background: transparent;
+            padding: 5px 10px;
+        }
+        .typing-indicator-backend span {
+            height: 6px;
+            width: 6px;
+            background: #94a3b8;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: bounce-backend 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator-backend span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator-backend span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes  bounce-backend {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
 
-<!-- Modal Service Advisor Iframe -->
-<div class="modal fade" id="modalAdvisorIframe" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1060;">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Pendaftaran Servis Baru (Service Advisor)</h5>
-                <button type="button" class="close rounded-pill btn btn-sm btn-icon btn-light btn-hover-primary m-0" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="chatbot-btn-backend" onclick="toggleChatbotBackend()">
+        <i class="fas fa-headset"></i>
+    </div>
+
+    <div class="chatbot-window-backend" id="chatbotWindowBackend">
+        <div class="chatbot-header-backend">
+            <h5><i class="fas fa-robot"></i> DSMS Support Assistant</h5>
+            <button class="chatbot-close-backend" onclick="toggleChatbotBackend()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chatbot-messages-backend" id="chatbotMessagesBackend">
+            <div class="chat-msg-backend msg-bot-backend">
+                Halo! Saya AI Support Internal Anda. Ada yang bisa saya bantu terkait fitur aplikasi, cara input barang, atau menu lainnya?
             </div>
-            <div class="modal-body p-0">
-                <iframe src="" id="advisorIframe" style="width: 100%; height: 75vh; border: none;"></iframe>
+            <div class="typing-indicator-backend" id="typingIndicatorBackend">
+                <span></span><span></span><span></span>
             </div>
         </div>
+        <div class="chatbot-input-backend">
+            <input type="text" id="chatInputBackend" placeholder="Tanya cara pemakaian..." onkeypress="handleChatKeyBackend(event)">
+            <button onclick="sendChatMessageBackend()"><i class="fas fa-paper-plane"></i></button>
+        </div>
     </div>
-</div>
 
+    <script>
+        function toggleChatbotBackend() {
+            const chatWin = document.getElementById('chatbotWindowBackend');
+            chatWin.style.display = chatWin.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleChatKeyBackend(e) {
+            if (e.key === 'Enter') sendChatMessageBackend();
+        }
+
+        async function sendChatMessageBackend() {
+            const input = document.getElementById('chatInputBackend');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessageBackend(message, 'user');
+            input.value = '';
+
+            const typing = document.getElementById('typingIndicatorBackend');
+            const messagesContainer = document.getElementById('chatbotMessagesBackend');
+            messagesContainer.appendChild(typing);
+            typing.style.display = 'block';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                let token = '{{ csrf_token() }}';
+
+                const response = await fetch('/chat/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({ message: message, context: 'backend' })
+                });
+                
+                const data = await response.json();
+                typing.style.display = 'none';
+                
+                if (data.success) {
+                    addMessageBackend(data.reply, 'bot');
+                } else {
+                    addMessageBackend('Maaf, sistem sedang sibuk.', 'bot');
+                }
+            } catch (error) {
+                typing.style.display = 'none';
+                addMessageBackend('Koneksi terputus.', 'bot');
+            }
+        }
+
+        function addMessageBackend(text, sender) {
+            const container = document.getElementById('chatbotMessagesBackend');
+            const typing = document.getElementById('typingIndicatorBackend');
+            const div = document.createElement('div');
+            div.className = `chat-msg-backend msg-${sender}-backend`;
+            div.innerHTML = text;
+            
+            container.insertBefore(div, typing);
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+    @endif
+    <!-- Auto Update Checker Script -->
+    <style>
+        @keyframes  pulseUpdate {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+        .pulse-update {
+            animation: pulseUpdate 2s infinite;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Versi aplikasi lokal saat ini
+            const CURRENT_APP_VERSION = '1.0.0'; 
+            
+            // URL Pusat untuk mengecek versi (Fallback ke local jika gagal untuk keperluan testing)
+            const MASTER_SERVER_URL = 'https://pos.dstechsmart.com/downloads/update_info.json';
+            const LOCAL_TEST_URL = '/downloads/update_info.json';
+
+            function checkUpdate() {
+                // Gunakan LOCAL_TEST_URL untuk percobaan sekarang
+                fetch(LOCAL_TEST_URL, { cache: "no-store" })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.latest_version) {
+                            if (compareVersions(data.latest_version, CURRENT_APP_VERSION) > 0) {
+                                // Versi baru tersedia! Munculkan tombol
+                                const updateBtns = document.querySelectorAll('.btn-update-notification');
+                                updateBtns.forEach(btn => {
+                                    btn.style.setProperty('display', 'flex', 'important');
+                                    btn.setAttribute('href', data.download_url);
+                                    btn.setAttribute('title', data.release_notes);
+                                    btn.innerHTML = '<i class="fas fa-exclamation-circle text-dark me-2"></i> Update v' + data.latest_version;
+                                });
+                            }
+                        }
+                    })
+                    .catch(err => console.log('Update checker failed:', err));
+            }
+
+            // Fungsi sederhana untuk membandingkan versi (1.1.0 vs 1.0.0)
+            function compareVersions(v1, v2) {
+                const parts1 = v1.split('.').map(Number);
+                const parts2 = v2.split('.').map(Number);
+                for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+                    const num1 = parts1[i] || 0;
+                    const num2 = parts2[i] || 0;
+                    if (num1 > num2) return 1;
+                    if (num1 < num2) return -1;
+                }
+                return 0;
+            }
+
+            // Jalankan pengecekan setelah jeda 3 detik agar tidak mengganggu loading awal
+            setTimeout(checkUpdate, 3000);
+        });
+    </script>
 </body>
 <!--end::Body-->
-</html>
+
+
+
+</html><?php  ?>
+@extends('layouts.main')

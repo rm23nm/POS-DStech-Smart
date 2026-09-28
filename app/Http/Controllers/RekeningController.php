@@ -98,7 +98,6 @@ class RekeningController extends Controller
     	Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeRekening'=>'required',
                 'NamaRekening'=>'required',
                 'KodeKelompok'=>'required',
                 'Level'=>'required',
@@ -106,7 +105,7 @@ class RekeningController extends Controller
             ]);
 
             $model = new Rekening;
-            $model->KodeRekening = $request->input('KodeRekening');
+            $model->KodeRekening = $this->generateSimpleCode("REK", "rekening", "KodeRekening", 3);
             $model->NamaRekening = $request->input('NamaRekening');
             $model->KodeKelompok = $request->input('KodeKelompok');
             $model->Jenis = $request->input('Jenis');
@@ -138,7 +137,6 @@ class RekeningController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeRekening'=>'required',
                 'NamaRekening'=>'required'
             ]);
 

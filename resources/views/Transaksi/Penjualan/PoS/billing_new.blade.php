@@ -754,7 +754,9 @@
         .fnb-qty-val { width: 25px; text-align: center; font-weight: 800; font-size: 1rem; color: #1a237e; }
     </style>
 
-</head>
+
+    
+    </head>
 
 <body>
     <!-- ===== HEADER ===== -->
@@ -783,7 +785,7 @@
             </div>
             <span class="user-info"><i class="fas fa-user-circle"></i> {{ Auth::user()->name }}</span>
             <a href="javascript:void(0)" onclick="openCustomerDisplay()"><i class="fas fa-desktop"></i> Customer Display</a>
-            <a href="javascript:void(0)" onclick="openJualFnbModal()" style="background: linear-gradient(135deg,#e65100,#ff8f00); color:#fff; padding:5px 12px; border-radius:6px; font-weight:600;"><i class="fas fa-utensils"></i> Jual FnB</a>
+            <a href="javascript:void(0)" onclick="if(typeof openJualFnbModal === 'function') { openJualFnbModal(); } else { document.getElementById('modalJualFnb').style.display='flex'; }" style="background: linear-gradient(135deg,#e65100,#ff8f00); cursor:pointer; color:#fff; padding:5px 12px; border-radius:6px; font-weight:600;"><i class="fas fa-utensils"></i> Jual FnB</a>
             <a href="{{ route('bookinglist') }}" target="_blank"><i class="fas fa-calendar-alt"></i> Booking</a>
             <a href="{{ route('logout') }}">
                 <i class="fas fa-power-off"></i> Logout
@@ -1512,11 +1514,18 @@
                                 type: "success"
                             }).then(() => {
                                 // Refresh status meja
+                                let printNoTrans = selectedTitik.notransaksi;
+                                // Refresh status meja
                                 refreshTableStatuses();
                                 // Kosongkan panel kanan
                                 selectedTitik = null;
-                                $('.titik-box').removeClass('selected');
+                                $('.titik-box').removeClass('selected active-selected');
                                 $('#billing-detail-container').html('<div class="empty-state">Pilih meja untuk melihat detail</div>');
+                                
+                                // Panggil struk preview
+                                setTimeout(() => {
+                                    showReceiptPreview(printNoTrans);
+                                }, 300);
                             });
                         } else {
                             swal("Gagal", response.message, "error");
@@ -1555,7 +1564,7 @@
                 NoTransaksi: selectedTitik.notransaksi
             },
             success: function(response) {
-                swal.close();
+                try { swal.close(); } catch(e) {} try { swal.closeModal(); } catch(e) {}
                 if (response.success) {
                     syncDisplayFromResponse(response);
                     populateDetailModal(response);
@@ -1799,21 +1808,59 @@
                 NoTransaksi: noFaktur
             },
             success: function(res) {
-                swal.close();
+                try { swal.close(); } catch(e) {} try { swal.closeModal(); } catch(e) {}
                 if (res.success) {
                     populateReceipt(res);
                     $('#modalReceiptPreview').addClass('open');
                     
                     // Otomatis cetak setelah modal terbuka
                     setTimeout(() => {
-                        window.print();
+                        const printFrame = document.createElement('iframe');
+                        printFrame.style.position = 'fixed';
+                        printFrame.style.right = '0';
+                        printFrame.style.bottom = '0';
+                        printFrame.style.width = '0';
+                        printFrame.style.height = '0';
+                        printFrame.style.border = '0';
+                        document.body.appendChild(printFrame);
+                        
+                        const printCss = `
+                        <style>
+                            @page { size: 80mm auto; margin: 0; }
+                            body { font-family: 'Courier New', Courier, monospace; color: #000; margin: 0; padding: 10px; width: 80mm; }
+                            .receipt-header { text-align: center; margin-bottom: 15px; }
+                            .receipt-logo { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
+                            .receipt-address { font-size: 0.85rem; line-height: 1.2; margin-bottom: 2px; }
+                            .receipt-divider { border-top: 1px dashed #000; margin: 10px 0; }
+                            .receipt-info { font-size: 0.85rem; margin-bottom: 10px; }
+                            .receipt-info-row { display: flex; justify-content: space-between; margin-bottom: 2px; }
+                            .receipt-table { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
+                            .receipt-table th { text-align: left; border-bottom: 1px dashed #000; padding-bottom: 5px; }
+                            .receipt-table td { padding: 4px 0; vertical-align: top; }
+                            .receipt-totals { font-size: 0.85rem; margin-top: 5px; }
+                            .receipt-total-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+                            .receipt-grand-total { font-weight: bold; font-size: 1rem; border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 6px 0; margin: 8px 0; }
+                            .receipt-footer { text-align: center; font-size: 0.85rem; margin-top: 20px; }
+                        </style>
+                        `;
+                        const receiptHtml = document.querySelector('.receipt-paper').innerHTML;
+                        
+                        const doc = printFrame.contentWindow.document;
+                        doc.write('<html><head><title>Print</title>' + printCss + '</head><body>');
+                        doc.write(receiptHtml);
+                        doc.write('</body></html>');
+                        doc.close();
+                        
+                        printFrame.contentWindow.focus();
+                        printFrame.contentWindow.print();
+                        setTimeout(() => { document.body.removeChild(printFrame); }, 60000);
                     }, 500);
                 } else {
                     swal("Gagal", res.message, "error");
                 }
             },
             error: function() {
-                swal.close();
+                try { swal.close(); } catch(e) {} try { swal.closeModal(); } catch(e) {}
                 swal("Error", "Gagal mengambil data struk", "error");
             }
         });
@@ -1991,7 +2038,9 @@
                             body { padding: 0; margin: 0; width: 80mm; }
                         }
                     </style>
-                </head>
+                
+    
+    </head>
                 <body>
                     <div class="receipt-paper">
                         ${receiptContent}
@@ -2121,6 +2170,8 @@
                     NoTransaksi: selectedTitik.notransaksi,
                     MetodePembayaranId: mpId,
                     NominalBayar: nominal,
+                    VoucherCode: window.activeFnbVoucherCode,
+                    VoucherRp: window.activeFnbVoucherRp,
                     AdminFee: adminFee,
                     DoCheckout: doCheckout ? 1 : 0
                 })
@@ -2254,11 +2305,22 @@
         $('#modalTambahMakanan').removeClass('open');
     }
 
-    function filterFnbGrid(query, gridId) {
-        let q = query.toLowerCase();
+    function filterFnbGrid(query, gridId, overrideCat) {
+        let q = (query || "").toLowerCase();
+        let activeCat = $('#jualFnbCategoryFilter').length ? $('#jualFnbCategoryFilter').val() : 'ALL';
+        
         $(`#${gridId} > div`).each(function() {
-            let name = $(this).data('name') || "";
-            $(this).toggle(name.includes(q));
+            let name = $(this).attr('data-name') || "";
+            let cat = $(this).attr('data-category') || "FNB";
+            
+            let matchSearch = name.includes(q);
+            let matchCat = (activeCat === 'ALL' || cat === activeCat);
+            
+            if (matchSearch && matchCat) {
+                this.style.setProperty("display", "flex", "important");
+            } else {
+                this.style.setProperty("display", "none", "important");
+            }
         });
     }
 
@@ -2950,8 +3012,8 @@
                     <div class="pp-row">
                         <div class="pp-field">
                             <label class="pp-label"><i class="fas fa-user"></i> Member (opsional)</label>
-                            <input type="text" class="pp-input" id="ppMemberSearch" placeholder="Cari nama, ID, atau No. HP...">
-                            <select class="pp-input mt-1" id="ppKodePelanggan" name="KodePelanggan" style="margin-top:6px;">
+                            <input type="text" class="pp-input" id="ppMemberSearch" placeholder="Tap RFID / Ketik No. HP...">
+                            <select class="pp-input mt-1" id="ppKodePelanggan" name="KodePelanggan" style="margin-top:6px; pointer-events: none; background: #e9ecef;" disabled="disabled" readonly>
                                 <option value="">-- Tidak ada / Umum --</option>
                                 @foreach($pelanggan as $plg)
                                     <option value="{{ $plg->KodePelanggan }}">{{ $plg->NamaPelanggan }}</option>
@@ -2999,12 +3061,24 @@
                             <span id="ppFnbTotalCount" class="badge" style="background: #1a237e; color: #fff; font-size: 0.75rem; border-radius: 10px; padding: 4px 10px;">0 Item</span>
                         </div>
                         <div style="padding: 10px; border-bottom: 1px solid #eee; background: #fff;">
-                            <input type="text" class="pp-input" id="ppFnbSearchInput" placeholder="Cari makanan/minuman..." onkeyup="filterFnbGrid(this.value, 'ppFnbMenuList')" style="border-radius: 20px; padding-left: 15px; height: 38px;">
+                            <div style="display:flex; gap:10px;">
+                                <select id="ppFnbCategoryFilter" onchange="filterFnbGrid($('#ppFnbSearchInput').val(), 'ppFnbMenuList', this.value)" style="display:none; border-radius: 15px; padding: 5px 10px; border: 1px solid #ccc; outline: none;">
+                                    <option value="FNB">Menu FNB</option>
+                                    <option value="TIKET">Tiket Masuk</option>
+                                    <option value="JASA">Jasa / Sewa</option>
+                                    <option value="ALL">Semua Kategori</option>
+                                </select>
+                                <input type="text" class="pp-input" id="ppFnbSearchInput" placeholder="Cari makanan/minuman..." onkeyup="filterFnbGrid(this.value, 'ppFnbMenuList', $('#ppFnbCategoryFilter').val())" style="flex:1; border-radius: 20px; padding-left: 15px; height: 38px;">
+                            </div>
                         </div>
                         
                         <div class="fnb-list-container" id="ppFnbMenuList">
                             @foreach($itemmaster as $item)
-                                <div class="fnb-item" data-name="{{ strtolower($item->NamaItem) }}">
+                                <div class="fnb-item" data-name="{{ strtolower($item->NamaItem) }}"
+             @php
+                $cat = $item->KategoriPOS ?? "FNB";
+             @endphp
+             data-category="{{ $cat }}" style="display:{{ $cat == 'FNB' ? 'flex' : 'none' }} !important;">
                                     <img src="{{ $item->Gambar ? (str_starts_with($item->Gambar, 'http') ? $item->Gambar : asset('assets/img/item/' . $item->Gambar)) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTUwJSIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjYWFhIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Gb29kPC90ZXh0Pjwvc3ZnPg==' }}" 
                                          class="fnb-item-img" 
                                          onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTUwJSIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjYWFhIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Gb29kPC90ZXh0Pjwvc3ZnPg=='">
@@ -3172,13 +3246,25 @@
                         <span id="fnbTotalCount" class="badge" style="background: #1a237e; color: #fff; font-size: 0.75rem; border-radius: 10px; padding: 4px 10px;">0 Item</span>
                     </div>
                     <div style="padding: 10px; border-bottom: 1px solid #eee; background: #fff;">
-                        <input type="text" class="pp-input" id="fnbSearchInput" placeholder="Ketik nama makanan atau minuman..." onkeyup="filterFnbGrid(this.value, 'fnbMenuList')" style="border-radius: 20px; padding-left: 15px; height: 38px;">
+                        <div style="display:flex; gap:10px;">
+                                <select id="fnbCategoryFilter" onchange="filterFnbGrid($('#fnbSearchInput').val(), 'fnbMenuList', this.value)" style="display:none; border-radius: 15px; padding: 5px 10px; border: 1px solid #ccc; outline: none;">
+                                    <option value="FNB">Menu FNB</option>
+                                    <option value="TIKET">Tiket Masuk</option>
+                                    <option value="JASA">Jasa / Sewa</option>
+                                    <option value="ALL">Semua Kategori</option>
+                                </select>
+                                <input type="text" class="pp-input" id="fnbSearchInput" placeholder="Ketik nama makanan atau minuman..." onkeyup="filterFnbGrid(this.value, 'fnbMenuList', $('#fnbCategoryFilter').val())" style="flex:1; border-radius: 20px; padding-left: 15px; height: 38px;">
+                            </div>
                     </div>
                     
                     <div class="fnb-list-container" id="fnbMenuList" style="max-height: 400px;">
                         @foreach($itemmaster as $item)
                             @if(in_array($item->TypeItem, [1,2,3,5]))
-                            <div class="fnb-item" data-name="{{ strtolower($item->NamaItem) }}">
+                            <div class="fnb-item" data-name="{{ strtolower($item->NamaItem) }}"
+             @php
+                $cat = $item->KategoriPOS ?? "FNB";
+             @endphp
+             data-category="{{ $cat }}" style="display:{{ $cat == 'FNB' ? 'flex' : 'none' }} !important;">
                                 <img src="{{ $item->Gambar ? (str_starts_with($item->Gambar, 'http') ? $item->Gambar : asset('assets/img/item/' . $item->Gambar)) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTUwIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNhYWEiIGR5PSIuM2VtIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkZvb2Q8L3RleHQ+PC9zdmc+' }}" 
                                      class="fnb-item-img" 
                                      onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTUwIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNhYWEiIGR5PSIuM2VtIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkZvb2Q8L3RleHQ+PC9zdmc+'">
@@ -3895,6 +3981,26 @@
         border-color: #d5d5d5;
         cursor: not-allowed;
     }
+    /* Slot yang sudah dimulai tapi belum selesai (customer terlambat) */
+    .slot-box.late {
+        background: #fff8e1;
+        color: #e65100;
+        border-color: #ffca28;
+        cursor: pointer;
+    }
+    .slot-box.late:hover {
+        background: #fff3cd;
+        border-color: #f9a825;
+        color: #bf360c;
+    }
+    .slot-box.late .slot-late-label {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 600;
+        line-height: 1;
+        margin-top: 2px;
+        color: #e65100;
+    }
     .slot-loading { font-size: 0.85rem; color: #78909c; width: 100%; text-align: center; font-style: italic; }
     .mt-1 { margin-top: 6px; }
 
@@ -3918,6 +4024,7 @@
     var dataPaketAll = {!! json_encode($paket) !!};
     var dataPelangganAll = {!! json_encode($pelanggan) !!}; // Data Member Injected
     var dataCustomerMemberships = {!! json_encode($customerMemberships ?? []) !!}; // Active Memberships
+    @php $gruppelanggan = \App\Models\GrupPelanggan::where('RecordOwnerID', \Auth::user()->RecordOwnerID)->get(); @endphp
     var dataGrupPelanggan = {!! json_encode($gruppelanggan) !!}; // Member Group
     var confCompany = {!! json_encode(count($company) > 0 ? $company[0] : null) !!};
 
@@ -4122,18 +4229,79 @@
         slotsData.forEach((s, idx) => {
             // Force block slot if member is invalid for PAKETMEMBER
             var isSlotBooked = s.booked || !isMemberValid;
+            // Slot sudah dimulai tapi belum selesai (customer terlambat) — hanya berlaku jika tidak diboking orang lain
+            var isSlotLate   = s.isLate && !isSlotBooked;
 
             var d = document.createElement('div');
-            d.className = 'slot-box' + (isSlotBooked ? ' booked' : '');
-            d.textContent = s.time;
+
+            // Tentukan class CSS berdasarkan status slot
+            if (isSlotBooked) {
+                d.className = 'slot-box booked';
+                d.textContent = s.time;
+            } else if (isSlotLate) {
+                d.className = 'slot-box late';
+                d.innerHTML = s.time + '<span class="slot-late-label">⚠ Telat</span>';
+            } else {
+                d.className = 'slot-box';
+                d.textContent = s.time;
+            }
+
             d.dataset.idx = idx;
-            
+
             if (!isSlotBooked) {
                 d.addEventListener('click', function() {
-                    toggleSlot(this, idx, s);
+                    if (isSlotLate) {
+                        // Tampilkan popup peringatan sebelum mengaktifkan transaksi terlambat
+                        confirmLateSlot(this, idx, s);
+                    } else {
+                        toggleSlot(this, idx, s);
+                    }
                 });
             }
             container.appendChild(d);
+        });
+    }
+
+    /**
+     * Tampilkan konfirmasi keterlambatan sebelum kasir memilih slot
+     * Waktu tetap dihitung dari awal slot (bukan dari jam sekarang)
+     * Menggunakan SweetAlert2 v7 — result.value (bukan result.isConfirmed)
+     */
+    function confirmLateSlot(el, idx, slot) {
+        var slotHour  = parseInt(slot.time.split(':')[0]);
+        var slotMin   = parseInt(slot.time.split(':')[1]);
+        var nowDate   = new Date();
+        var menit     = (nowDate.getHours() * 60 + nowDate.getMinutes()) - (slotHour * 60 + slotMin);
+        if (menit < 0) menit = 0;
+
+        var sisaMenit = 60 - menit;
+        if (sisaMenit < 0) sisaMenit = 0;
+
+        var htmlMsg = '<div style="text-align:left;font-size:0.9rem;line-height:1.8">'
+                    + '<p>Slot sudah dimulai sejak <b>' + slot.time + '</b>.</p>'
+                    + '<p>Customer terlambat <b style="color:#e65100">\u00b1' + menit + ' menit</b>.</p>'
+                    + '<p>Sisa waktu bermain: <b style="color:#1565c0">\u00b1' + sisaMenit + ' menit</b>.</p>'
+                    + '<hr style="margin:8px 0">'
+                    + '<p style="color:#c62828;font-size:0.82rem">'
+                    + '\u26a0 Waktu tetap dihitung dari <b>' + slot.time + '</b>. '
+                    + 'Resiko keterlambatan ditanggung konsumen.</p>'
+                    + '</div>';
+
+        // SweetAlert2 v7: gunakan result.value (bukan result.isConfirmed)
+        Swal.fire({
+            title: '\u26a0 Customer Terlambat',
+            html: htmlMsg,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Aktifkan Transaksi',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#e65100',
+            cancelButtonColor: '#78909c',
+            reverseButtons: false
+        }).then(function(result) {
+            if (result.value) {
+                toggleSlot(el, idx, slot);
+            }
         });
     }
 
@@ -4674,7 +4842,7 @@
             
             var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            fetch('/billing/checkvoucher', {
+            fetch('{{ route("billing-checkvoucher") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -4897,24 +5065,37 @@
                     <div style="margin-bottom:12px;">
                         <label style="font-size:0.8rem; color:#555; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Pilih Item / Produk</label>
                         <div style="position:relative; margin-top:4px;">
-                            <input type="text" id="jualFnbSearchInput" placeholder="Cari Nama Menu atau Barcode..." onkeyup="filterFnbGrid(this.value, 'jualFnbMenuGrid')"
-                                style="width:100%; padding:12px 15px; border:2px solid #ffcc80; border-radius:10px; font-size:1rem; box-sizing:border-box; margin-bottom:15px; outline:none; transition:0.3s;"
+                            <div style="display:flex; gap:10px;">
+                    <select id="jualFnbCategoryFilter" onchange="filterFnbGrid($('#jualFnbSearchInput').val(), 'jualFnbMenuGrid', this.value)" style="display:none; padding:10px; border:2px solid #ffcc80; border-radius:10px; font-size:1rem; outline:none; font-weight:600; color:#444;">
+                        <option value="FNB">Menu FNB</option>
+                        <option value="TIKET">Tiket Masuk</option>
+                        <option value="JASA">Jasa / Sewa</option>
+                        <option value="ALL">Semua Kategori</option>
+                    </select>
+                    <input type="text" id="jualFnbSearchInput" placeholder="Cari Nama Menu atau Barcode..." onkeyup="filterFnbGrid(this.value, 'jualFnbMenuGrid', $('#jualFnbCategoryFilter').val())"
+                                style="flex:1; padding:12px 15px; border:2px solid #ffcc80; border-radius:10px; font-size:1rem; box-sizing:border-box; margin-bottom:15px; outline:none; transition:0.3s;"
                                 onfocus="this.style.borderColor='#e65100'">
+                </div>
                         </div>
                     </div>
                     
-                    <div style="padding:15px; display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:15px; overflow-y:auto;" id="fnbQuickGrid">
+                    <div style="padding:15px; display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-auto-rows: max-content; gap:15px; overflow-y:auto; align-content: start;" id="jualFnbMenuGrid">
                         @foreach($itemmaster as $item)
                             @php $isHabis = ($item->Stock ?? 0) <= 0; @endphp
                             <div class="fnb-card" 
+                                 data-name="{{ strtolower($item->NamaItem) }}"
+                                 @php
+                                    $cat = $item->KategoriPOS ?? "FNB";
+                                 @endphp
+                                 data-category="{{ $cat }}" 
                                  onclick="{{ $isHabis ? "swal('Stok Habis', 'Menu tidak tersedia.', 'warning')" : 'addJualFnbToCart(' . json_encode($item) . ')' }}" 
-                                 style="background:#fff; border:1px solid #eee; border-radius:12px; padding:12px; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.06); position:relative; {{ $isHabis ? 'opacity:0.6; filter:grayscale(0.9);' : '' }}">
+                                 style="background:#fff; border:1px solid #eee; border-radius:12px; padding:12px; cursor:pointer; transition:all 0.2s; display:{{ $cat == 'FNB' ? 'flex' : 'none' }}; flex-direction:column; align-items:center; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.06); position:relative; {{ $isHabis ? 'opacity:0.6; filter:grayscale(0.9);' : '' }}">
                                 
                                 @if($isHabis)
                                     <div style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%) rotate(-15deg); background:#d32f2f; color:#fff; padding:4px 8px; border-radius:4px; font-weight:800; font-size:0.75rem; z-index:10; border:1px solid #fff; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,0.3);">STOK HABIS</div>
                                 @endif
 
-                                <img src="{{ $item->Gambar ? (str_starts_with($item->Gambar, 'http') ? $item->Gambar : asset('assets/img/item/' . $item->Gambar)) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjYWFhIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Gb29kPC90ZXh0Pjwvc3ZnPg==' }}" style="width:100px; height:100px; object-fit:cover; border-radius:10px; margin-bottom:10px;">
+                                <img src="{{ $item->Gambar ? (str_starts_with($item->Gambar, 'http') ? $item->Gambar : asset('assets/img/item/' . $item->Gambar)) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjYWFhIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Gb29kPC90ZXh0Pjwvc3ZnPg==' }}" style="width:100px; height:100px; object-fit:cover; border-radius:10px; margin-bottom:10px; flex-shrink:0;">
                                 <div style="font-weight:700; font-size:0.9rem; color:#333; height:40px; overflow:hidden; line-height:1.2;">{{ $item->NamaItem }}</div>
                                 <div style="font-weight:800; color:#e65100; margin-top:5px; font-size:1rem;">Rp {{ number_format($item->HargaJual) }}</div>
                                 <div style="font-size:0.75rem; color:{{ $isHabis ? '#d32f2f' : '#888' }}; margin-top:2px;">Stok: {{ number_format($item->Stock ?? 0) }}</div>
@@ -4954,7 +5135,9 @@
                                 <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.8rem; color:#666;"><span>Subtotal</span><span id="jualFnbSubtotal">Rp 0</span></div>
                                 <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.8rem; color:#666;"><span>PPN</span><span id="jualFnbPpn">Rp 0</span></div>
                                 <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.8rem; color:#666;"><span>Layanan</span><span id="jualFnbLayanan">Rp 0</span></div>
-                                <div id="jualFnbAdminRow" style="display:none; justify-content:space-between; margin-bottom:4px; font-size:0.8rem; color:#666;"><span>Admin</span><span id="jualFnbAdminFee">Rp 0</span></div>
+                                
+<div id="jualFnbDiskonRow" style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.8rem; color:#d32f2f;"><span>Diskon / Voucher</span><span id="jualFnbDiskonVal">- Rp 0</span></div>
+<div id="jualFnbAdminRow" style="display:none; justify-content:space-between; margin-bottom:4px; font-size:0.8rem; color:#666;"><span>Admin</span><span id="jualFnbAdminFee">Rp 0</span></div>
                                 <div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:800; color:#e65100; margin-top:8px; border-top:1px dashed #ccc; padding-top:8px;">
                                     <span>TOTAL</span><span id="jualFnbGrandTotal">Rp 0</span>
                                 </div>
@@ -4970,7 +5153,8 @@
                                     </div>
                                 </div>
                                 <div id="jualFnbExistingCustomerRow" style="margin-bottom:8px;">
-                                    <select id="jualFnbPelanggan" class="js-select2" style="width:100%;">
+                                    <input type="text" id="jualFnbRfid" placeholder="Tap RFID / Ketik No. HP lalu Enter..." style="width:100%; padding:6px; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; margin-bottom:5px;">
+    <select id="jualFnbPelanggan" class="js-select2" style="width:100%; pointer-events:none; background:#e9ecef;" disabled="disabled" readonly>
                                         <option value="">-- Pelanggan Umum --</option>
                                         @foreach($pelanggan as $p)
                                             <option value="{{ $p->KodePelanggan }}">{{ $p->NamaPelanggan }}</option>
@@ -5019,17 +5203,65 @@
     // ===== JUAL FnB STANDALONE =====
     let jualFnbCart = [];
 
+    window.activeFnbVoucherCode = '';
+    window.activeFnbVoucherRp = 0;
+
+    function applyJualFnbVoucher() {
+        let code = $('#jualFnbVoucher').val().trim();
+        if (!code) {
+            window.activeFnbVoucherCode = '';
+            window.activeFnbVoucherRp = 0;
+            calculateJualFnbTotal();
+            swal('Info', 'Voucher dihapus.', 'info');
+            return;
+        }
+        
+        // Simulasikan atau panggil ajax ke backend untuk cek voucher
+        // Di sini kita pakai ajax yang sama dengan voucher utama
+        let subtotal = jualFnbCart.reduce((s, i) => s + i.Qty * i.Harga, 0);
+        if (subtotal <= 0) {
+            swal('Perhatian', 'Keranjang kosong.', 'warning');
+            return;
+        }
+
+        $.ajax({
+            url: '/billing/check-voucher', // Asumsi ada route ini
+            method: 'POST',
+            data: { kode: code, subtotal: subtotal },
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            success: function(res) {
+                if(res.success) {
+                    window.activeFnbVoucherCode = code;
+                    window.activeFnbVoucherRp = parseFloat(res.potongan) || 0;
+                    calculateJualFnbTotal();
+                    swal('Berhasil', 'Voucher diterapkan: Rp ' + window.activeFnbVoucherRp, 'success');
+                } else {
+                    window.activeFnbVoucherCode = '';
+                    window.activeFnbVoucherRp = 0;
+                    calculateJualFnbTotal();
+                    swal('Gagal', res.message, 'error');
+                }
+            },
+            error: function() {
+                swal('Error', 'Gagal cek voucher.', 'error');
+            }
+        });
+    }
+
+
     function openJualFnbModal() {
         jualFnbCart = [];
         updateJualFnbCartTable();
         $('#jualFnbSearchInput').val('');
+        $('#jualFnbCategoryFilter').val('FNB');
         $('#jualFnbSearchResults').hide();
+        filterFnbGrid('', 'jualFnbMenuGrid');
         calculateJualFnbTotal();
-        document.getElementById('modalJualFnb').style.display = 'flex';
+        $('#modalJualFnb').css('display', 'flex'); console.log('FnB Modal Opened');
     }
 
     function closeJualFnbModal() {
-        document.getElementById('modalJualFnb').style.display = 'none';
+        $('#modalJualFnb').css('display', 'none');
     }
 
     function toggleJualFnbNewCustomer() {
@@ -5085,7 +5317,9 @@
         if (existing) { existing.Qty += 1; }
         else { jualFnbCart.push({ KodeItem: item.KodeItem, NamaItem: item.NamaItem, Harga: item.HargaJual, Satuan: item.Satuan || 'PCS', Qty: 1 }); }
         $('#jualFnbSearchInput').val('');
+        $('#jualFnbCategoryFilter').val('FNB');
         $('#jualFnbSearchResults').hide();
+        filterFnbGrid('', 'jualFnbMenuGrid');
         updateJualFnbCartTable();
     }
 
@@ -5136,18 +5370,22 @@
 
     function calculateJualFnbTotal(isFromInput = false) {
         let subtotal = jualFnbCart.reduce((s, i) => s + i.Qty * i.Harga, 0);
+        let diskon = window.activeFnbVoucherRp || 0;
+        let dpp = subtotal - diskon;
+        if (dpp < 0) dpp = 0;
+
         let ppnPersen = parseFloat($('#jualFnbPpnPersen').text()) || 0;
         let servicePersen = parseFloat($('#jualFnbServicePersen').text()) || 0;
 
-        let ppnRp = subtotal * (ppnPersen / 100);
-        let serviceRp = subtotal * (servicePersen / 100);
+        let ppnRp = dpp * (ppnPersen / 100);
+        let serviceRp = dpp * (servicePersen / 100);
 
         let $opt = $('#jualFnbMetode option:selected');
         let adminPercent = parseFloat($opt.data('percent')) || 0;
         let adminRupiah = parseFloat($opt.data('rupiah')) || 0;
         let tipe = $opt.data('tipe') || '';
 
-        let subtotalWithTax = subtotal + ppnRp + serviceRp;
+        let subtotalWithTax = dpp + ppnRp + serviceRp;
         let adminFee = adminPercent > 0 ? subtotalWithTax * (adminPercent / 100) : (adminRupiah > 0 ? adminRupiah : 0);
         let grandTotal = Math.round(subtotalWithTax + adminFee);
 
@@ -5163,6 +5401,7 @@
             $('#jualFnbAdminRow').hide();
         }
 
+        $('#jualFnbDiskonVal').text('- ' + formatRp(diskon));
         const nominalInp = document.getElementById('jualFnbNominal');
         if (tipe === 'NON TUNAI' || tipe === 'NONTUNAI') {
             nominalInp.value = new Intl.NumberFormat('id-ID').format(grandTotal);
@@ -5227,6 +5466,8 @@
                     items: jualFnbCart,
                     MetodePembayaranId: $('#jualFnbMetode').val(),
                     NominalBayar: nominal,
+                    VoucherCode: window.activeFnbVoucherCode,
+                    VoucherRp: window.activeFnbVoucherRp,
                     isNewCustomer: $('#jualFnbIsNewCustomer').is(':checked'),
                     KodePelanggan: $('#jualFnbPelanggan').val(),
                     NamaPelanggan: $('#jualFnbNewNama').val(),
@@ -5300,6 +5541,54 @@
     }
 
     $(document).ready(function() {
+
+    $('#ppMemberSearch').on('keypress', function(e) {
+        if (e.which == 13) { // Enter key
+            var searchVal = $(this).val().trim().toLowerCase();
+            if (searchVal) {
+                var found = dataPelangganAll.find(function(p) {
+                    return (p.RFID_UID && p.RFID_UID.toLowerCase() == searchVal) ||
+                           (p.Keterangan && p.Keterangan.toLowerCase() == searchVal) ||
+                           (p.KodePelanggan && p.KodePelanggan.toLowerCase() == searchVal) ||
+                           (p.NoIdentitas && p.NoIdentitas.toLowerCase() == searchVal) ||
+                           (p.NoTlp1 && p.NoTlp1.toLowerCase() == searchVal);
+                });
+                
+                if (found) {
+                    $('#ppKodePelanggan').val(found.KodePelanggan).trigger('change');
+                    Swal.fire('Berhasil', 'Member ' + found.NamaPelanggan + ' ditemukan.', 'success');
+                } else {
+                    Swal.fire('Gagal', 'Member tidak ditemukan.', 'error');
+                }
+                $(this).val('');
+            }
+        }
+    });
+
+
+    $('#jualFnbRfid').on('keypress', function(e) {
+        if (e.which == 13) {
+            var searchVal = $(this).val().trim().toLowerCase();
+            if (searchVal) {
+                var found = dataPelangganAll.find(function(p) {
+                    return (p.RFID_UID && p.RFID_UID.toLowerCase() == searchVal) ||
+                           (p.Keterangan && p.Keterangan.toLowerCase() == searchVal) ||
+                           (p.KodePelanggan && p.KodePelanggan.toLowerCase() == searchVal) ||
+                           (p.NoIdentitas && p.NoIdentitas.toLowerCase() == searchVal) ||
+                           (p.NoTlp1 && p.NoTlp1.toLowerCase() == searchVal);
+                });
+                
+                if (found) {
+                    $('#jualFnbPelanggan').val(found.KodePelanggan).trigger('change');
+                    Swal.fire('Berhasil', 'Member ' + found.NamaPelanggan + ' ditemukan.', 'success');
+                } else {
+                    Swal.fire('Gagal', 'Member tidak ditemukan.', 'error');
+                }
+                $(this).val('');
+            }
+        }
+    });
+
         $('.js-select2').select2({
             dropdownParent: $('#modalJualFnb')
         });
@@ -5344,3 +5633,5 @@
 </script>
 </body>
 </html>
+
+

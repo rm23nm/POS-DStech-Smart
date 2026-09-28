@@ -315,7 +315,7 @@ Route::get('/user', [UserController::class,'View'])->name('user')->middleware(['
 Route::get('/user/form/{id}', [UserController::class,'Form'])->name('user-form')->middleware(['auth', 'check.session']);
 Route::post('/user/store', [UserController::class, 'store'])->name('user-store')->middleware(['auth', 'check.session']);
 Route::post('/user/edit', [UserController::class, 'edit'])->name('user-edit')->middleware(['auth', 'check.session']);
-// Route::delete('/user/delete/{id}', [UserController::class, 'deletedata'])->name('user-delete')->middleware(['auth', 'check.session']);
+Route::delete('/user/delete/{id}', [UserController::class, 'deletedata'])->name('user-delete')->middleware(['auth', 'check.session']);
 Route::delete('/user/logout/{id}', [UserController::class, 'LogOutUser'])->name('user-logout')->middleware(['auth', 'check.session']);
 Route::get('/user/export', [UserController::class,'Export'])->name('user-export')->middleware(['auth', 'check.session']);
 
@@ -1212,6 +1212,7 @@ Route::post('/booking/pay-gateway', [BookingOnlineController::class, 'SimpanPemb
 Route::get('/booking/{id}/get-bookedtable', [BookingOnlineController::class, 'getBookingsByDate'])->name('booking-get-bookedtable');
 Route::get('/booking/{id}/get-DiscountVoucher', [BookingOnlineController::class, 'getDiscountVoucher'])->name('booking-get-DiscountVoucher');
 Route::get('/bookinglist', [BookingOnlineController::class, 'View'])->name('bookinglist')->middleware(['auth', 'check.session']);
+Route::post('/booking/reschedule', [BookingOnlineController::class, 'rescheduleBooking'])->name('booking-reschedule')->middleware(['auth', 'check.session']);
 Route::get('/booking/generateVoucher', [BookingOnlineController::class, 'ViewGenerateVoucher'])->name('booking-generateVoucher');
 Route::post('/booking/voucher-store', [BookingOnlineController::class, 'storeVoucher'])->name('booking-voucherStore');
 Route::get('/booking/get-listVoucher', [BookingOnlineController::class, 'getListVoucher'])->name('booking-getListVoucher');
@@ -1292,7 +1293,7 @@ Route::delete('/voucher/delete/{id}', [VoucherController::class, 'deletedata'])-
 Route::post('/voucher/toggle/{id}', [VoucherController::class, 'toggleActive'])->name('voucher-toggle')->middleware(['auth', 'check.session']);
 // json
 Route::post('/voucher/read', [VoucherController::class, 'ViewJson'])->name('voucher-ViewJson')->middleware(['auth', 'check.session']);
-// public â€“ used on registration form (no auth required)
+// public û used on registration form (no auth required)
 Route::post('/voucher/check', [VoucherController::class, 'checkVoucher'])->name('voucher-check');
 
 
@@ -1492,7 +1493,7 @@ Route::delete('/voucher/delete/{id}', [VoucherController::class, 'deletedata'])-
 Route::post('/voucher/toggle/{id}', [VoucherController::class, 'toggleActive'])->name('voucher-toggle')->middleware(['auth', 'check.session']);
 // json
 Route::post('/voucher/read', [VoucherController::class, 'ViewJson'])->name('voucher-ViewJson')->middleware(['auth', 'check.session']);
-// public â€“ used on registration form (no auth required)
+// public û used on registration form (no auth required)
 Route::post('/voucher/check', [VoucherController::class, 'checkVoucher'])->name('voucher-check');
 
 
@@ -1700,3 +1701,9 @@ Route::post('/master-gaji/komponen/store', [PenggajianController::class, 'storeK
 
 Route::get('/proses-penggajian', [PenggajianController::class, 'prosesPenggajian'])->name('proses-penggajian')->middleware(['auth', 'check.session']);
 Route::post('/proses-penggajian/posting', [PenggajianController::class, 'postingKasKeluar'])->name('posting-kas-keluar')->middleware(['auth', 'check.session']);
+
+
+Route::get("/testss", function() {
+        Auth::login(App\Models\User::first());
+        return app()->make("App\Http\Controllers\TableOrderController")->ViewSelfService(app("request"));
+    });

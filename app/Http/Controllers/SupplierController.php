@@ -110,7 +110,6 @@ class SupplierController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeSupplier'=>'required',
                 'NamaSupplier'=>'required',
                 'NoTlp1'=>'required',
             ]);

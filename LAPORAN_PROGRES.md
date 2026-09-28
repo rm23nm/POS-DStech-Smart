@@ -360,6 +360,26 @@
 
 ---
 
+## 6. Rincian Pekerjaan Sesi Sekarang (Fitur Hapus User)
+
+### Langkah 1: Mengaktifkan Route Hapus User
+*   **Deskripsi**: Membuka komentar (uncomment) rute `Route::delete('/user/delete/{id}'...` pada file `routes/web.php` untuk mengaktifkan kembali endpoint penghapusan data pengguna (User).
+*   **Status**: **Selesai (100%)**
+
+### Langkah 2: Memperbaiki Logika Controller
+*   **Deskripsi**: Memperbaiki fungsi `deletedata` pada `UserController.php`. Mengubah pencarian berdasarkan `KodeUser` menjadi `id` sesuai struktur tabel, serta memperbaiki arah *redirect* yang salah dari `/users` menjadi `/user`.
+*   **Status**: **Selesai (100%)**
+
+### Langkah 3: Menambahkan Tombol Hapus pada Antarmuka (View)
+*   **Deskripsi**: Menyisipkan kembali tombol "Hapus User" ke dalam menu *dropdown action* pada tabel Daftar Pengguna di file `User.blade.php`. Tombol telah diintegrasikan dengan fitur konfirmasi SweetAlert.
+*   **Status**: **Selesai (100%)**
+
+### Langkah 4: Sinkronisasi ke Server Live
+*   **Deskripsi**: Melakukan unggah (*upload*) file `web.php`, `UserController.php`, dan `User.blade.php` dari *environment* lokal ke server VPS (Live) menggunakan SFTP secara *real-time* agar fitur Hapus User langsung berjalan di *production*.
+*   **Status**: **Selesai (100%)**
+
+---
+
 ### Langkah 12: Perbaikan Format Nomor Faktur POS
 *   **Deskripsi**: Mengembalikan format penomoran faktur menjadi `POS[tahun][bulan][tanggal][nomor 3 digit]` yang sebelumnya tidak menambahkan unsur tanggal. Modifikasi dilakukan pada fungsi `GetNewDoc` dan `GetNewDocMobile` di file `DocumentNumbering.php` agar khusus untuk `DocType == 'POS'` secara otomatis menyisipkan format hari/tanggal (`d`) ke dalam *prefix* nomor transaksi.
 *   **Status**: **Selesai**

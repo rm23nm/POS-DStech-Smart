@@ -9,6 +9,7 @@ use DB;
 use Log;
 
 use App\Models\Satuan;
+use App\Models\DocumentNumbering;
 
 class SatuanController extends Controller
 {
@@ -55,12 +56,11 @@ class SatuanController extends Controller
     	Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeSatuan'=>'required',
                 'NamaSatuan'=>'required'
             ]);
 
             $model = new Satuan;
-            $model->KodeSatuan = $request->input('KodeSatuan');
+            $model->KodeSatuan = $this->generateSimpleCode('STN', 'satuan', 'KodeSatuan', 3);
             $model->NamaSatuan = $request->input('NamaSatuan');
             $model->RecordOwnerID = Auth::user()->RecordOwnerID;
 
@@ -86,7 +86,6 @@ class SatuanController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeSatuan'=>'required',
                 'NamaSatuan'=>'required'
             ]);
 
@@ -119,7 +118,7 @@ class SatuanController extends Controller
         try {
 
             $model = new Satuan;
-            $model->KodeSatuan = $request->input('KodeSatuan');
+            $model->KodeSatuan = $this->generateSimpleCode('STN', 'satuan', 'KodeSatuan', 3);
             $model->NamaSatuan = $request->input('NamaSatuan');
             $model->RecordOwnerID = Auth::user()->RecordOwnerID;
 

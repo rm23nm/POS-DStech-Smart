@@ -398,8 +398,8 @@ class CompanyController extends Controller
                     'ExpiredAlertWA' => $request->input('ExpiredAlertWA'),
                     'SmartproApiKey' => $request->input('SmartproApiKey'),
                     'SmartproSender' => $request->input('SmartproSender'),
-                ]);
-            
+                    'GateApiKey' => empty($request->input('GateApiKey')) ? '' : $request->input('GateApiKey'),
+                ]);            
                 
                 $data['success'] = true;
                 $data['message'] = 'Data Perusahaan berhasil disimpan.';

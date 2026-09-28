@@ -964,14 +964,31 @@
         </div>
       `);
 
-      if (j.status === 'booked') {
-        $slotCard.addClass('bg-light text-muted').append('<br><em>Booked</em>');
+      const selectedDate = $('.date-btn.active').data('date');
+      const now = new Date();
+      let isPast = false;
+      if (selectedDate) {
+          const d = new Date(selectedDate);
+          if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()) {
+              const timeStr = j.jam.split(' - ')[0]; // Gets "13:00" from "13:00 - 14:00"
+              const parts = timeStr.split(':');
+              if (parts.length >= 2) {
+                  const h = parseInt(parts[0]);
+                  const m = parseInt(parts[1]);
+                  if (h < now.getHours() || (h === now.getHours() && m < now.getMinutes())) {
+                      isPast = true;
+                  }
+              }
+          }
+      }
+
+      if (j.status === 'booked' || isPast) {
+        $slotCard.addClass('bg-light text-muted').append('<br><em>Booked/Lewat</em>');
       } else {
         const isInCart = cart.find(item => item.id === meja.id && item.jam === j.jam);
         if (isInCart) $slotCard.addClass('selected');
 
         $slotCard.on('click', function () {
-          const selectedDate = $('.date-btn.active').data('date');
           const newItem = { id:meja.id, meja: meja.nama, jam: j.jam, harga: j.harga, date: selectedDate, jammulai:j.jammulai, jamselesai:j.jamselesai, type:'jam' };
           
           if (cart.length > 0 && !isJamValid(j.jam, selectedDate)) {
@@ -1056,6 +1073,9 @@
     }, 500);
   }
 
+  function parseHour(jamStr) {
+      return parseInt(jamStr.split(':')[0], 10);
+  }
   function isJamValid(newJam, selectedDate) {
     const sameDate = cart.every(item => item.date === selectedDate);
     if (!sameDate) return false;
@@ -1092,6 +1112,86 @@
 
     console.log("FormData:", formData);  // Debugging
         
+
+    if (formData.totalPembelian <= 0) {
+        // Skip Midtrans and save directly
+        let xData = {
+            "NoTransaksi": "",
+            "TglBooking": formData.tglBookingOnly,
+            "Keterangan": "Voucher/Free",
+            "JamMulai": formData.jamMulaiOnly,
+            "JamSelesai": formData.jamAkhirOnly,
+            "mejaID": cart[0]['id'],
+            "paketid": $('#paketSelect').val(),
+            "KodeSales": "-",
+            "KodePelanggan": "-",
+            "StatusTransaksi": 0,
+            "ExtraRequest": $('#ExtraRequest').val() || formData.extraRequest,
+            "TotalTransaksi": formData.totalAsli,
+            "TotalTax": formData.totalTax + formData.totalPajakHiburan,
+            "TotalDiskon": formData.totalDiskon,
+            "TotalLainLain": 0,
+            "NetTotal": formData.totalPembelian,
+            "NamaPelanggan": formData.namaLengkap,
+            "Email": formData.email,
+            "NoTlp1": formData.noTelp,
+            "VoucherCode" : formData.voucherCode,
+            "kodePartner": "{{ $company->KodePartner }}",
+            "fnbCart": formData.fnbCart
+        };
+
+        fetch("{{route('booking-pay-gateway')}}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(xData)
+        })
+        .then(response => response.json())
+        .then(response => {
+            if (response.success) {
+                let notrans = response.data && response.data.NoTransaksi ? response.data.NoTransaksi : '';
+                let tgl = response.data && response.data.TglBooking ? response.data.TglBooking : '';
+                let jam = response.data && response.data.JamMulai ? response.data.JamMulai + ' - ' + response.data.JamSelesai : '';
+                
+                let successMsg = '<b>Booking Berhasil Disimpan!</b><br><br>' +
+                                 (notrans ? '<div style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:15px; border:1px dashed #28a745;">' +
+                                 '<span style="font-size:13px; color:#6c757d">Nomor Booking (Invoice):</span><br>' +
+                                 '<h3 style="margin:5px 0; color:#28a745">' + notrans + '</h3>' +
+                                 '<span style="font-size:13px; color:#6c757d">Waktu: ' + tgl + ' (' + jam + ')</span>' +
+                                 '</div>' : '') +
+                                 'Silakan tangkap layar (Screenshot) atau catat nomor booking ini sebagai bukti pesanan Anda di lokasi.';
+
+                Swal.fire({
+                    icon: "success",
+                    title: 'Yeay! Berhasil',
+                    html: successMsg,
+                    confirmButtonText: 'Tutup & Selesai',
+                }).then(() => {
+                    if (localStorage.getItem('booking_cart')) {
+                        localStorage.removeItem('booking_cart');
+                    }
+                    location.reload();
+                });
+            } else {
+                ButtonObject.text(ButtonDefaultText);
+                ButtonObject.attr('disabled', false);
+                Swal.fire({
+                    icon: "error",
+                    title: 'Error',
+                    text: response.message,
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            ButtonObject.text(ButtonDefaultText);
+            ButtonObject.attr('disabled', false);
+        });
+        
+        return;
+    }
     let oData = {
         'NoTransaksi': "",
         'TotalPembelian': formData.totalPembelian,
@@ -1138,10 +1238,10 @@
                     } else {
                         let xData = {
                             "NoTransaksi": "",
-                            "TglBooking": formData.jamMulai,
+                            "TglBooking": formData.tglBookingOnly,
                             "Keterangan": result.payment_type + "#" + (result.va_numbers?.[0]?.bank || "") + "#" + (result.va_numbers?.[0]?.va_number || ""),
-                            "JamMulai": formData.jamMulai,
-                            "JamSelesai": formData.jamAkhir,
+                            "JamMulai": formData.jamMulaiOnly,
+                            "JamSelesai": formData.jamAkhirOnly,
                             "mejaID": cart[0]['id'],
                             "paketid": $('#paketSelect').val(),
                             "KodeSales": "-",
@@ -1173,10 +1273,23 @@
                         .then(response => response.json())
                         .then(response => {
                             if (response.success) {
+                                let notrans = response.data && response.data.NoTransaksi ? response.data.NoTransaksi : '';
+                                let tgl = response.data && response.data.TglBooking ? response.data.TglBooking : '';
+                                let jam = response.data && response.data.JamMulai ? response.data.JamMulai + ' - ' + response.data.JamSelesai : '';
+                                
+                                let successMsg = '<b>Pembayaran Berhasil!</b><br><br>' +
+                                                 (notrans ? '<div style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:15px; border:1px dashed #28a745;">' +
+                                                 '<span style="font-size:13px; color:#6c757d">Nomor Booking (Invoice):</span><br>' +
+                                                 '<h3 style="margin:5px 0; color:#28a745">' + notrans + '</h3>' +
+                                                 '<span style="font-size:13px; color:#6c757d">Waktu: ' + tgl + ' (' + jam + ')</span>' +
+                                                 '</div>' : '') +
+                                                 'Silakan tangkap layar (Screenshot) atau catat nomor booking ini sebagai bukti pesanan Anda di lokasi.';
+
                                 Swal.fire({
                                     icon: "success",
-                                    title: 'Berhasil',
-                                    text: 'Pembayaran berhasil disimpan, Silahkan Cek Email Anda!',
+                                    title: 'Yeay! Berhasil',
+                                    html: successMsg,
+                                    confirmButtonText: 'Tutup & Selesai',
                                 }).then(() => {
                                     if (localStorage.getItem('booking_cart')) {
                                         localStorage.removeItem('booking_cart');
@@ -1349,6 +1462,9 @@
         kodePartner: "{{ $company->KodePartner }}",
         jamMulai: jamMulaiFull,
         jamAkhir: jamSelesaiFull,
+        tglBookingOnly: tanggal,
+        jamMulaiOnly: jamMulaiTerdepan.jammulai,
+        jamAkhirOnly: jamSelesaiTerakhir.jamselesai,
         detail : cart,
         fnbCart: fnbCart
       };

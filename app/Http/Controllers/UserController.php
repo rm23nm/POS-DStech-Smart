@@ -209,7 +209,7 @@ class UserController extends Controller
     public function deletedata(Request $request)
     {
         $users = DB::table('users')
-                ->where('KodeUser','=', $request->id)
+                ->where('id','=', $request->id)
                 ->where('RecordOwnerID','=',Auth::user()->RecordOwnerID)
                 ->delete();
 
@@ -219,7 +219,7 @@ class UserController extends Controller
         else{
         	alert()->error('Error','Delete User Gagal.');
         }
-        return redirect('users');
+        return redirect('user');
     }
 
     public function LogOutUser(Request $request)

@@ -185,7 +185,19 @@ class TableOrderController extends Controller
         //                 ->where('RecordOwnerID','=',Auth::user()->RecordOwnerID)
         //                 ->where('Active','=', 'Y')->get();
         $oItem = new ItemMaster();
-        $itemmaster = $oItem->GetItemData(Auth::user()->RecordOwnerID,"", "", "", "1,2,3,5", "Y", '', 0);
+        $itemmaster = \App\Models\ItemMaster::selectRaw("itemmaster.*, jenisitem.NamaJenis")
+            ->leftJoin('jenisitem', function($join) {
+                $join->on('itemmaster.KodeJenisItem', '=', 'jenisitem.KodeJenis')
+                     ->on('itemmaster.RecordOwnerID', '=', 'jenisitem.RecordOwnerID');
+            })
+            ->where('itemmaster.RecordOwnerID', Auth::user()->RecordOwnerID)
+            ->where('itemmaster.Active', 'Y')
+            ->where(function($q) {
+                $q->where('itemmaster.KategoriPOS', 'FNB')
+                  ->orWhere('itemmaster.KodeJenisItem', 'LIKE', '%FNB%');
+            })
+            ->get();
+        \Log::info('DEBUG FNB SelfService: Returned ' . count($itemmaster) . ' items.');
 
         $midtransdata = MetodePembayaran::where('RecordOwnerID','=',Auth::user()->RecordOwnerID)
                             ->where('MetodeVerifikasi','=','AUTO')->first();
@@ -394,7 +406,7 @@ class TableOrderController extends Controller
 
         $metodepembayaran = MetodePembayaran::where('RecordOwnerID','=',$roid)->get();
 
-        $itemmaster = ItemMaster::selectRaw("itemmaster.KodeItem, itemmaster.NamaItem, itemmaster.HargaJual, itemmaster.Gambar, itemmaster.TypeItem, COALESCE(itemwarehouses.Qty, 0) as Stock")
+        $itemmaster = ItemMaster::selectRaw("itemmaster.KodeItem, itemmaster.NamaItem, itemmaster.HargaJual, itemmaster.Gambar, itemmaster.TypeItem, itemmaster.KategoriPOS, COALESCE(itemwarehouses.Qty, 0) as Stock")
                     ->leftJoin('itemwarehouses', function($join) use ($roid, $gudangPoS) {
                         $join->on('itemmaster.KodeItem', '=', 'itemwarehouses.KodeItem')
                             ->on('itemmaster.RecordOwnerID', '=', 'itemwarehouses.RecordOwnerID')
@@ -402,9 +414,14 @@ class TableOrderController extends Controller
                     })
                     ->where('itemmaster.RecordOwnerID', $roid)
                     ->where('itemmaster.Active', 'Y')
-                    ->whereNotIn('itemmaster.TypeItem', [2, 4])
+                    ->where(function($q) {
+                        $q->where('itemmaster.KategoriPOS', 'FNB')
+                          ->orWhere('itemmaster.KodeJenisItem', 'LIKE', '%FNB%');
+                    })
                     ->orderBy('itemmaster.NamaItem', 'ASC')
                     ->get();
+        
+        \Log::info('DEBUG FNB ViewNew: Returned ' . $itemmaster->count() . ' items for roid ' . $roid . ' with gudang ' . $gudangPoS);
         $midtransdata = MetodePembayaran::where('RecordOwnerID','=',$roid)
                             ->where('MetodeVerifikasi','=','AUTO')->first();
         $midtransclientkey = "";
@@ -548,6 +565,16 @@ class TableOrderController extends Controller
         
         $titiklampu = $titiklampu->unique('id')->values();
 
+        // Add JamMulaiParsed and JamSelesaiParsed for BillingSelfService blade
+        $titiklampu->transform(function ($item) {
+            $mulai = $item->JamMulai ? \Carbon\Carbon::parse($item->JamMulai, 'Asia/Jakarta') : null;
+            $selesai = $item->JamSelesai ? \Carbon\Carbon::parse($item->JamSelesai, 'Asia/Jakarta') : null;
+            $item->JamMulaiParsed = $mulai ? ($mulai->isToday() ? $mulai->format('H:i') : $mulai->format('d/m H:i')) : '-';
+            $item->JamSelesaiParsed = $selesai ? ($selesai->isToday() ? $selesai->format('H:i') : $selesai->format('d/m H:i')) : '-';
+            $item->StatusMeja = $item->StatusMeja ?: 'KOSONG';
+            return $item;
+        });
+
         Log::info("ViewNew: Loaded " . $titiklampu->count() . " tables for " . Auth::user()->name);
         $titiklampuoption = TitikLampu::where('titiklampu.RecordOwnerID', '=', Auth::user()->RecordOwnerID)
                                 ->where('titiklampu.Status','=','0')->get();
@@ -568,7 +595,19 @@ class TableOrderController extends Controller
         //                 ->where('RecordOwnerID','=',Auth::user()->RecordOwnerID)
         //                 ->where('Active','=', 'Y')->get();
         $oItem = new ItemMaster();
-        $itemmaster = $oItem->GetItemData(Auth::user()->RecordOwnerID,"", "", "", "1,2,3,5", "Y", '', 0);
+        $itemmaster = \App\Models\ItemMaster::selectRaw("itemmaster.*, jenisitem.NamaJenis")
+            ->leftJoin('jenisitem', function($join) {
+                $join->on('itemmaster.KodeJenisItem', '=', 'jenisitem.KodeJenis')
+                     ->on('itemmaster.RecordOwnerID', '=', 'jenisitem.RecordOwnerID');
+            })
+            ->where('itemmaster.RecordOwnerID', Auth::user()->RecordOwnerID)
+            ->where('itemmaster.Active', 'Y')
+            ->where(function($q) {
+                $q->where('itemmaster.KategoriPOS', 'FNB')
+                  ->orWhere('itemmaster.KodeJenisItem', 'LIKE', '%FNB%');
+            })
+            ->get();
+        \Log::info('DEBUG FNB SelfService: Returned ' . count($itemmaster) . ' items.');
 
         $midtransdata = MetodePembayaran::where('RecordOwnerID','=',Auth::user()->RecordOwnerID)
                             ->where('MetodeVerifikasi','=','AUTO')->first();
@@ -840,7 +879,7 @@ class TableOrderController extends Controller
             $overlapOnline = DB::table('bookingtableonline')
                 ->where('mejaID', $model->tableid)
                 ->where('RecordOwnerID', $roid)
-                ->where('StatusTransaksi', 1) // 1 = Confirmed / Paid
+                ->where('StatusTransaksi', 0) // 0 = Confirmed / Paid
                 ->where(function($q) use ($model, $checkEnd) {
                     $q->where(DB::raw("CAST(CONCAT(TglBooking, ' ', JamMulai) AS DATETIME)"), '<', $checkEnd)
                       ->where(DB::raw("CAST(CONCAT(TglBooking, ' ', COALESCE(JamSelesai, '23:59:59')) AS DATETIME)"), '>', $model->JamMulai);
@@ -1068,34 +1107,39 @@ class TableOrderController extends Controller
         ]);
 
         try {
-            $model = TableOrderHeader::selectRaw("tableorderheader.NoTransaksi, tableorderheader.tableid, COALESCE(SUM(tableorderfnb.LineTotal),0) AS totalFNB, COALESCE(SUM(fakturpenjualanheader.TotalPembelian),0) AS TotalCostTable, COALESCE(SUM(fakturpenjualanheader.TotalPembayaran), 0) SumedPayment ")
-                        ->leftJoin('tableorderfnb', function ($value)  {
-                            $value->on('tableorderfnb.NoTransaksi','=','tableorderheader.NoTransaksi')
-                            ->on('tableorderfnb.RecordOwnerID','=','tableorderheader.RecordOwnerID');
-                        })
-                        ->leftJoin('fakturpenjualandetail', function ($value)  {
-                            $value->on('fakturpenjualandetail.BaseReff','=','tableorderheader.NoTransaksi')
-                            ->on('fakturpenjualandetail.RecordOwnerID','=','tableorderheader.RecordOwnerID');
-                        })
-                        ->leftJoin('fakturpenjualanheader', function ($value)  {
-                            $value->on('fakturpenjualanheader.NoTransaksi','=','fakturpenjualandetail.NoTransaksi')
-                            ->on('fakturpenjualanheader.RecordOwnerID','=','fakturpenjualandetail.RecordOwnerID')
-                            ->where('fakturpenjualanheader.Status', '=', 'C') // kondisi nilai tetap
-                            ->where('fakturpenjualanheader.TotalPembayaran', '>', 0); // kondisi angka tetap
-                        })
-                        ->where('tableorderheader.NoTransaksi','=',$request->input('txtNoTransaksi_CheckOut'))
-                        ->where('tableorderheader.RecordOwnerID','=', Auth::user()->RecordOwnerID)
-                        ->groupBy('tableorderheader.NoTransaksi', 'tableorderheader.tableid')->first();
+            $model = TableOrderHeader::where('NoTransaksi', $request->input('txtNoTransaksi_CheckOut'))
+                        ->where('RecordOwnerID', Auth::user()->RecordOwnerID)
+                        ->first();
             
-            $totalTransaksi = $model->totalFNB + $model->TotalCostTable;
-            $Status = -1;
-            // dd($model);
-            // $request->input('TotalPembayaran')
-            if($totalTransaksi > $model->SumedPayment || $totalTransaksi == 0 ){
+            // Dummy block to satisfy later "if ($model) {" logic safely without wrapping
+            if ($model) {
+                $totalFNB = DB::table('tableorderfnb')
+                            ->where('NoTransaksi', $model->NoTransaksi)
+                            ->where('RecordOwnerID', $model->RecordOwnerID)
+                            ->sum('LineTotal');
+
+                $fakturHeaders = DB::table('fakturpenjualanheader')
+                    ->whereIn('NoTransaksi', function($q) use ($model) {
+                        $q->select('NoTransaksi')
+                          ->from('fakturpenjualandetail')
+                          ->where('BaseReff', $model->NoTransaksi)
+                          ->where('RecordOwnerID', $model->RecordOwnerID);
+                    })
+                    ->where('RecordOwnerID', $model->RecordOwnerID)
+                    ->where('Status', 'C')
+                    ->get();
+                
+                $TotalCostTable = $fakturHeaders->sum('TotalPembelian');
+                $SumedPayment = $fakturHeaders->sum('TotalPembayaran');
+                
+                $totalTransaksi = $totalFNB + $TotalCostTable;
                 $Status = -1;
-            }
-            else{
-                $Status = 0;
+                
+                if ($totalTransaksi > 0 && $totalTransaksi > $SumedPayment) {
+                    $Status = -1;
+                } else {
+                    $Status = 0;
+                }
             }
 
             // dd($Status);
@@ -2514,7 +2558,7 @@ class TableOrderController extends Controller
                 // Ex: Current 20:25, Slot 20:00 -> 20:00 < 19:55 ? False -> Available
                 // Ex: Current 20:35, Slot 20:00 -> 20:00 < 20:05 ? True -> Past
                 $toleranceTime = $currentDateTime->copy()->subMinutes(10);
-                $isPast = $slotDateTime->lt($toleranceTime);
+                $isPast = false; // Always allow past slots per user request
                 
                 // Check if slot is booked or played
                 // Booked: Status 'D' (Draft/Booking)
@@ -2841,13 +2885,13 @@ class TableOrderController extends Controller
                 })
                 ->get(['JamMulai', 'JamSelesai']);
 
-            // Aturan 3: bookingtableonline StatusTransaksi = 1 (Booking Online Paid/Confirmed) pada tanggal tersebut
+            // Aturan 3: bookingtableonline StatusTransaksi = 0 (Booking Online Paid/Confirmed) pada tanggal tersebut
             // Seringkali TglBooking online hanya 1 hari, agar aman kita pakai intersect juga bila JamMulai adalah DATETIME.
             // Namun jika JamMulai time only, bisa error. Asumsikan JamMulai berisi datetime yang utuh jika formatnya YYYY-MM-DD HH:ii:ss
             $bookedOnline = DB::table('bookingtableonline')
                 ->where('RecordOwnerID', Auth::user()->RecordOwnerID)
                 ->where('mejaID', $tableId)
-                ->where('StatusTransaksi', 1)
+                ->where('StatusTransaksi', 0)
                 ->whereDate('TglBooking', $tanggal)
                 ->get(['JamMulai', 'JamSelesai']);
 
@@ -2898,25 +2942,38 @@ class TableOrderController extends Controller
                 $slotEnd = $currentSlot->copy()->addHour();
 
                 $isBooked = false;
-                
-                // Aturan 1: Blok jam yang sudah terlewati di tanggal yang dipilih (hari ini)
+                $isLate   = false;
+
+                // Aturan 1: Cek apakah slot berkaitan dengan waktu yang sudah lewat (hari ini)
                 if ($isToday && $slotStart->lt($now)) {
-                    $isBooked = true;
-                } else {
+                    if ($slotEnd->lte($now)) {
+                        // Slot sudah SELESAI TOTAL → blokir sepenuhnya
+                        $isBooked = true;
+                    } else {
+                        // Slot sudah DIMULAI tapi BELUM SELESAI → izinkan (tapi tandai terlambat)
+                        // Kasir tetap bisa mengaktifkan transaksi, waktu dihitung dari awal slot
+                        $isLate = true;
+                    }
+                }
+
+                // Jika belum diblokir karena waktu, cek apakah ada transaksi lain yang overlap
+                if (!$isBooked) {
                     foreach ($allBooked as $booked) {
                         // Cek overlap: start_A < end_B && end_A > start_B
                         if ($slotStart->lt($booked['end']) && $slotEnd->gt($booked['start'])) {
                             $isBooked = true;
+                            $isLate   = false; // jika diboking orang lain, tidak bisa aktif sama sekali
                             break;
                         }
                     }
                 }
 
                 $slots[] = [
-                    'time' => $slotStart->format('H:i'),
+                    'time'       => $slotStart->format('H:i'),
                     'start_full' => $slotStart->format('Y-m-d H:i:s'),
-                    'end_full' => $slotEnd->format('Y-m-d H:i:s'),
-                    'booked' => $isBooked
+                    'end_full'   => $slotEnd->format('Y-m-d H:i:s'),
+                    'booked'     => $isBooked,
+                    'isLate'     => $isLate,
                 ];
 
                 $currentSlot->addHour();
@@ -3100,7 +3157,7 @@ class TableOrderController extends Controller
             $model->tableid = $request->input('tableid');
             $model->KodeSales = $request->input('KodeSales');
             $model->DurasiPaket = $request->input('DurasiPaket');
-            $model->KodePelanggan = $request->input('KodePelanggan');
+            $model->KodePelanggan = $request->input('KodePelanggan') ?: 'CASH';
             
             // Concat Tgl & Jam
             $jamMulaiStr = $request->input('JamMulai');
@@ -3637,6 +3694,7 @@ class TableOrderController extends Controller
             }
         } catch (\Throwable $th) {
             DB::rollback();
+            Log::error("storePaket Error: " . $th->getMessage() . "\n" . $th->getTraceAsString());
             $data['message'] = 'Internal error: ' . $th->getMessage();
         }
 
@@ -3648,6 +3706,71 @@ public function getTableStatuses()
             date_default_timezone_set('Asia/Jakarta');
             $roid = Auth::user()->RecordOwnerID;
             $now = Carbon::now('Asia/Jakarta');
+            // AUTO ACTIVATE ONLINE BOOKINGS
+            $bookingsToActivate = DB::table('bookingtableonline')
+                ->where('RecordOwnerID', $roid)
+                ->where('StatusTransaksi', 0)
+                ->where(DB::raw("CAST(CONCAT(TglBooking, ' ', JamMulai) AS DATETIME)"), '<=', $now->format('Y-m-d H:i:s'))
+                ->get();
+
+            foreach ($bookingsToActivate as $book) {
+                $tglOnly = explode(' ', $book->TglBooking)[0];
+                $m = Carbon::parse($tglOnly . ' ' . $book->JamMulai);
+                $s = Carbon::parse($tglOnly . ' ' . $book->JamSelesai);
+                if ($s->lt($m)) {
+                    $s->addDay();
+                }
+                $tglJamMulai = $m->format('Y-m-d H:i:s');
+                $tglJamSelesai = $s->format('Y-m-d H:i:s');
+                
+                $exists = DB::table('tableorderheader')->where('NoTransaksi', $book->NoTransaksi)->exists();
+                if (!$exists) {
+                    DB::table('tableorderheader')->insert([
+                        'NoTransaksi' => $book->NoTransaksi,
+                        'TglTransaksi' => $tglJamMulai,
+                        'TglPencatatan' => $now->format('Y-m-d H:i:s'),
+                        'JenisPaket' => 'JAM',
+                        'paketid' => $book->paketid,
+                        'tableid' => $book->mejaID,
+                        'KodeSales' => $book->KodeSales,
+                        'DurasiPaket' => 0,
+                        'Status' => 1,
+                        'KodePelanggan' => $book->KodePelanggan,
+                        'TaxTotal' => $book->TotalTax,
+                        'GrossTotal' => $book->TotalTransaksi,
+                        'DiscTotal' => $book->TotalDiskon,
+                        'NetTotal' => $book->NetTotal,
+                        'JamMulai' => $tglJamMulai,
+                        'JamSelesai' => $tglJamSelesai,
+                        'RecordOwnerID' => $roid,
+                        'DocumentStatus' => 'O',
+                        'kitchen_order_status' => 0,
+                    ]);
+
+                    DB::table('bookingtableonline')->where('NoTransaksi', $book->NoTransaksi)->update(['StatusTransaksi' => 1]);
+
+                    $fnbBookings = DB::table('bookingtablefnb')->where('NoTransaksi', $book->NoTransaksi)->get();
+                    foreach ($fnbBookings as $fb) {
+                        DB::table('tableorderfnb')->insert([
+                            'NoTransaksi' => $book->NoTransaksi,
+                            'KodeItem' => $fb->ItemMasterID,
+                            'Qty' => $fb->Qty,
+                            'Harga' => $fb->Harga,
+                            'Diskon' => $fb->Diskon,
+                            'LineTotal' => $fb->LineTotal,
+                            'RecordOwnerID' => $fb->RecordOwnerID,
+                            'isCompleted' => 0,
+                            'LineStatus' => 'O',
+                            'ServiceType' => 'DINE_IN',
+                            'OrderSource' => 'WEB',
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                        ]);
+                    }
+
+                    DB::table('titiklampu')->where('id', $book->mejaID)->where('RecordOwnerID', $roid)->update(['status' => 1]);
+                }
+            }
             $nearlyExpiredThreshold = (clone $now)->addMinutes(10);
 
             // A. Handle Expired Tables (O -> C/KOSONG)
@@ -4383,7 +4506,7 @@ public function getTableStatuses()
                 $overlapOnline = DB::table('bookingtableonline')
                     ->where('mejaID', $header->tableid)
                     ->where('RecordOwnerID', $recordOwnerID)
-                    ->where('StatusTransaksi', 1)
+                    ->where('StatusTransaksi', 0)
                     ->where(function($q) use ($header, $newJamSelesai) {
                         $q->where(DB::raw("CAST(CONCAT(TglBooking, ' ', JamMulai) AS DATETIME)"), '<', $newJamSelesai)
                           ->where(DB::raw("CAST(CONCAT(TglBooking, ' ', COALESCE(JamSelesai, '23:59:59')) AS DATETIME)"), '>', $header->JamSelesai);
@@ -5565,7 +5688,17 @@ public function getTableStatuses()
             elseif ($metode->AdminFeeRupiah > 0) $adminFeeRp = $metode->AdminFeeRupiah;
         }
 
-        $grandTotal = round($subtotal + $ppnRp + $serviceRp + $adminFeeRp);
+        $voucherCode = $request->input('VoucherCode');
+        $voucherRp = floatval($request->input('VoucherRp', 0));
+        
+        // Make sure voucher is valid
+        if ($voucherRp > $subtotal) $voucherRp = $subtotal;
+        
+        $dpp = $subtotal - $voucherRp;
+        $ppnRp = round($dpp * ($ppnPersen / 100));
+        $serviceRp = round($dpp * ($servicePersen / 100));
+        
+        $grandTotal = round($dpp + $ppnRp + $serviceRp + $adminFeeRp);
 
         DB::beginTransaction();
         try {

@@ -507,7 +507,7 @@
 															$l3Name = strtolower(trim($lv3['PermissionName']));
 															
 															// Filter out Lampu and Table Order for TiketGate
-															if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] === 'TiketGate') {
+															if (false /* disabled TiketGate filter */) {
 																if (str_contains($l3Name, 'lampu') || str_contains($l3Name, 'table order')) {
 																	unset($lv2['submenu'][$keyLv3]);
 																	continue;
@@ -522,7 +522,7 @@
 													if ($isSystemController) {
 														$targetCat = 'system';
 													} else {
-														if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] === 'TiketGate') {
+														if (false /* disabled TiketGate filter */) {
 															continue;
 														}
 														$targetCat = 'billiard';
@@ -620,7 +620,7 @@
 												} elseif (in_array($l2Name, ['autorisasi', 'pengguna'])) {
 													$targetCat = 'system';
 												} elseif ($l2Name === 'paket') {
-													if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] === 'TiketGate') {
+													if (false /* disabled TiketGate filter */) {
 														if (!empty($lv2['submenu'])) {
 															foreach ($lv2['submenu'] as $keyLv3 => $lv3) {
 																$l3Name = strtolower(trim($lv3['PermissionName']));
@@ -851,7 +851,7 @@
 										$jenisUsahaHeader = $cData[0]['JenisUsaha'];
 										
 										// Sembunyikan Resto & Billiard untuk Bengkel
-										if (in_array($jenisUsahaHeader, ['Bengkel', 'Servis', 'BengkelDealer'])) {
+										if (false /* disabled Bengkel filter */) {
 											unset($activePremiumCategories['resto']);
 											unset($activePremiumCategories['billiard']);
 										} else {
@@ -861,21 +861,21 @@
 										}
 									}
 									// Untuk usaha Parkir: sembunyikan semua menu yang tidak relevan
-									if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] == 'Parkir') {
+									if (false /* disabled Parkir filter */) {
 										$keysToRemove = ['pos', 'billiard', 'booking', 'display', 'resto', 'inventory', 'consignment', 'purchasing', 'crm', 'finance', 'accounting', 'reports_sales', 'reports_accounting', 'bengkel', 'dealer'];
 										foreach ($keysToRemove as $removeKey) {
 											unset($activePremiumCategories[$removeKey]);
 										}
 									}
 									// Untuk usaha TiketGate: sembunyikan semua menu yang tidak relevan
-									if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] == 'TiketGate') {
+									if (false /* disabled TiketGate filter 2 */) {
 										$keysToRemove = ['booking', 'resto', 'inventory', 'consignment', 'purchasing', 'crm', 'bengkel', 'dealer'];
 										foreach ($keysToRemove as $removeKey) {
 											unset($activePremiumCategories[$removeKey]);
 										}
 									}
 									// Untuk usaha Retail / Apotek: sembunyikan semua menu yang tidak relevan
-									if (isset($cData[0]['JenisUsaha']) && in_array($cData[0]['JenisUsaha'], ['Retail', 'Apotek', 'Klinik'])) {
+									if (false /* disabled Retail filter */) {
 										$keysToRemove = ['billiard', 'booking', 'resto', 'bengkel', 'dealer'];
 										// Khusus Retail biasa, sembunyikan display. Tapi Apotek/Klinik butuh display.
 										if ($cData[0]['JenisUsaha'] == 'Retail') {
@@ -886,7 +886,7 @@
 										}
 									}
 									// Untuk usaha FnB: sembunyikan semua menu yang tidak relevan
-									if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] == 'FnB') {
+									if (false /* disabled FnB filter */) {
 										$keysToRemove = ['bengkel', 'dealer'];
 										foreach ($keysToRemove as $removeKey) {
 											unset($activePremiumCategories[$removeKey]);

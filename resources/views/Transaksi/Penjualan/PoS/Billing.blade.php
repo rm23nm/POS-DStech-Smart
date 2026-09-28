@@ -6059,14 +6059,6 @@ License: You must have a valid license purchased only from themeforest(the above
 			// location.reload();
 
 			const win = window.open(url, '_blank', 'width=800,height=600');
-			if (win) {
-				win.onload = function () {
-					win.print();
-					win.onafterprint = function () {
-						win.close();
-					};
-				};
-			}
 			showCetakModal(NoTransaksi);
 		}
 

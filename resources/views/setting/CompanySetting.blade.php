@@ -185,12 +185,14 @@
 													<li class="nav-item" >
 														<a class="nav-link" id="custdisplay-antrean-tab" data-bs-toggle="pill" href="#custdisplay-antrean" role="tab" aria-controls="custdisplay-antrean" aria-selected="false" style="padding-left: 25px;"><i class="flaticon-presentation me-2"></i> Customer Display</a>
 													</li>
+													@if ($company[0]['JenisUsaha'] == 'Klinik')
 													<li class="nav-item" >
 														<a class="nav-link" id="custdisplay-klinik-tab" data-bs-toggle="pill" href="#custdisplay-klinik" role="tab" aria-controls="custdisplay-klinik" aria-selected="false" style="padding-left: 25px;"><i class="flaticon-presentation me-2 text-primary"></i> Layar TV Poli Klinik</a>
 													</li>
 													<li class="nav-item" >
 														<a class="nav-link" id="custdisplay-kiosk-tab" data-bs-toggle="pill" href="#custdisplay-kiosk" role="tab" aria-controls="custdisplay-kiosk" aria-selected="false" style="padding-left: 25px;"><i class="flaticon-presentation me-2 text-warning"></i> Layar TV Kiosk Pendaftaran</a>
 													</li>
+													@endif
 													@if ($company[0]['JenisUsaha'] == "Hiburan" || $company[0]['JenisUsaha'] == "FnB")
 													<li class="nav-item" >
 														<a class="nav-link" id="custdisplay-ecatalog-tab" data-bs-toggle="pill" href="#custdisplay-ecatalog" role="tab" aria-controls="custdisplay-ecatalog" aria-selected="false" style="padding-left: 25px;"><i class="flaticon-internet me-2"></i> E-Catalog & Booking Hiburan</a>
@@ -669,6 +671,48 @@
 																<input type="text" class="form-control" name="SmartproSender" placeholder="628xxx (nomor WA yang terhubung di Smartpro)" value="{{ count($company) > 0 ? ($company[0]['SmartproSender'] ?? '') : '' }}">
 															</fieldset>
 														</div>
+														
+								{{-- ===== GATE API KEY SECTION ===== --}}
+								<div class="card card-custom gutter-b mt-6 border border-light-danger bg-white shadow-sm rounded">
+									<div class="card-header h-auto py-3 bg-light-danger border-0 rounded-top">
+										<div class="card-title m-0">
+											<h3 class="card-label text-danger font-weight-bolder m-0" style="font-size: 1.25rem;">
+												<i class="fas fa-door-open me-2 text-danger"></i> Gate Agent — API Key
+											</h3>
+										</div>
+									</div>
+									<div class="card-body py-4">
+										<div class="row">
+											<div class="col-12 mb-3">
+												<div class="alert alert-light-info border border-info rounded">
+													<i class="fas fa-info-circle text-info me-2"></i>
+													<strong>Apa ini?</strong> API Key ini digunakan oleh <strong>Gate Agent</strong> yang terinstall di PC Client (lokasi usaha) untuk sinkronisasi data tiket &amp; kartu member dari server ini. Berikan key ini kepada teknisi saat instalasi Gate Agent.
+												</div>
+											</div>
+											<div class="col-md-8">
+												<label class="text-body fw-bold">Gate Agent API Key</label>
+												<fieldset class="form-group mb-3">
+													<div class="input-group">
+														<input type="text" class="form-control font-monospace" id="GateApiKeyInput" name="GateApiKey"
+															placeholder="Klik Generate untuk membuat API Key baru"
+															value="{{ count($company) > 0 ? ($company[0]['GateApiKey'] ?? '') : '' }}"
+															readonly>
+														<button type="button" class="btn btn-light-primary px-4" onclick="copyGateApiKey()" title="Salin Key">
+															<i class="fas fa-copy"></i> Salin
+														</button>
+													</div>
+													<small class="text-muted">API Key bersifat rahasia. Jangan berikan kepada pihak yang tidak berkepentingan.</small>
+												</fieldset>
+											</div>
+											<div class="col-md-4 d-flex align-items-center">
+												<button type="button" class="btn btn-danger w-100" onclick="generateGateApiKey()">
+													<i class="fas fa-key me-2"></i> Generate API Key Baru
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								{{-- ===== END GATE API KEY SECTION ===== --}}
 														{{-- ===== END SECTION ===== --}}
 
 													</div>
@@ -821,8 +865,9 @@
 															</div>
 														</div>
 													</div>
-												</div>
 
+
+												@if ($company[0]['JenisUsaha'] == "Klinik")
 												<div class="tab-pane fade" id="custdisplay-klinik" role="tabpanel" aria-labelledby="custdisplay-klinik-tab">
 													<div class="row">
 														<!-- CARD: CUSTOMER DISPLAY KLINIK -->
@@ -883,8 +928,10 @@
 												</fieldset>
 											</div>
 										</div>
-									</div>
 
+
+											</div>
+												@endif
 												@if ($company[0]['JenisUsaha'] == "Hiburan" || $company[0]['JenisUsaha'] == "FnB")
 												<div class="tab-pane fade" id="custdisplay-ecatalog" role="tabpanel" aria-labelledby="custdisplay-ecatalog-tab">
 													<div class="row">
@@ -1408,9 +1455,10 @@
 											</div>
 										</div>
 									</div>
-									<div class="form-group row">
+</div>
+									<div class="form-group row mt-4">
 	                            		<div class="col-md-12">
-	                            			<button type="submit" class="btn btn-success text-white font-weight-bold me-1 mb-1">Simpan</button>
+	                            			<button type="submit" class="btn btn-success text-white font-weight-bold me-1 mb-1"><i class="fas fa-save"></i> Simpan Pengaturan</button>
 	                            		</div>
 
 									</div>
@@ -2719,5 +2767,38 @@ jQuery("#fileKioskBackground").change(function(){
         encodeImagetoBase64(this, "KioskBackgroundBase64");
     }
 });
+    // ===== Gate API Key Functions (window scope agar bisa dipanggil dari onclick) =====
+    window.generateGateApiKey = function() {
+        Swal.fire({
+            title: "Generate API Key Baru?",
+            html: "<p>API Key lama akan diganti. Gate Agent yang sudah terinstall harus diupdate dengan key baru ini.</p>",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Generate!",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const array = new Uint8Array(16);
+                window.crypto.getRandomValues(array);
+                const apiKey = Array.from(array).map(b => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+                document.getElementById("GateApiKeyInput").value = apiKey;
+                Swal.fire({ icon: "success", title: "API Key Baru Dibuat!", html: "<p>Jangan lupa klik <strong>Simpan</strong> untuk menyimpan API Key ini.</p>", timer: 3000 });
+            }
+        });
+    };
+
+    window.copyGateApiKey = function() {
+        const input = document.getElementById("GateApiKeyInput");
+        const val = input.value;
+        if (!val) {
+            Swal.fire("Kosong!", "Belum ada API Key. Silakan Generate terlebih dahulu.", "warning");
+            return;
+        }
+        navigator.clipboard.writeText(val).then(() => {
+            Swal.fire({ icon: "success", title: "Disalin!", text: "API Key berhasil disalin ke clipboard.", timer: 2000, showConfirmButton: false });
+        });
+    };
+    // ===== End Gate API Key Functions =====
+
 </script>
 @endpush

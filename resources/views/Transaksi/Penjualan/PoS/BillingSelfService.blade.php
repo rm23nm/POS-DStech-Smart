@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+
     <meta charset="utf-8" />
     <title>Self Service POS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -213,6 +215,7 @@
         .pp-header { background: #1a237e; color: #fff; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; }
         .pp-header-titik { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
         .pp-close { background: rgba(255,255,255,0.2); border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .swal2-container, .sweet-alert, .swal-overlay { z-index: 99999 !important; }
 
         .pp-body { padding: 24px; overflow-y: auto; flex: 1; }
         .pp-footer { padding: 16px 24px; background: #f8f9fa; border-top: 1px solid #eee; display: flex; gap: 12px; justify-content: flex-end; }
@@ -227,6 +230,9 @@
         .slot-box { padding: 8px 12px; background: #fff; border: 1.5px solid #cfd8dc; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
         .slot-box.selected { background: #1a237e; color: #fff; border-color: #1a237e; }
         .slot-box.booked { background: #e0e0e0; color: #999; cursor: not-allowed; border-color: #e0e0e0; }
+        .slot-box.late { background: #ffd54f !important; color: #b71c1c !important; border-color: #f57f17 !important; cursor: pointer; }
+        .slot-box.late:hover { background: #ffca28 !important; border-color: #f57f17 !important; color: #b71c1c !important; }
+        .slot-late-label { display: block; font-size: 0.6rem; font-weight: 600; margin-top: -2px; }
 
         .pp-durasi-wrap { display: flex; align-items: center; gap: 10px; }
         .pp-dur-btn { width: 40px; height: 40px; border-radius: 10px; border: 2px solid #1a237e; background: #fff; color: #1a237e; font-size: 1.5rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
@@ -419,10 +425,11 @@
                     <div class="pp-row">
                         <div class="pp-field">
                             <label class="pp-label">Member / Pelanggan</label>
-                            <select class="pp-input" id="ppKodePelanggan" onchange="calculateTotal()">
+                            <input type="text" class="pp-input" id="ppMemberSearch" placeholder="Tap RFID / Ketik No. HP lalu Enter..." style="margin-bottom:6px;">
+                            <select class="pp-input" id="ppKodePelanggan" onchange="calculateTotal()" style="pointer-events: none; background: #e9ecef;" disabled="disabled" readonly>
                                 <option value="">-- Umum / Guest --</option>
                                 @foreach($pelanggan as $p)
-                                    <option value="{{ $p->KodePelanggan }}">{{ $p->NamaPelanggan }} ({{ $p->KodePelanggan }})</option>
+                                    <option value="{{ $p->KodePelanggan }}">{{ $p->NamaPelanggan }} ({{ $p->KodePelanggan }}) {{ $p->NoTlp1 ? ' - ' . $p->NoTlp1 : '' }} {{ $p->RFID_UID ? ' - RFID:' . $p->RFID_UID : '' }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -489,6 +496,13 @@
                         <hr style="border:none; border-top:1px dashed #ccc; margin:10px 0;">
                         <div class="detail-calc-row" style="font-weight:800; font-size:1.1rem; color:#1a237e;"><span>GRAND TOTAL</span> <span id="calcGrandTotal">Rp 0</span></div>
                         
+                        <div class="pp-row" style="margin-top:10px;">
+                            <label class="pp-label">VOUCHER / DISKON</label>
+                            <div style="display:flex; gap:5px;">
+                                <input type="text" id="ppVoucher" class="pp-input" placeholder="Kode Voucher" style="flex:1; border:1.5px solid #ffcc80; text-transform:uppercase;">
+                                <button type="button" onclick="window.applyPpVoucher()" style="background:#e65100; color:#fff; border:none; border-radius:8px; padding:0 15px; font-weight:700;">CEK</button>
+                            </div>
+                        </div>
                         <div class="pp-row mt-2" style="margin-top:15px;">
                             <label class="pp-label">Metode Pembayaran</label>
                             <select class="pp-input" id="ppMetodePembayaran" onchange="calculateTotal()">
@@ -753,11 +767,13 @@
                         <div class="detail-calc-row"><span>Subtotal Menu</span> <span id="jfSubtotal">Rp 0</span></div>
                         <div class="detail-calc-row"><span>Pajak & Layanan</span> <span id="jfTax">Rp 0</span></div>
                         <hr style="border:none; border-top:2px dashed #ffcc80; margin:10px 0;">
+                        <div class="detail-calc-row" style="color:red; font-weight:600;"><span>Diskon / Voucher</span> <span id="jfDiskon">- Rp 0</span></div>
                         <div class="detail-calc-row" style="font-weight:800; font-size:1.3rem; color:#e65100;"><span>TOTAL</span> <span id="jfGrandTotal">Rp 0</span></div>
                         
                         <div class="pp-row" style="margin-top:15px;">
                             <label class="pp-label">MEMBER / PELANGGAN</label>
-                            <select class="pp-input" id="jfPelanggan" style="border:1.5px solid #ffcc80;">
+                            <input type="text" class="pp-input" id="jfMemberSearchFix" placeholder="Tap RFID / Ketik No. HP lalu Enter..." style="margin-bottom:6px; border:1.5px solid #ffcc80;">
+                            <select class="pp-input" id="jfPelanggan" style="border:1.5px solid #ffcc80; pointer-events: none; background: #e9ecef;" disabled="disabled" readonly>
                                 <option value="UMUM">-- Umum / Guest --</option>
                                 @foreach($pelanggan as $p)
                                     <option value="{{ $p->KodePelanggan }}">{{ $p->NamaPelanggan }}</option>
@@ -812,10 +828,31 @@
 
     <script>
     // ===== CONFIG & DATA =====
-    var dataPaketAll = {!! json_encode($paket) !!};
-    var dataPelangganAll = {!! json_encode($pelanggan) !!};
-    var dataGrupPelanggan = {!! json_encode($gruppelanggan) !!};
-    var confCompany = {!! json_encode(count($company) > 0 ? $company[0] : null) !!};
+    
+window.onerror = function(msg, url, lineNo, columnNo, error) {
+  var string = msg.toLowerCase();
+  var substring = "script error";
+  if (string.indexOf(substring) > -1){
+    alert("Script Error: See Browser Console for Detail");
+  } else {
+    var message = [
+      "Message: " + msg,
+      "URL: " + url,
+      "Line: " + lineNo,
+      "Column: " + columnNo,
+      "Error object: " + (error ? error.stack : "")
+    ].join(" - ");
+    alert(message);
+  }
+  return false;
+};
+
+console.log('--- LATEST VERSION HAS LOADED ---');
+$(document).ready(function() { $('#ppKodePelanggan').select2({ dropdownParent: $('#modalPilihPaket') }); });
+    var dataPaketAll = @json($paket);
+    var dataPelangganAll = @json($pelanggan);
+    var dataGrupPelanggan = @json($gruppelanggan);
+    var confCompany = @json(count($company) > 0 ? $company[0] : null);
     var selectedTitik = null;
     var selectedSlots = []; 
     var rawSlots = [];      
@@ -900,6 +937,10 @@
             if (end && end !== 'null' && end !== '') {
                 var diff = new Date(end.replace(' ', 'T')) - _nowLocal;
                 label = diff < 0 ? "WAKTU HABIS" : formatDur(diff);
+                if (diff < 0 && this.dataset.alerted !== 'true') {
+                    this.dataset.alerted = 'true';
+                    swal('Peringatan', 'Waktu ' + (this.dataset.namatitiklampu || 'meja') + ' telah lewat / habis!', 'warning');
+                }
             } else if (start) {
                 label = formatDur(_nowLocal - new Date(start.replace(' ', 'T')));
             }
@@ -960,6 +1001,16 @@
         $('.fnb-qty-val').text('0'); // Reset all qty displays
         $('#fnbTotalCount').text('0 Item');
         updateJamSelesai();
+        var sel = document.getElementById('ppMetodePembayaran');
+        if (sel) {
+            for(var i=0; i<sel.options.length; i++) {
+                if(sel.options[i].text.toUpperCase().includes('QRIS')) {
+                    sel.value = sel.options[i].value;
+                    break;
+                }
+            }
+            $('#ppMetodePembayaran').trigger('change').prop('disabled', true);
+        }
     }
 
     function closePilihPaketModal() { $('#modalPilihPaket').removeClass('open'); }
@@ -971,7 +1022,7 @@
         dataPaketAll.forEach(p => {
             // Filter by Jenis AND Category (matching main POS logic)
             if (p.JenisPaket === jenis) {
-                if (cat === "" || p.NamaPaket.toUpperCase().includes(cat)) {
+                if (cat === "" || p.NamaPaket.toUpperCase().includes(cat) || p.KelompokLampu === cat) { // fallback check
                     var opt = document.createElement('option');
                     opt.value = p.id;
                     opt.text = p.NamaPaket;
@@ -984,6 +1035,16 @@
         $('#ppRowSlot').toggle(jenis === 'JAM' || jenis === 'PAKETMEMBER');
         if (jenis === 'JAM' || jenis === 'PAKETMEMBER') fetchSlots();
         updateJamSelesai();
+        var sel = document.getElementById('ppMetodePembayaran');
+        if (sel) {
+            for(var i=0; i<sel.options.length; i++) {
+                if(sel.options[i].text.toUpperCase().includes('QRIS')) {
+                    sel.value = sel.options[i].value;
+                    break;
+                }
+            }
+            $('#ppMetodePembayaran').trigger('change').prop('disabled', true);
+        }
     }
 
     function fetchSlots() {
@@ -1002,13 +1063,99 @@
 
     function renderSlots(data) {
         rawSlots = data;
-        var html = data.map((s, i) => `<div class="slot-box ${s.booked ? 'booked' : ''}" onclick="toggleSlot(this, ${i})">${s.time}</div>`).join('');
+        var tglPilih = $('#ppTglTransaksi').val();
+        var now = new Date();
+        var isToday = false;
+        if (tglPilih) {
+            var d = new Date(tglPilih);
+            isToday = (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate());
+        }
+        var nowHour = now.getHours();
+        var nowMin = now.getMinutes();
+
+        var html = data.map((s, i) => {
+            var isPast = false;
+            if (isToday) {
+                var parts = s.time.split(':');
+                if (parts.length === 2) {
+                    var h = parseInt(parts[0]);
+                    var m = parseInt(parts[1]);
+                    if (h < nowHour || (h === nowHour && m < nowMin)) isPast = true;
+                }
+            }
+            if (s.booked) {
+                return `<div class="slot-box booked">` + s.time + `</div>`;
+            } else if (isPast) {
+                return `<div class="slot-box late" onclick="toggleSlot(this, ` + i + `)">` + s.time + `<span class="slot-late-label">? Telat</span></div>`;
+            } else {
+                return `<div class="slot-box" onclick="toggleSlot(this, ` + i + `)">` + s.time + `</div>`;
+            }
+        }).join('');
         $('#ppSlotContainer').html(html);
         selectedSlots = [];
     }
 
     function toggleSlot(el, idx) {
         if (el.classList.contains('booked')) return;
+        
+        var tglPilih = $('#ppTglTransaksi').val();
+        var now = new Date();
+        var isToday = false;
+        if (tglPilih) {
+            var d = new Date(tglPilih);
+            isToday = (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate());
+        }
+        
+        if (!el.classList.contains('selected') && isToday) {
+            var timeStr = rawSlots[idx].time;
+            var parts = timeStr.split(':');
+            var slotH = parseInt(parts[0]);
+            var slotM = parseInt(parts[1]);
+            var nowHour = now.getHours();
+            var nowMin = now.getMinutes();
+            
+            // Assume 1 slot = 1 hour (base duration is window.activePaketDurasi but usually 1 slot is a 1 hour block)
+            // Let's calculate remaining minutes until the end of the slot block.
+            // Actually, if the start time is in the past:
+            if (slotH < nowHour || (slotH === nowHour && slotM < nowMin)) {
+                // It's in the past! Calculate remaining minutes of this 60 minute slot (assuming 1 slot = 1 hour for now)
+                var menit = (nowHour * 60 + nowMin) - (slotH * 60 + slotM);
+                if (menit < 0) menit = 0;
+                var sisaMenit = 60 - menit;
+                if (sisaMenit < 0) sisaMenit = 0;
+                
+                var htmlMsg = '<div style="text-align:left;font-size:0.9rem;line-height:1.8">'
+                            + '<p>Slot sudah dimulai sejak <b>' + timeStr + '</b>.</p>'
+                            + '<p>Customer terlambat <b style="color:#e65100">\u00b1' + menit + ' menit</b>.</p>'
+                            + '<p>Sisa waktu bermain: <b style="color:#1565c0">\u00b1' + sisaMenit + ' menit</b>.</p>'
+                            + '<hr style="margin:8px 0">'
+                            + '<p style="color:#c62828;font-size:0.82rem">'
+                            + '\u26a0 Waktu tetap dihitung dari <b>' + timeStr + '</b>. '
+                            + 'Resiko keterlambatan ditanggung konsumen.</p>'
+                            + '</div>';
+                
+                swal({
+                    title: '? Customer Terlambat',
+                    html: htmlMsg,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Aktifkan Transaksi',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#e65100',
+                    cancelButtonColor: '#78909c'
+                }).then((result) => {
+                    if (result.value) {
+                        _doToggleSlot(el, idx);
+                    }
+                });
+                return;
+            }
+        }
+        
+        _doToggleSlot(el, idx);
+    }
+    
+    function _doToggleSlot(el, idx) {
         if (el.classList.contains('selected')) {
             el.classList.remove('selected');
             selectedSlots = selectedSlots.filter(i => i !== idx);
@@ -1022,6 +1169,16 @@
             $('#ppJamMulai').val(rawSlots[selectedSlots[0]].time);
         }
         updateJamSelesai();
+        var sel = document.getElementById('ppMetodePembayaran');
+        if (sel) {
+            for(var i=0; i<sel.options.length; i++) {
+                if(sel.options[i].text.toUpperCase().includes('QRIS')) {
+                    sel.value = sel.options[i].value;
+                    break;
+                }
+            }
+            $('#ppMetodePembayaran').trigger('change').prop('disabled', true);
+        }
     }
 
     $('#ppPaketId').on('change', function() {
@@ -1034,6 +1191,16 @@
             window.activePaketDurasi = d;
         }
         updateJamSelesai();
+        var sel = document.getElementById('ppMetodePembayaran');
+        if (sel) {
+            for(var i=0; i<sel.options.length; i++) {
+                if(sel.options[i].text.toUpperCase().includes('QRIS')) {
+                    sel.value = sel.options[i].value;
+                    break;
+                }
+            }
+            $('#ppMetodePembayaran').trigger('change').prop('disabled', true);
+        }
     });
 
     function changeDurasi(delta) {
@@ -1042,6 +1209,16 @@
         var val = (parseInt(inp.val()) || 0) + (delta * step);
         inp.val(Math.max(step, val));
         updateJamSelesai();
+        var sel = document.getElementById('ppMetodePembayaran');
+        if (sel) {
+            for(var i=0; i<sel.options.length; i++) {
+                if(sel.options[i].text.toUpperCase().includes('QRIS')) {
+                    sel.value = sel.options[i].value;
+                    break;
+                }
+            }
+            $('#ppMetodePembayaran').trigger('change').prop('disabled', true);
+        }
     }
 
     function updateJamSelesai() {
@@ -1199,6 +1376,7 @@
         var harga = parseFormattedRp($('#ppHargaNormal').val()) || 0;
         var subtotal = (dur / base) * harga;
         if (isNaN(subtotal)) subtotal = 0;
+        window.activeSewaSubtotal = subtotal;
 
         // FNB Total
         var fnbSubtotal = Object.values(ppSelectedFnb).reduce((s, i) => s + ((parseInt(i.qty) || 0) * (parseFloat(i.price) || 0)), 0);
@@ -1237,11 +1415,17 @@
         var admin = (subtotal - discRp + ppn + fnbSubtotal) * (admP / 100) + admR;
         if (isNaN(admin)) admin = 0;
 
-        var grand = subtotal - discRp + ppn + admin + fnbSubtotal;
-        if (isNaN(grand)) grand = 0;
+        var voucherPotongan = window.activePpVoucherRp || 0;
+        var grand = subtotal - discRp + ppn + admin + fnbSubtotal - voucherPotongan;
+        if (isNaN(grand) || grand < 0) grand = 0;
 
         $('#calcSubtotal').text(formatRp(subtotal));
         $('#calcDiskonRp').text('- ' + formatRp(discRp));
+        var vEl = document.getElementById('calcVoucherRp');
+        if (vEl) vEl.innerText = '- ' + formatRp(voucherPotongan);
+        else {
+            $('#calcDiskonRp').parent().after('<div class="detail-calc-row"><span>Voucher/Kupon</span> <span id="calcVoucherRp" style="color:#d32f2f;">- ' + formatRp(voucherPotongan) + '</span></div>');
+        }
         $('#calcPpnRp').text(formatRp(ppn));
         $('#calcAdminRp').text(formatRp(admin));
         $('#calcFnbTotal').text(formatRp(fnbSubtotal));
@@ -1590,8 +1774,11 @@
         const payload = {
             items: jfCart,
             MetodePembayaranId: $('#jfMetodePembayaran').val(),
-            isNewCustomer: true,
-            NamaPelanggan: 'Guest Self-Service',
+            isNewCustomer: $('#jfPelanggan').val() === 'UMUM',
+            NamaPelanggan: $('#jfPelanggan option:selected').text(),
+            KodePelanggan: $('#jfPelanggan').val() === 'UMUM' ? null : $('#jfPelanggan').val(),
+            VoucherCode: window.activeJfVoucherCode,
+            VoucherNominal: window.activeJfVoucherRp,
             NoTlp1: '-'
         };
 
@@ -1695,9 +1882,9 @@
                     document.body.appendChild(printFrame);
                     
                     const doc = printFrame.contentWindow.document;
-                    doc.write('<html><head><title>Print</title></head><body>');
+                    doc.write('<html><head>\n\n<title>Print</title></head><body>');
                     doc.write(html);
-                    doc.write('
+                    doc.write(`
 <script>
     var _globalBarcodeScannerBuffer = "";
     var _globalBarcodeScannerTimer = null;
@@ -1731,8 +1918,79 @@
             }
         }
     });
-</script>
-</body></html>');
+
+    $('#ppMemberSearch').on('keypress', function(e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            var searchVal = $(this).val().trim().toLowerCase();
+            if (searchVal) {
+                var found = dataPelangganAll.find(function(p) {
+                    return (p.RFID_UID && p.RFID_UID.toLowerCase() == searchVal) ||
+                           (p.NoTlp1 && p.NoTlp1.toLowerCase() == searchVal) ||
+                           (p.KodePelanggan && p.KodePelanggan.toLowerCase() == searchVal);
+                });
+                if (found) {
+                    $('#ppKodePelanggan').val(found.KodePelanggan).trigger('change');
+                    swal('Berhasil', 'Member Ditemukan: ' + found.NamaPelanggan, 'success');
+                } else {
+                    $('#ppKodePelanggan').val('').trigger('change');
+                    swal('Gagal', 'Member tidak ditemukan!', 'error');
+                }
+            } else {
+                $('#ppKodePelanggan').val('').trigger('change');
+            }
+        }
+    });
+
+    $('#jfMemberSearch').on('keypress', function(e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            var searchVal = $(this).val().trim().toLowerCase();
+            if (searchVal) {
+                var found = dataPelangganAll.find(function(p) {
+                    return (p.RFID_UID && p.RFID_UID.toLowerCase() == searchVal) ||
+                           (p.NoTlp1 && p.NoTlp1.toLowerCase() == searchVal) ||
+                           (p.KodePelanggan && p.KodePelanggan.toLowerCase() == searchVal);
+                });
+                if (found) {
+                    $('#jfMetodePelanggan').val(found.KodePelanggan).trigger('change');
+                    swal('Berhasil', 'Member Ditemukan: ' + found.NamaPelanggan, 'success');
+                } else {
+                    $('#jfMetodePelanggan').val('').trigger('change');
+                    swal('Gagal', 'Member tidak ditemukan!', 'error');
+                }
+            } else {
+                $('#jfMetodePelanggan').val('').trigger('change');
+            }
+        }
+    });
+
+
+    $('#jfMemberSearchFix').on('keypress', function(e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            var searchVal = $(this).val().trim().toLowerCase();
+            if (searchVal) {
+                var found = dataPelangganAll.find(function(p) {
+                    return (p.RFID_UID && p.RFID_UID.toLowerCase() == searchVal) ||
+                           (p.NoTlp1 && p.NoTlp1.toLowerCase() == searchVal) ||
+                           (p.KodePelanggan && p.KodePelanggan.toLowerCase() == searchVal);
+                });
+                if (found) {
+                    $('#jfPelanggan').val(found.KodePelanggan).trigger('change');
+                    swal('Berhasil', 'Member Ditemukan: ' + found.NamaPelanggan, 'success');
+                } else {
+                    $('#jfPelanggan').val('UMUM').trigger('change');
+                    swal('Gagal', 'Member tidak ditemukan!', 'error');
+                }
+            } else {
+                $('#jfPelanggan').val('UMUM').trigger('change');
+            }
+        }
+    });
+
+    <\/script>
+</body></html>`);
                     doc.close();
                     
                     printFrame.contentWindow.focus();
@@ -1781,6 +2039,127 @@
             }
         }
     });
+
+window.activeJfVoucherCode = '';
+    window.activeJfVoucherRp = 0;
+
+    window.applyJfVoucher = function() {
+        let code = $('#jfVoucher').val().trim();
+        if (!code) {
+            window.activeJfVoucherCode = '';
+            window.activeJfVoucherRp = 0;
+            calculateJfTotal();
+            swal('Info', 'Voucher dihapus.', 'info');
+            return;
+        }
+
+        let subtotal = jfCart.reduce((s, i) => s + (i.Qty * i.Harga), 0);
+        if (subtotal <= 0) {
+            swal('Perhatian', 'Keranjang kosong.', 'warning');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ route("billing-checkvoucher") }}',
+            method: 'POST',
+            data: { voucher_code: code, subtotal: subtotal },
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            success: function(res) {
+                if(res.success) {
+                    window.activeJfVoucherCode = code;
+                    window.activeJfVoucherRp = parseFloat(res.potongan) || 0;
+                    calculateJfTotal();
+                    swal('Berhasil', 'Voucher diterapkan: Rp ' + window.activeJfVoucherRp, 'success');
+                } else {
+                    window.activeJfVoucherCode = '';
+                    window.activeJfVoucherRp = 0;
+                    calculateJfTotal();
+                    swal('Gagal', res.message, 'error');
+                }
+            },
+            error: function() {
+                swal('Error', 'Gagal cek voucher.', 'error');
+            }
+        });
+    }
+
+
+    let memberSearchTimeout = null;
+    function doMemberSearch(inputEl, dropdownId) {
+        var searchVal = $(inputEl).val().trim().toLowerCase();
+        if (searchVal.length >= 4) {
+            var found = dataPelangganAll.find(function(p) {
+                return (p.RFID_UID && p.RFID_UID.toLowerCase() == searchVal) ||
+                       (p.NoTlp1 && p.NoTlp1.toLowerCase() == searchVal) ||
+                       (p.KodePelanggan && p.KodePelanggan.toLowerCase() == searchVal);
+            });
+            if (found) {
+                $(dropdownId).val(found.KodePelanggan).trigger('change');
+                swal('Berhasil', 'Member Ditemukan: ' + found.NamaPelanggan, 'success');
+                $(inputEl).val('');
+            }
+        }
+    }
+
+    $(document).ready(function() {
+    $('#ppMemberSearch').on('input', function(e) {
+        if (memberSearchTimeout) clearTimeout(memberSearchTimeout);
+        let el = this;
+        memberSearchTimeout = setTimeout(() => doMemberSearch(el, '#ppKodePelanggan'), 800);
+    }).on('keypress', function(e) {
+        if (e.which == 13) { e.preventDefault(); doMemberSearch(this, '#ppKodePelanggan'); }
+    });
+
+    $('#jfMemberSearchFix').on('input', function(e) {
+        if (memberSearchTimeout) clearTimeout(memberSearchTimeout);
+        let el = this;
+        memberSearchTimeout = setTimeout(() => doMemberSearch(el, '#jfPelanggan'), 800);
+    }).on('keypress', function(e) {
+        if (e.which == 13) { e.preventDefault(); doMemberSearch(this, '#jfPelanggan'); }
+    });
+});
+
+    window.activePpVoucherCode = '';
+    window.activePpVoucherRp = 0;
+
+    window.applyPpVoucher = function() {
+        let code = $('#ppVoucher').val().trim();
+        if (!code) {
+            window.activePpVoucherCode = '';
+            window.activePpVoucherRp = 0;
+            calculateTotal();
+            swal('Info', 'Voucher dihapus.', 'info');
+            return;
+        }
+
+        calculateTotal();
+        let subtotal = window.activeSewaSubtotal || 0;
+
+        $.ajax({
+            url: '{{ route("billing-checkvoucher") }}',
+            method: 'POST',
+            data: { voucher_code: code, subtotal: subtotal },
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+            success: function(res) {
+                if(res.success) {
+                    window.activePpVoucherCode = code;
+                    window.activePpVoucherRp = parseFloat(res.potongan) || 0;
+                    calculateTotal();
+                    swal('Berhasil', 'Voucher diterapkan: Rp ' + window.activePpVoucherRp, 'success');
+                } else {
+                    window.activePpVoucherCode = '';
+                    window.activePpVoucherRp = 0;
+                    calculateTotal();
+                    swal('Gagal', res.message, 'error');
+                }
+            },
+            error: function() {
+                swal('Error', 'Gagal cek voucher.', 'error');
+            }
+        });
+    }
+
+
 </script>
 </body>
 </html>

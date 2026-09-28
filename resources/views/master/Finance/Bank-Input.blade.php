@@ -57,7 +57,7 @@
 	                            		<div class="col-md-3">
 	                            			<label  class="text-body">Kode Bank</label>
 	                            			<fieldset class="form-group mb-3">
-	                            				<input type="text" class="form-control" id="KodeBank" name="KodeBank" placeholder="Masukan Kode Bank" value="{{ count($bank) > 0 ? $bank[0]['KodeBank'] : '' }}" required="" {{ count($bank) > 0 ? 'readonly' : '' }} >
+	                            				<input type="text" class="form-control" id="KodeBank" name="KodeBank" placeholder="Otomatis" readonly value="{{ count($bank) > 0 ? $bank[0]['KodeBank'] : '' }}"  {{ count($bank) > 0 ? 'readonly' : '' }} >
 	                            			</fieldset>
 	                            			
 	                            		</div>

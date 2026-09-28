@@ -9,6 +9,7 @@ use DB;
 use Log;
 
 use App\Models\ItemMaster;
+use App\Models\DocumentNumbering;
 use App\Models\JenisItem;
 use App\Models\Merk;
 use App\Models\Gudang;
@@ -96,6 +97,11 @@ class ItemMasterController extends Controller
       $oItem = new ItemMaster();
       $itemmaster = $oItem->GetItemData(Auth::user()->RecordOwnerID,$KodeJenis, $Merk, $TipeItem,$TipeItemIN, $Active, $Scan,1);
 
+      $KategoriPOS = $request->input('KategoriPOS');
+      if ($KategoriPOS != "") {
+          $itemmaster->where('itemmaster.KategoriPOS', '=', $KategoriPOS);
+      }
+
       $data['data'] = $itemmaster->get();
 
       return response()->json($data);
@@ -167,7 +173,12 @@ class ItemMasterController extends Controller
        		$itemmaster->where(DB::raw("CONCAT(itemmaster.KodeItem,' ', itemmaster.NamaItem, ' ', itemmaster.Barcode,' ', COALESCE(merk.NamaMerk,''))"),'LIKE','%' . $Scan . '%');
        	}
 
-         $data['data'] = $itemmaster->get();
+         
+        $KategoriPOS = $request->input('KategoriPOS');
+        if ($KategoriPOS != "") {
+            $itemmaster->where('itemmaster.KategoriPOS', '=', $KategoriPOS);
+        }
+        $data['data'] = $itemmaster->get();
 
          return response()->json($data);
     }
@@ -266,31 +277,46 @@ class ItemMasterController extends Controller
 
           $model = new ItemMaster;
 
-          $model->KodeItem = $jsonData['KodeItem'];
+          $KodeItem = $jsonData['KodeItem'];
+          if (empty($KodeItem) || $KodeItem === 'AUTO') {
+              $lastItem = ItemMaster::where('RecordOwnerID', Auth::user()->RecordOwnerID)
+                            ->where('KodeItem', 'like', 'ITM%')
+                            ->orderBy('KodeItem', 'desc')->first();
+              if ($lastItem) {
+                  $lastCode = intval(substr($lastItem->KodeItem, 3));
+                  $KodeItem = 'ITM' . str_pad($lastCode + 1, 6, '0', STR_PAD_LEFT);
+              } else {
+                  $KodeItem = 'ITM000001';
+              }
+              $jsonData['KodeItem'] = $KodeItem;
+          }
+
+          $model->KodeItem = $KodeItem;
           $model->NamaItem = $jsonData['NamaItem'];
           $model->KodeJenisItem = empty($jsonData['KodeJenisItem']) ? "" : $jsonData['KodeJenisItem'];
           $model->ExpiredDate = empty($jsonData['ExpiredDate']) ? null : $jsonData['ExpiredDate'];
           $model->KodeMerk = empty($jsonData['KodeMerk']) ? "" : $jsonData['KodeMerk'];
           $model->TypeItem = empty($jsonData['TypeItem']) ? "" : $jsonData['TypeItem'];
+          $model->KategoriPOS = empty($jsonData['KategoriPOS']) ? "FNB" : $jsonData['KategoriPOS'];
           $model->Rak = empty($jsonData['Rak']) ? "" : $jsonData['Rak'];
           $model->KodeGudang = empty($jsonData['KodeGudang']) ? "" : $jsonData['KodeGudang'];
           $model->KodeSupplier = empty($jsonData['KodeSupplier']) ? "" : $jsonData['KodeSupplier'];
           $model->Satuan = empty($jsonData['Satuan']) ? "" : $jsonData['Satuan'];
           $model->Barcode = empty($jsonData['Barcode']) ? "" : $jsonData['Barcode'];
           $model->Gambar = "";
-          $model->HargaPokokPenjualan = $jsonData['HargaPokokPenjualan'];
-          $model->HargaJual = $jsonData['HargaJual'];
-          $model->KomisiMekanik = empty($jsonData['KomisiMekanik']) ? 0 : $jsonData['KomisiMekanik'];
-          $model->HargaBeliTerakhir = $jsonData['HargaBeliTerakhir'];
-          $model->Stock = $jsonData['Stock'];
-          $model->StockMinimum = $jsonData['StockMinimum'];
+          $model->HargaPokokPenjualan = empty($jsonData['HargaPokokPenjualan']) ? 0 : floatval($jsonData['HargaPokokPenjualan']);
+          $model->HargaJual = empty($jsonData['HargaJual']) ? 0 : floatval($jsonData['HargaJual']);
+          $model->KomisiSales = empty($jsonData['KomisiSales']) ? 0 : floatval($jsonData['KomisiSales']);
+          $model->HargaBeliTerakhir = empty($jsonData['HargaBeliTerakhir']) ? 0 : floatval($jsonData['HargaBeliTerakhir']);
+          $model->Stock = empty($jsonData['Stock']) ? 0 : floatval($jsonData['Stock']);
+          $model->StockMinimum = empty($jsonData['StockMinimum']) ? 0 : floatval($jsonData['StockMinimum']);
           if($jsonData['TypeItem'] == "5"){
             $model->isKonsinyasi = "Y";
           }
           else{
             $model->isKonsinyasi = "N";
           }
-          $model->VatPercent = $jsonData['VatPercent'];
+          $model->VatPercent = empty($jsonData['VatPercent']) ? 0 : $jsonData['VatPercent'];
           $model->Active = 'Y';
 
           $setting = \App\Models\SettingAccount::where('RecordOwnerID', Auth::user()->RecordOwnerID)->first();
@@ -442,21 +468,22 @@ class ItemMasterController extends Controller
                     'ExpiredDate' => empty($jsonData['ExpiredDate']) ? null : $jsonData['ExpiredDate'],
                     'KodeMerk' => empty($jsonData['KodeMerk']) ? "" : $jsonData['KodeMerk'],
                     'TypeItem' => empty($jsonData['TypeItem']) ? "" : $jsonData['TypeItem'],
+                    'KategoriPOS' => empty($jsonData['KategoriPOS']) ? "FNB" : $jsonData['KategoriPOS'],
                     'Rak' => empty($jsonData['Rak']) ? "" : $jsonData['Rak'],
                     'KodeGudang' => empty($jsonData['KodeGudang']) ? "" : $jsonData['KodeGudang'],
                     'KodeSupplier' => empty($jsonData['KodeSupplier']) ? "" : $jsonData['KodeSupplier'],
                     'Satuan' => empty($jsonData['Satuan']) ? "" : $jsonData['Satuan'],
                     'Barcode' => empty($jsonData['Barcode']) ? "" : $jsonData['Barcode'],
                     'Gambar' => "",
-                    'HargaPokokPenjualan' => $jsonData['HargaPokokPenjualan'],
-                    'HargaJual' => $jsonData['HargaJual'],
-                    'KomisiMekanik' => empty($jsonData['KomisiMekanik']) ? 0 : $jsonData['KomisiMekanik'],
-                    'HargaBeliTerakhir' => $jsonData['HargaBeliTerakhir'],
-                    'Stock' => $jsonData['Stock'],
-                    'StockMinimum' => $jsonData['StockMinimum'],
+                    'HargaPokokPenjualan' => empty($jsonData['HargaPokokPenjualan']) ? 0 : floatval($jsonData['HargaPokokPenjualan']),
+                    'HargaJual' => empty($jsonData['HargaJual']) ? 0 : floatval($jsonData['HargaJual']),
+                    'KomisiSales' => empty($jsonData['KomisiSales']) ? 0 : floatval($jsonData['KomisiSales']),
+                    'HargaBeliTerakhir' => empty($jsonData['HargaBeliTerakhir']) ? 0 : floatval($jsonData['HargaBeliTerakhir']),
+                    'Stock' => empty($jsonData['Stock']) ? 0 : floatval($jsonData['Stock']),
+                    'StockMinimum' => empty($jsonData['StockMinimum']) ? 0 : floatval($jsonData['StockMinimum']),
                     'isKonsinyasi' => ($jsonData['TypeItem'] == "5") ? "Y" : "N",
                     'Active' => $jsonData['Active'],
-                    'VatPercent' => $jsonData['VatPercent'],
+                    'VatPercent' => empty($jsonData['VatPercent']) ? 0 : $jsonData['VatPercent'],
                     'TampilkanEMenu' => isset($jsonData['TampilkanEMenu']) ? $jsonData['TampilkanEMenu'] : 0,
                     'AcctHPP' => !empty($jsonData['AcctHPP']) ? $jsonData['AcctHPP'] : ($setting->InvAcctHargaPokokPenjualan ?? ""),
                     'AcctPenjualan' => !empty($jsonData['AcctPenjualan']) ? $jsonData['AcctPenjualan'] : ($setting->InvAcctPendapatanJual ?? ""),

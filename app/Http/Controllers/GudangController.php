@@ -9,6 +9,7 @@ use DB;
 use Log;
 
 use App\Models\Gudang;
+use App\Models\DocumentNumbering;
 
 class GudangController extends Controller
 {
@@ -57,12 +58,11 @@ class GudangController extends Controller
     	Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeGudang'=>'required',
                 'NamaGudang'=>'required'
             ]);
 
             $model = new Gudang;
-            $model->KodeGudang = $request->input('KodeGudang');
+            $model->KodeGudang = $this->generateSimpleCode('GDG', 'gudang', 'KodeGudang', 3);
             $model->NamaGudang = $request->input('NamaGudang');
             $model->RecordOwnerID = Auth::user()->RecordOwnerID;
 
@@ -88,7 +88,6 @@ class GudangController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeGudang'=>'required',
                 'NamaGudang'=>'required'
             ]);
 
@@ -118,7 +117,7 @@ class GudangController extends Controller
         try {
 
             $model = new Gudang;
-            $model->KodeGudang = $request->input('KodeGudang');
+            $model->KodeGudang = $this->generateSimpleCode('GDG', 'gudang', 'KodeGudang', 3);
             $model->NamaGudang = $request->input('NamaGudang');
             $model->RecordOwnerID = Auth::user()->RecordOwnerID;
 

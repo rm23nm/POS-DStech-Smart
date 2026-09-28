@@ -1137,7 +1137,8 @@ License: You must have a valid license purchased only from themeforest(the above
 							<div class="mb-0">
 								<fieldset class="form-group mb-0 d-flex align-items-center gap-1">
 									<div style="flex: 1; min-width: 0;">
-										<select class="js-example-basic-single js-states form-control bg-transparent" id="KodePelanggan" name="KodePelanggan" style="width: 100%;">
+										<input type="text" id="FnBRfidScan" class="form-control mb-2" placeholder="Tap RFID / Ketik No. HP..." autofocus>
+										<select class="js-example-basic-single js-states form-control bg-transparent" id="KodePelanggan" name="KodePelanggan" style="width: 100%;" disabled>
 											<option value="">-- Pelanggan Umum --</option>
 											@foreach($pelanggan as $ko)
 												<option value="{{ $ko->KodePelanggan }}">
@@ -1715,6 +1716,7 @@ License: You must have a valid license purchased only from themeforest(the above
             			<label  class="text-body">Grup Pelanggan</label>
             			<fieldset class="form-group mb-3">
             				<select name="ModalKodeGrupPelanggan" id="ModalKodeGrupPelanggan" class="js-example-basic-single js-states form-control bg-transparent" name="state" required="">
+								@php $gruppelanggan = \App\Models\GrupPelanggan::where('RecordOwnerID', \Auth::user()->RecordOwnerID)->get(); @endphp
 								<option value="">Pilih Kelompok Pelanggan</option>
 								@foreach($gruppelanggan as $ko)
 									<option value="{{ $ko->KodeGrup }}">
@@ -2076,6 +2078,29 @@ License: You must have a valid license purchased only from themeforest(the above
                 $('#_Barcode').trigger(eEnter);
             } else {
                 _globalBarcodeScannerBuffer = "";
+            }
+        }
+    });
+</script>
+<script>
+    $('#FnBRfidScan').on('keypress', function(e) {
+        if (e.which == 13) {
+            var searchVal = $(this).val().trim().toLowerCase();
+            if (searchVal) {
+                var found = _Pelanggan.find(function(p) {
+                    return (p.RFID_UID && p.RFID_UID.toLowerCase() == searchVal) ||
+                           (p.Keterangan && p.Keterangan.toLowerCase() == searchVal) ||
+                           (p.KodePelanggan && p.KodePelanggan.toLowerCase() == searchVal) ||
+                           (p.NoIdentitas && p.NoIdentitas.toLowerCase() == searchVal) ||
+                           (p.NoTlp1 && p.NoTlp1.toLowerCase() == searchVal);
+                });
+                if (found) {
+                    $('#KodePelanggan').val(found.KodePelanggan).trigger('change');
+                    Swal.fire('Berhasil', 'Member ' + found.NamaPelanggan + ' ditemukan.', 'success');
+                } else {
+                    Swal.fire('Gagal', 'Member tidak ditemukan.', 'error');
+                }
+                $(this).val('');
             }
         }
     });
@@ -2907,6 +2932,13 @@ License: You must have a valid license purchased only from themeforest(the above
 		}
 		
 		inputEl.trigger('change').trigger('input');
+		
+		if (_ActiveNumpadField === 'QTY') {
+			$('#_Qty').val(inputEl.val());
+		} else {
+			$('#_Diskon').val(inputEl.val());
+		}
+
 		updateTotal(activeRow[0]);
 		CalculateTotal();
 	}
@@ -2952,6 +2984,31 @@ License: You must have a valid license purchased only from themeforest(the above
 			jQuery(document).on('click', '#AppendArea tr#InputSectionData', function() {
 				jQuery('#AppendArea tr#InputSectionData').removeClass('selected-row');
 				jQuery(this).addClass('selected-row');
+				
+				// Sync UI inputs with row data
+				var rowQty = jQuery(this).find('input[id="txtQty"]').val();
+				var rowDiskon = jQuery(this).find('input[id="txtDiskon"]').val();
+				jQuery('#_Qty').val(rowQty || 0);
+				jQuery('#_Diskon').val(rowDiskon || 0);
+			});
+			
+			// Bi-directional sync from UI inputs to active row
+			$('#_Qty').on('input', function() {
+				var activeRow = $('#AppendArea tr#InputSectionData.selected-row');
+				if (activeRow.length > 0) {
+					activeRow.find('input[id="txtQty"]').val($(this).val() || 0);
+					updateTotal(activeRow[0]);
+					CalculateTotal();
+				}
+			});
+			
+			$('#_Diskon').on('input', function() {
+				var activeRow = $('#AppendArea tr#InputSectionData.selected-row');
+				if (activeRow.length > 0) {
+					activeRow.find('input[id="txtDiskon"]').val($(this).val() || 0);
+					updateTotal(activeRow[0]);
+					CalculateTotal();
+				}
 			});
 
 			// F&B Modal triggers: Open Tipe Order modal when button is clicked
@@ -3015,11 +3072,6 @@ License: You must have a valid license purchased only from themeforest(the above
 				SetEnableCommand();
 			});
 
-
-			// Auto-select first customer if available
-			if (jQuery('#KodePelanggan option').length > 1) {
-				jQuery('#KodePelanggan').val(jQuery('#KodePelanggan option:eq(1)').val()).trigger('change');
-			}
 
 			jQuery('#btPilihVariant').click(function () {
 				var KodeItem = jQuery('#VariantFatherItemCode').val();
@@ -3327,7 +3379,8 @@ License: You must have a valid license purchased only from themeforest(the above
 		                'KodeJenis' : '',
 		                'Merk' 		: '',
 		                'TipeItem' 	: '',
-		                'Active' 	: 'Y',
+		                'Active' : 'Y',
+				'KategoriPOS' : 'FNB',
 		                'Scan'		: jQuery('#_Barcode').val(),
 		                'TipeItemIN' : '1,3,5'
 		            },
@@ -3962,7 +4015,8 @@ License: You must have a valid license purchased only from themeforest(the above
                 'KodeJenis' : '',
 			    'Merk' 		: '',
 			    'TipeItem' 	: '',
-				'Active' 	: 'Y',
+				'Active' : 'Y',
+				'KategoriPOS' : 'FNB',
 				'Scan'		: KodeItem,
 				'TipeItemIN' : '1,3,5'
             },

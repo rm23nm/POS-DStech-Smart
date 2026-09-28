@@ -61,7 +61,9 @@ class TicketingPoSController extends Controller
 
         $midtransclientkey = config('midtrans.client_key');
 
+                $gruppelanggan = \App\Models\GrupPelanggan::where('RecordOwnerID', \Auth::user()->RecordOwnerID)->get();
         return view('Transaksi.Penjualan.PoS.TicketingPoS', [
+            'gruppelanggan' => $gruppelanggan,
             'company' => $company,
             'tickets' => $tickets,
             'fnbItems' => $fnbItems,
@@ -509,39 +511,45 @@ class TicketingPoSController extends Controller
 
     public function checkVoucher(Request $request)
     {
-        $idUser = Auth::user()->id;
-        $user = User::find($idUser);
-        $kodeVoucher = $request->KodeVoucher;
-        $subtotal = $request->Subtotal;
+        try {
+            $idUser = Auth::user()->id;
+            $user = User::find($idUser);
+            $kodeVoucher = $request->KodeVoucher;
+            $subtotal = $request->Subtotal;
 
-        $voucher = DB::table('discountvoucher')
-            ->where('VoucherCode', $kodeVoucher)
-            ->where('RecordOwnerID', $user->RecordOwnerID)
-            ->first();
+            $voucher = DB::table('discountvoucher')
+                ->where('VoucherCode', $kodeVoucher)
+                ->where('RecordOwnerID', $user->RecordOwnerID)
+                ->first();
 
-        if (!$voucher) {
-            return response()->json(['success' => false, 'message' => 'Voucher tidak ditemukan.']);
+            if (!$voucher) {
+                return response()->json(['success' => false, 'message' => 'Voucher tidak ditemukan.']);
+            }
+
+            $today = Carbon::today()->format('Y-m-d');
+            if ($today < $voucher->StartDate || $today > $voucher->EndDate) {
+                return response()->json(['success' => false, 'message' => 'Voucher sudah kadaluarsa atau belum aktif.']);
+            }
+
+            if ($voucher->DiscountUsed >= $voucher->DiscountQuota) {
+                return response()->json(['success' => false, 'message' => 'Kuota voucher sudah habis.']);
+            }
+
+            $discountNominal = $subtotal * ($voucher->DiscountPercent / 100);
+            
+            // Perbaiki logika jika MaximalDiscount = 0, maka tidak ada batas
+            if ($voucher->MaximalDiscount > 0 && $discountNominal > $voucher->MaximalDiscount) {
+                $discountNominal = $voucher->MaximalDiscount;
+            }
+
+            return response()->json([
+                'success' => true,
+                'discount' => $discountNominal,
+                'message' => 'Voucher berhasil diterapkan.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Kesalahan sistem: ' . $e->getMessage()]);
         }
-
-        $today = Carbon::today()->format('Y-m-d');
-        if ($today < $voucher->StartDate || $today > $voucher->EndDate) {
-            return response()->json(['success' => false, 'message' => 'Voucher sudah kadaluarsa atau belum aktif.']);
-        }
-
-        if ($voucher->DiscountUsed >= $voucher->DiscountQuota) {
-            return response()->json(['success' => false, 'message' => 'Kuota voucher sudah habis.']);
-        }
-
-        $discountNominal = $subtotal * ($voucher->DiscountPercent / 100);
-        if ($discountNominal > $voucher->MaximalDiscount) {
-            $discountNominal = $voucher->MaximalDiscount;
-        }
-
-        return response()->json([
-            'success' => true,
-            'discount' => $discountNominal,
-            'message' => 'Voucher berhasil diterapkan.'
-        ]);
     }
 
     public function checkInMember(Request $request)

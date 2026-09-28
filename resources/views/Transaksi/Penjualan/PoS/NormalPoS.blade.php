@@ -309,7 +309,7 @@ License: You must have a valid license purchased only from themeforest(the above
 									<div class="col-md-6">
 										<label class="text-dark" >Pilih Pelanggan </label>
 										<fieldset class="form-group mb-3 d-flex">
-											<select class="js-example-basic-single js-states form-control bg-transparent" id="KodePelanggan" name="KodePelanggan">
+											<input type="text" id="RfidScan" class="form-control mb-2" placeholder="Tap RFID / Ketik No. HP..." autofocus><select class="js-example-basic-single js-states form-control bg-transparent" id="KodePelanggan" name="KodePelanggan" disabled>
 												<option value="">-- Pelanggan Umum --</option>
 												@foreach($pelanggan as $ko)
 													<option value="{{ $ko->KodePelanggan }}">
@@ -986,7 +986,7 @@ License: You must have a valid license purchased only from themeforest(the above
 </html>
 <script type="text/javascript">
 	var _LastInputed = '';
-	var _TipeDiskon = '';
+	var _TipeDiskon = '%'; $('#_TipeDiskon').text(' (%)');
 	var _ServicesData = [];
 	var _DiskonGrupCustomer = 0;
 	var _TerminPelanggan = '';
@@ -1268,32 +1268,24 @@ License: You must have a valid license purchased only from themeforest(the above
 			}
 		});
 
-		$('#_Diskon').on("keypress", function(e) {
+		$('#_Diskon').on("input", function(e) {
 			var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
       		var allRowsData  = dataGridInstance.getDataSource().items();
 
-			if (e.keyCode == 13) {
-				var objIndex = allRowsData.findIndex(obj => obj.KodeItem == _LastInputed);
-
-        		// console.log(objIndex);
-        		// console.log(allRowsData)
-        		if (objIndex != -1) {
-        			if (_TipeDiskon == "%" && allRowsData[objIndex].DiskonRp == 0) {
-        				allRowsData[objIndex].DiskonPersen = parseFloat($('#_Diskon').val());
-        			}
-        			else if (_TipeDiskon == "Rp" && allRowsData[objIndex].DiskonPersen == 0) {
-        				allRowsData[objIndex].DiskonRp = parseFloat($('#_Diskon').val());
-        			}
-
-        			bindGrid(allRowsData);
-        			dataGridInstance.refresh();
-
-        			$('#_Diskon').val(0);
-        			$('#_Diskon').focus();
-        		}
-
-        		CalculateTotal();
-			}
+			var objIndex = allRowsData.findIndex(obj => obj.KodeItem == _LastInputed);
+    		if (objIndex != -1) {
+    		    var val = parseFloat($(this).val()) || 0;
+    			if (_TipeDiskon == "%" || _TipeDiskon == "") {
+    				allRowsData[objIndex].DiskonPersen = val;
+    				allRowsData[objIndex].DiskonRp = 0;
+    			} else {
+    				allRowsData[objIndex].DiskonRp = val;
+    				allRowsData[objIndex].DiskonPersen = 0;
+    			}
+    			bindGrid(allRowsData);
+    			dataGridInstance.refresh();
+    		}
+    		CalculateTotal();
 		});
 
 		$('#btPilihLookupData').click(function () {
@@ -1401,6 +1393,9 @@ License: You must have a valid license purchased only from themeforest(the above
 	            	if (response.data.length > 0) {
 	            		_DiskonGrupCustomer = response.data[0]['DiskonPersen'];
 	            		_TerminPelanggan = response.data[0]['DiskonPersen'];
+
+                        var _DiskonMemberPersen = parseFloat(response.data[0]['DiskonMemberPersen'] || 0);
+                        _DiskonGrupCustomer = parseFloat(_DiskonGrupCustomer || 0) + _DiskonMemberPersen;
 	            		// console.log(response.data[0]);
 
 	            		if (allRowsData.length > 0) {
@@ -1471,6 +1466,29 @@ License: You must have a valid license purchased only from themeforest(the above
 			}
 		});
 
+		
+    $('#RfidScan').on('keypress', function(e) {
+        if (e.which == 13) {
+            var searchVal = $(this).val().trim().toLowerCase();
+            if (searchVal) {
+                var found = _Pelanggan.find(function(p) {
+                    return (p.RFID_UID && p.RFID_UID.toLowerCase() == searchVal) ||
+                           (p.Keterangan && p.Keterangan.toLowerCase() == searchVal) ||
+                           (p.KodePelanggan && p.KodePelanggan.toLowerCase() == searchVal) ||
+                           (p.NoIdentitas && p.NoIdentitas.toLowerCase() == searchVal) ||
+                           (p.NoTlp1 && p.NoTlp1.toLowerCase() == searchVal);
+                });
+                if (found) {
+                    $('#KodePelanggan').val(found.KodePelanggan).trigger('change');
+                    Swal.fire('Berhasil', 'Member ' + found.NamaPelanggan + ' ditemukan.', 'success');
+                } else {
+                    Swal.fire('Gagal', 'Member tidak ditemukan.', 'error');
+                }
+                $(this).val('');
+            }
+        }
+    });
+    
 		jQuery('#btAddCustomer').click(function () {
 			jQuery('#LookupAddCustomer').modal({backdrop: 'static', keyboard: false})
 			jQuery('#LookupAddCustomer').modal('show');

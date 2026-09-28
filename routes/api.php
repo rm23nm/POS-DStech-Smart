@@ -74,8 +74,16 @@ Route::post('/superadmin/sync-subscription', [\App\Http\Controllers\DstechGlobal
 Route::post('/gate/scan', [\App\Http\Controllers\GateApiController::class, 'scan'])->name('gate-scan');
 
 
-// API untuk Gate ESP32
+// API untuk Gate ESP32 (Koneksi WiFi / HTTPS dari luar jaringan)
 Route::post('/gate/check', [App\Http\Controllers\GateController::class, 'checkAccess']);
+
+// API untuk Gate ESP32 (Koneksi LAN / HTTP lokal - dalam jaringan yang sama)
+Route::post('/gate/lan', [App\Http\Controllers\GateController::class, 'checkAccessLAN']);
+
+// API untuk Gate Agent (PC Client) - Sinkronisasi data tiket & member ke lokal
+Route::post('/gate/sync-data',  [App\Http\Controllers\GateAgentController::class, 'syncData']);
+// API untuk Gate Agent (PC Client) - Update tiket yang sudah dipakai di gate lokal ke cloud
+Route::post('/gate/use-ticket', [App\Http\Controllers\GateAgentController::class, 'useTicket']);
 
 // API untuk Pengecekan Lisensi Offline dari Aplikasi Desktop/Mobile
 Route::post('/check-license', [App\Http\Controllers\LicenseController::class, 'checkLicense']);

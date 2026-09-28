@@ -57,12 +57,11 @@ class BankController extends Controller
     	Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeBank'=>'required',
                 'NamaBank'=>'required'
             ]);
 
             $model = new Bank;
-            $model->KodeBank = $request->input('KodeBank');
+            $model->KodeBank = $this->generateSimpleCode("BNK", "bank", "KodeBank", 3);
             $model->NamaBank = $request->input('NamaBank');
             $model->NamaPemilik = $request->input('NamaPemilik');
             $model->NoRekeningBank = $request->input('NoRekeningBank');
@@ -91,7 +90,6 @@ class BankController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeBank'=>'required',
                 'NamaBank'=>'required'
             ]);
 
@@ -136,7 +134,7 @@ class BankController extends Controller
         try {
 
             $model = new Bank;
-            $model->KodeBank = $request->input('KodeBank');
+            $model->KodeBank = $this->generateSimpleCode("BNK", "bank", "KodeBank", 3);
             $model->NamaBank = $request->input('NamaBank');
             $model->NamaPemilik = $request->input('NamaPemilik');
             $model->CabangPembukaRekening = $request->input('CabangPembukaRekening');

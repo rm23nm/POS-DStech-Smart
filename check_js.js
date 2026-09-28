@@ -1,50 +1,20 @@
-const fs = require('fs');
-const vm = require('vm');
+const fs = require("fs");
+const html = fs.readFileSync("D:/OneDrive/My Project Aplikasi/pos.dstechsmart.com/resources/views/Transaksi/Penjualan/PoS/billing_new.blade.php", "utf8");
 
-const content = fs.readFileSync('resources/views/Transaksi/Penjualan/PoS/FnBPoS.blade.php', 'utf8');
-
-const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+const regex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
 let match;
-let scriptIndex = 0;
-let hasError = false;
-
-while ((match = scriptRegex.exec(content)) !== null) {
-    scriptIndex++;
-    let jsCode = match[1];
-    
-    // Replace PHP inline tags cleanly first
-    jsCode = jsCode.replace(/<\?php[\s\S]*?\?>/gi, '"php_placeholder"');
-    jsCode = jsCode.replace(/['"]\{\{[\s\S]*?\}\}['"]/gi, '"blade_placeholder"');
-    jsCode = jsCode.replace(/\{\{[\s\S]*?\}\}/gi, 'null');
-    jsCode = jsCode.replace(/@\{\{[\s\S]*?\}\}/gi, 'null');
-    jsCode = jsCode.replace(/@\w+\([\s\S]*?\)/gi, '/* directive */');
-    jsCode = jsCode.replace(/@\w+/gi, '/* directive */');
-
+let count = 0;
+while ((match = regex.exec(html)) !== null) {
+    count++;
+    const code = match[1];
     try {
-        new vm.Script(jsCode);
-        console.log(`Script block ${scriptIndex}: OK`);
+        new Function(code);
     } catch (e) {
-        hasError = true;
-        console.error(`Script block ${scriptIndex}: ERROR`);
-        console.error(e.message);
-        
-        const lines = jsCode.split('\n');
-        const stackLines = e.stack.split('\n');
-        const lineMatch = stackLines[0].match(/:(\d+)$/) || stackLines[1].match(/:(\d+):\d+$/) || stackLines[1].match(/:(\d+)$/);
-        if (lineMatch) {
-            const errLineNum = parseInt(lineMatch[1]);
-            console.error(`Error at line ${errLineNum}:`);
-            for (let i = Math.max(0, errLineNum - 5); i < Math.min(lines.length, errLineNum + 5); i++) {
-                const marker = (i + 1 === errLineNum) ? '>>> ' : '    ';
-                console.error(`${marker}${i + 1}: ${lines[i]}`);
-            }
-        } else {
-            console.error(e.stack);
-        }
-        console.error('\n' + '='.repeat(40) + '\n');
+        console.log("Syntax error in script block " + count + "!");
+        console.log(e.toString());
+        console.log("--- Snippet ---");
+        console.log(code.substring(Math.max(0, code.length - 200)));
+        console.log("---------------");
     }
 }
-
-if (!hasError) {
-    console.log("ALL SCRIPT BLOCKS COMPILATION PASSED!");
-}
+console.log("Checked " + count + " script blocks.");

@@ -195,7 +195,7 @@
                     </div>
 
                     <div class="info">
-                        No. Trx : {{ $header->NoTransaksi }}<br>
+                        No. Trx : {{ $header->NoTransaksi }}-{{ $ticketIndex + 1 }}<br>
                         Tgl     : {{ date('d-m-Y H:i', strtotime($header->TglTransaksi)) }}<br>
                         Harga   : Rp {{ number_format($detail->Harga ?? 0, 0, ',', '.') }}
                     </div>

@@ -9,6 +9,7 @@ use DB;
 use Log;
 
 use App\Models\JenisItem;
+use App\Models\DocumentNumbering;
 
 class JenisItemController extends Controller
 {
@@ -57,12 +58,11 @@ class JenisItemController extends Controller
     	Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeJenis'=>'required',
                 'NamaJenis'=>'required'
             ]);
 
             $model = new JenisItem;
-            $model->KodeJenis = $request->input('KodeJenis');
+            $model->KodeJenis = $this->generateSimpleCode('JM', 'jenisitem', 'KodeJenis', 3);
             $model->NamaJenis = $request->input('NamaJenis');
             $model->TampilkanEMenu = $request->input('TampilkanEMenu') == 'on' ? 1 : 0;
             $model->RecordOwnerID = Auth::user()->RecordOwnerID;
@@ -89,7 +89,6 @@ class JenisItemController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeJenis'=>'required',
                 'NamaJenis'=>'required'
             ]);
 
@@ -124,7 +123,7 @@ class JenisItemController extends Controller
         try {
 
             $model = new JenisItem;
-            $model->KodeJenis = $request->input('KodeJenis');
+            $model->KodeJenis = $this->generateSimpleCode('JM', 'jenisitem', 'KodeJenis', 3);
             $model->NamaJenis = $request->input('NamaJenis');
             $model->TampilkanEMenu = $request->input('TampilkanEMenu') == 'on' ? 1 : 0;
             $model->RecordOwnerID = Auth::user()->RecordOwnerID;

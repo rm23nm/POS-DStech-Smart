@@ -200,9 +200,12 @@
         </div>
         <div style="flex: 1; overflow-y: auto;">
             <div class="rfid-box">
-                <label style="font-size: 13px; font-weight: 700; color: #0369a1; margin-bottom: 10px; display: block;">Pilih / Cari Pelanggan</label>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+    <label style="font-size: 13px; font-weight: 700; color: #0369a1; margin-bottom: 0;">Pilih / Cari Pelanggan</label>
+    <button type="button" class="btn btn-sm btn-primary" onclick="openAddPelangganModal()" style="padding: 2px 8px; font-size: 12px; background-color: #0284c7; border:none;"><i class="fas fa-plus"></i> Pelanggan</button>
+</div>
                 
-                <select id="pelanggan-select" class="form-select form-select-lg mb-3" style="width: 100%;">
+                <select id="pelanggan-select" class="form-select form-select-lg mb-3" style="width: 100%;" disabled>
                     <option value="">-- Pelanggan Umum --</option>
                     @foreach($pelanggan as $p)
                         <option value="{{ $p->KodePelanggan }}">{{ $p->NamaPelanggan }}</option>
@@ -211,8 +214,8 @@
 
                 <hr style="border-color: #bae6fd; margin: 20px 0;">
 
-                <label style="font-size: 13px; font-weight: 700; color: #0369a1; display: block;">Atau Tap Kartu RFID Member</label>
-                <input type="text" id="rfid-scan" class="rfid-input" placeholder="Tap Kartu Disini..." autofocus>
+                <label style="font-size: 13px; font-weight: 700; color: #0369a1; display: block;">Atau Tap Kartu RFID / Nomor HP Member</label>
+                <input type="text" id="rfid-scan" class="rfid-input" placeholder="Tap RFID / Ketik No. HP..." autofocus>
                 
                 <div id="member-name" class="mt-3 p-2" style="display:none; font-weight:bold; background:#dcfce7; color:#166534; border-radius:6px; border:1px solid #bbf7d0;"></div>
                 
@@ -331,7 +334,7 @@
             
             <div class="d-flex justify-content-between align-items-center mb-2 mt-2 pt-2" style="border-top:1px dashed #cbd5e1;">
                 <input type="text" id="chkKodeVoucher" class="form-control form-control-sm w-50" placeholder="Kode Voucher">
-                <button class="btn btn-sm btn-info text-white font-bold" onclick="checkVoucherTicketing()" id="btnCheckVoucher">Cek</button>
+                <button class="btn btn-sm btn-info text-white font-bold" onclick="checkVoucherCode()" id="btnCheckVoucher">Cek</button>
             </div>
             <div class="d-flex justify-content-between mb-2 text-rose-500 font-bold">
                 <span>Voucher</span>
@@ -357,11 +360,16 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{{ env('MIDTRANS_IS_PRODUCTION', false) ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ $midtransclientkey }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js">
+</script>
+<script src="{{ env('MIDTRANS_IS_PRODUCTION', false) ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ $midtransclientkey }}">
+</script>
 
 <script>
     let cart = [];
@@ -401,7 +409,7 @@
             let uid = $(this).val().trim();
             if(uid) {
                 // Cari di array pelanggan
-                let member = pelangganList.find(p => p.RFID_UID == uid || p.Keterangan == uid);
+                let member = pelangganList.find(p => p.RFID_UID == uid || p.Keterangan == uid || (p.NoTlp1 && p.NoTlp1 == uid) || p.KodePelanggan == uid);
                 if(member) {
                     memberUid = member.KodePelanggan;
                     memberName = member.NamaPelanggan;
@@ -639,7 +647,7 @@
             },
             error: function() {
                 $('#btnCheckVoucher').prop('disabled', false).text('Cek');
-                Swal.fire('Error', 'Gagal memvalidasi voucher', 'error');
+                Swal.fire('Error', 'Gagal memvalidasi voucher. Status: ' + (arguments[0] ? arguments[0].status : 'Unknown'), 'error'); console.error('Voucher AJAX Error:', arguments);
             }
         });
     }
@@ -803,6 +811,7 @@
     function formatRp(angka) {
         return Math.round(angka).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
+
 </script>
 
 <!-- Checkout Modal -->
@@ -910,6 +919,7 @@
             }
         }
     });
+
 </script>
 
 
@@ -1090,6 +1100,7 @@
             data: { 
                 Scan: query, 
                 Active: 'Y', 
+				KategoriPOS: 'TIKET', 
                 TipeItemIN: '1,2,3,5',
                 KodeGudang: "{{ $company[0]->GudangPoS ?? 'GDG01' }}"
             },
@@ -1337,9 +1348,11 @@
             dropdownParent: $('#modalJualFnb')
         });
     });
-    </script>
+    
+</script>
 
-    <script src="{{ asset('js/sweetalert.js') }}"></script>
+    <script src="{{ asset('js/sweetalert.js') }}">
+</script>
 
 <script>
     var _globalBarcodeScannerBuffer = "";
@@ -1374,6 +1387,7 @@
             }
         }
     });
+
 </script>
 
 
@@ -1444,6 +1458,7 @@
             simpanDraftTicketing();
         }
     });
+
 </script>
 <script>
     let activeInputMode = 'QTY';
@@ -1521,12 +1536,109 @@
             else el.val(el.val() + val);
         }
     }
+
 </script>
 <script>
     function parseFormattedRp(val) {
         if (!val) return 0;
         return parseFloat(val.toString().replace(/\./g, '')) || 0;
     }
+
 </script>
+<script>
+function openAddPelangganModal() {
+    $('#formAddPelanggan')[0].reset();
+    $('#modalAddPelanggan').modal('show');
+}
+
+function savePelangganBaru() {
+    let nama = $('#addNamaPelanggan').val();
+    let grup = $('#addKodeGrupPelanggan').val();
+    if (!nama || !grup) {
+        Swal.fire('Peringatan', 'Nama Pelanggan dan Grup Pelanggan wajib diisi!', 'warning');
+        return;
+    }
+    
+    let btn = $('#modalAddPelanggan .btn-primary');
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menyimpan...');
+    
+    $.ajax({
+        url: "{{ route('pelanggan-storeJson') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            NamaPelanggan: nama,
+            NoIdentitas: $('#addNoIdentitas').val(),
+            RFID_UID: $('#addRFID_UID').val(),
+            KodeGrupPelanggan: grup,
+            NoTlp1: $('#addNoTlp1').val(),
+        },
+        success: function(res) {
+            btn.prop('disabled', false).text('Simpan');
+            if (res.success) {
+                $('#modalAddPelanggan').modal('hide');
+                Swal.fire('Sukses', 'Pelanggan berhasil ditambahkan', 'success');
+                
+                let newOption = new Option(res.data.NamaPelanggan, res.data.KodePelanggan, true, true);
+                $('#pelanggan-select').append(newOption).trigger('change');
+            } else {
+                Swal.fire('Error', res.message || 'Gagal menyimpan', 'error');
+            }
+        },
+        error: function(xhr) {
+            btn.prop('disabled', false).text('Simpan');
+            Swal.fire('Error', 'Gagal memproses data', 'error');
+            console.error(xhr.responseText);
+        }
+    });
+}
+</script>
+<!-- Modal Tambah Pelanggan -->
+<div class="modal fade" id="modalAddPelanggan" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:99999;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius:12px; border:none; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+            <div class="modal-header" style="background:#0ea5e9; color:white; border-radius:12px 12px 0 0;">
+                <h5 class="modal-title font-bold"><i class="fas fa-user-plus"></i> Tambah Pelanggan Baru</h5>
+                <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close" style="background:transparent; border:none; font-size:1.5rem; line-height:1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background:#f8fafc; padding:20px;">
+                <form id="formAddPelanggan">
+                    <div class="form-group mb-3">
+                        <label>Nama Pelanggan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="NamaPelanggan" id="addNamaPelanggan" required placeholder="Masukkan Nama">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>No. KTP/SIM/Paspor</label>
+                        <input type="text" class="form-control" name="NoIdentitas" id="addNoIdentitas" placeholder="Masukkan ID">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Nomor RFID (Opsional)</label>
+                        <input type="text" class="form-control" name="RFID_UID" id="addRFID_UID" placeholder="Tap Kartu / Ketik Nomor">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Grup Pelanggan <span class="text-danger">*</span></label>
+                        <select name="KodeGrupPelanggan" id="addKodeGrupPelanggan" class="form-control" required>
+                            <option value="">Pilih Grup</option>
+                            @php $gruppelanggan = \App\Models\GrupPelanggan::where('RecordOwnerID', \Auth::user()->RecordOwnerID)->get(); @endphp
+                            @foreach ($gruppelanggan as $g)
+                                <option value="{{ $g->KodeGrup }}">{{ $g->NamaGrup }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>No HP/Telepon</label>
+                        <input type="text" class="form-control" name="NoTlp1" id="addNoTlp1" placeholder="08xxxx">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="background:#f1f5f9; border-radius:0 0 12px 12px;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="savePelangganBaru()">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

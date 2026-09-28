@@ -169,4 +169,33 @@ class GateController extends Controller
         $logs = GateLog::orderBy('created_at', 'desc')->paginate(50);
         return view('Gate.logs', compact('logs'));
     }
+
+    /**
+     * Endpoint API khusus untuk koneksi LAN (HTTP Lokal).
+     * Tidak memerlukan HTTPS karena sudah berada di jaringan tertutup.
+     * Keamanan dijaga via X-Gate-Secret header.
+     * Logika validasi identik dengan checkAccess().
+     */
+    public function checkAccessLAN(Request $request)
+    {
+        // Periksa apakah request dari jaringan lokal (opsional, sebagai lapisan keamanan tambahan)
+        $clientIp = $request->ip();
+        $isLocal = (
+            str_starts_with($clientIp, '192.168.') ||
+            str_starts_with($clientIp, '10.') ||
+            str_starts_with($clientIp, '172.') ||
+            $clientIp === '127.0.0.1'
+        );
+
+        if (!$isLocal) {
+            return response()->json([
+                'access' => false,
+                'message' => 'Endpoint ini hanya dapat diakses dari jaringan lokal'
+            ], 403);
+        }
+
+        // Teruskan ke logika checkAccess yang sama
+        return $this->checkAccess($request);
+    }
 }
+

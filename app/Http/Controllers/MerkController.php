@@ -9,6 +9,7 @@ use DB;
 use Log;
 
 use App\Models\Merk;
+use App\Models\DocumentNumbering;
 
 class MerkController extends Controller
 {
@@ -57,12 +58,11 @@ class MerkController extends Controller
     	Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeMerk'=>'required',
                 'NamaMerk'=>'required'
             ]);
 
             $model = new Merk;
-            $model->KodeMerk = $request->input('KodeMerk');
+            $model->KodeMerk = $this->generateSimpleCode('M', 'merk', 'KodeMerk', 3);
             $model->NamaMerk = $request->input('NamaMerk');
             $model->RecordOwnerID = Auth::user()->RecordOwnerID;
 
@@ -88,7 +88,6 @@ class MerkController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeMerk'=>'required',
                 'NamaMerk'=>'required'
             ]);
 
@@ -122,7 +121,7 @@ class MerkController extends Controller
         try {
 
             $model = new Merk;
-            $model->KodeMerk = $request->input('KodeMerk');
+            $model->KodeMerk = $this->generateSimpleCode('M', 'merk', 'KodeMerk', 3);
             $model->NamaMerk = $request->input('NamaMerk');
             $model->RecordOwnerID = Auth::user()->RecordOwnerID;
 

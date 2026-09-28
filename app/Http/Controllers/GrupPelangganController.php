@@ -47,12 +47,11 @@ class GrupPelangganController extends Controller
     	Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeGrup'=>'required',
                 'NamaGrup'=>'required'
             ]);
 
             $model = new GrupPelanggan;
-            $model->KodeGrup = $request->input('KodeGrup');
+            $model->KodeGrup = $this->generateSimpleCode("GP", "gruppelanggan", "KodeGrup", 3);
             $model->NamaGrup = $request->input('NamaGrup');
             $model->LevelHarga = $request->input('LevelHarga');
             $model->DiskonPersen = $request->input('DiskonPersen');
@@ -80,7 +79,6 @@ class GrupPelangganController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeGrup'=>'required',
                 'NamaGrup'=>'required'
             ]);
 
@@ -113,7 +111,6 @@ class GrupPelangganController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeGrup'=>'required',
                 'NamaGrup'=>'required'
             ]);
 

@@ -107,7 +107,6 @@ class SalesController extends Controller
         Log::debug($request->all());
         try {
             $this->validate($request, [
-                'KodeSales'=>'required',
                 'NamaSales'=>'required',
                 'NoTlp1'=>'required',
                 'Email'=>'required',

@@ -172,12 +172,13 @@ class PelangganController extends Controller
                 'KodeGrupPelanggan'=>'required',
             ]);
 
-            $numberingData = new DocumentNumbering();
-            $KodePelanggan = $numberingData->GetNewDoc("PLG","pelanggan","KodePelanggan");
+            $KodePelanggan = $this->generateSimpleCode('PLG', 'pelanggan', 'KodePelanggan', 4);
 
             $model = new Pelanggan;
             $model->KodePelanggan = $KodePelanggan;
 			$model->NamaPelanggan = $request->input('NamaPelanggan');
+			$model->NoIdentitas = $request->input('NoIdentitas');
+			$model->RFID_UID = $request->input('RFID_UID');
 			$model->KodeGrupPelanggan = $request->input('KodeGrupPelanggan');
 			$model->LimitPiutang = $request->input('LimitPiutang');
 			$model->ProvID = $request->input('ProvID');
@@ -229,12 +230,13 @@ class PelangganController extends Controller
                 'KodeGrupPelanggan'=>'required',
             ]);
 
-            $numberingData = new DocumentNumbering();
-            $KodePelanggan = $numberingData->GetNewDoc("PLG","pelanggan","KodePelanggan");
+            $KodePelanggan = $this->generateSimpleCode('PLG', 'pelanggan', 'KodePelanggan', 4);
 
             $model = new Pelanggan;
             $model->KodePelanggan = $KodePelanggan;
             $model->NamaPelanggan = $request->input('NamaPelanggan');
+			$model->NoIdentitas = $request->input('NoIdentitas');
+			$model->RFID_UID = $request->input('RFID_UID');
             $model->KodeGrupPelanggan = $request->input('KodeGrupPelanggan');
             $model->LimitPiutang = $request->input('LimitPiutang');
             $model->ProvID = $request->input('ProvID');
@@ -294,6 +296,8 @@ class PelangganController extends Controller
             if ($model) {
                 \App\Services\DBLogger::update('pelanggan', ['KodePelanggan' => $request->input('KodePelanggan'), 'RecordOwnerID' => Auth::user()->RecordOwnerID], [
                     'NamaPelanggan' => $request->input('NamaPelanggan'),
+                    'NoIdentitas' => $request->input('NoIdentitas'),
+                    'RFID_UID' => $request->input('RFID_UID'),
                     'KodeGrupPelanggan' => $request->input('KodeGrupPelanggan'),
                     'LimitPiutang' => $request->input('LimitPiutang'),
                     'ProvID' => $request->input('ProvID'),
@@ -347,6 +351,8 @@ class PelangganController extends Controller
             if ($model) {
                 \App\Services\DBLogger::update('pelanggan', ['KodePelanggan' => $request->input('KodePelanggan'), 'RecordOwnerID' => Auth::user()->RecordOwnerID], [
                     'NamaPelanggan' => $request->input('NamaPelanggan'),
+                    'NoIdentitas' => $request->input('NoIdentitas'),
+                    'RFID_UID' => $request->input('RFID_UID'),
                     'KodeGrupPelanggan' => $request->input('KodeGrupPelanggan'),
                     'LimitPiutang' => $request->input('LimitPiutang'),
                     'ProvID' => $request->input('ProvID'),

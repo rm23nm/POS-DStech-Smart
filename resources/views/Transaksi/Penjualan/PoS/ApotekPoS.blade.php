@@ -273,15 +273,13 @@ License: You must have a valid license purchased only from themeforest(the above
 			display: grid;
 			grid-template-columns: repeat(4, 1fr);
 			gap: 8px;
-			flex-grow: 1;
 		}
 		.btn-numpad {
 			background: rgba(255, 255, 255, 0.8) !important;
 			backdrop-filter: blur(5px);
 			border: 1.5px solid #cbd5e1 !important;
 			color: #1e293b !important;
-			height: auto !important;
-			min-height: 48px;
+			height: 42px !important;
 			border-radius: 14px !important;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), inset 0 2px 0 rgba(255,255,255,0.2) !important;
 			transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -321,8 +319,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			color: #0f172a !important;
 			font-weight: 950 !important;
 			font-size: 1.25rem !important;
-			height: auto !important;
-			min-height: 40px;
+			height: 36px !important;
 			min-width: 36px;
 			padding: 0 !important;
 			border-radius: 12px !important;
@@ -352,8 +349,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			color: var(--primary) !important;
 			font-weight: 950 !important;
 			font-size: 1.1rem !important;
-			height: auto !important;
-			min-height: 48px;
+			height: 42px !important;
 			border-radius: 14px !important;
 			transition: all 0.15s ease !important;
 		}
@@ -369,8 +365,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			color: var(--secondary) !important;
 			font-weight: 950 !important;
 			font-size: 1.2rem !important;
-			height: auto !important;
-			min-height: 48px;
+			height: 42px !important;
 			border-radius: 14px !important;
 			transition: all 0.15s ease !important;
 		}
@@ -386,8 +381,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			color: white !important;
 			font-weight: 950 !important;
 			font-size: 1.2rem !important;
-			height: auto !important;
-			min-height: 48px;
+			height: 42px !important;
 			border-radius: 14px !important;
 			box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
 			transition: all 0.15s ease !important;
@@ -1025,24 +1019,24 @@ License: You must have a valid license purchased only from themeforest(the above
 				<!-- COLUMN 2: Business Partner Area & Touch NumPad (Alfamart layout style) -->
 				<div class="col-xl-3 col-lg-3 col-md-12 d-flex flex-column scrollbar-1" style="height: calc(100vh - 105px) !important; margin-bottom: 0px !important; overflow-y: auto;">
 					<!-- Tactile Glowing Barcode Scanner Card (Shifted to Column 2 for spacious cart) -->
-					<div class="card card-custom bg-white border-0 mb-1 flex-shrink-0" style="height: auto !important; border-radius: 14px !important;">
-						<div class="card-body p-1 px-2">
-							<div class="row g-1">
+					<div class="card card-custom bg-white border-0 mb-2 flex-shrink-0" style="height: auto !important; border-radius: 18px !important;">
+						<div class="card-body p-1.5 px-3">
+							<div class="row g-2">
 								<div class="col-12 mb-0">
 									<div class="barcode-wrapper">
-										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-qr-code-scan barcode-icon" viewBox="0 0 16 16" style="top:50%; margin-top:-8px;">
+										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-qr-code-scan barcode-icon" viewBox="0 0 16 16">
 											<path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5M.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 10 14.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5"/>
 										</svg>
-										<input type="text" class="form-control" id="_Barcode" placeholder="Scan Barcode (Fokus)..." style="padding-left: 40px !important; height: 30px;">
+										<input type="text" class="form-control" id="_Barcode" placeholder="Scan Barcode saja (Fokus)..." style="padding-left: 50px !important; height: 36px;">
 									</div>
 								</div>
 								<div class="col-6">
 									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1;">Kuantitas (Qty)</label>
-									<input type="number" class="form-control border-dark" id="_Qty" value="0" style="height: 24px; padding: 2px 6px !important; font-size: 0.8rem;">
+									<input type="number" class="form-control border-dark" id="_Qty" value="0" style="height: 26px; padding: 2px 6px !important; font-size: 0.8rem;">
 								</div>
 								<div class="col-6">
 									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1;">Diskon (Rp / %)</label>
-									<input type="number" class="form-control border-dark" id="_Diskon" value="0" style="height: 24px; padding: 2px 6px !important; font-size: 0.8rem;">
+									<input type="number" class="form-control border-dark" id="_Diskon" value="0" style="height: 26px; padding: 2px 6px !important; font-size: 0.8rem;">
 								</div>
 							</div>
 						</div>
@@ -1052,16 +1046,16 @@ License: You must have a valid license purchased only from themeforest(the above
 					<input type="hidden" id="KodeSales" value="{{ Auth::user()->KodeSales ?? '' }}">
 
 					<!-- Business Partner Selector Card (Compact - containing only Pilih Pelanggan) -->
-					<div class="card card-custom bg-white border-0 mb-1 flex-shrink-0" style="height: auto !important; border-radius: 14px !important;">
-						<div class="card-header align-items-center border-0 py-1 px-2">
-							<div class="card-title mb-0 d-flex align-items-center gap-1">
-								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-people-fill text-primary" viewBox="0 0 16 16">
+					<div class="card card-custom bg-white border-0 mb-2 flex-shrink-0" style="height: auto !important; border-radius: 18px !important;">
+						<div class="card-header align-items-center border-0 py-1.5">
+							<div class="card-title mb-0 d-flex align-items-center gap-2">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill text-primary" viewBox="0 0 16 16">
 									<path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
 								</svg>
-								<h4 class="font-weight-bold text-dark mb-0" style="font-size: 0.85rem;">Business Partner</h4>
+								<h4 class="font-weight-bold text-dark mb-0" style="font-size: 0.9rem;">Business Partner</h4>
 							</div>
 						</div>
-						<div class="card-body pt-0 pb-1 px-2">
+						<div class="card-body pt-0 pb-1.5">
 							<div class="mb-0">
 								<fieldset class="form-group mb-0 d-flex align-items-center gap-1">
 									<div style="flex: 1; min-width: 0;">
@@ -1074,13 +1068,13 @@ License: You must have a valid license purchased only from themeforest(the above
 											@endforeach
 										</select>
 									</div>
-									<button class="btn btn-primary d-flex align-items-center justify-content-center px-2" style="height: 28px; border-radius: 8px !important; background: var(--primary) !important;" id="btSearchCustomer" title="Cari Member">
-										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+									<button class="btn btn-primary d-flex align-items-center justify-content-center px-3" style="height: 32px; border-radius: 10px !important; background: var(--primary) !important;" id="btSearchCustomer" title="Cari Member">
+										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 											<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
 										</svg>
 									</button>
-									<button class="btn btn-secondary d-flex align-items-center justify-content-center px-2" style="height: 28px; border-radius: 8px !important; background: #e2e8f0 !important; color: #475569 !important; border: 1px solid #cbd5e1 !important;" id="btAddCustomer" title="Tambah Member Baru">
-										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+									<button class="btn btn-secondary d-flex align-items-center justify-content-center px-3" style="height: 32px; border-radius: 10px !important; background: #e2e8f0 !important; color: #475569 !important; border: 1px solid #cbd5e1 !important;" id="btAddCustomer" title="Tambah Member Baru">
+										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
 											<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
 										</svg>
 									</button>
@@ -1090,45 +1084,45 @@ License: You must have a valid license purchased only from themeforest(the above
 					</div>
 
 					<!-- Informasi Resep Apotek Card -->
-					<div class="card card-custom bg-white border-0 mb-1 flex-shrink-0" style="height: auto !important; border-radius: 14px !important;">
-						<div class="card-header align-items-center border-0 py-1 px-2">
-							<div class="card-title mb-0 d-flex align-items-center gap-1">
-								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-file-medical-fill text-primary" viewBox="0 0 16 16">
+					<div class="card card-custom bg-white border-0 mb-2 flex-shrink-0" style="height: auto !important; border-radius: 18px !important;">
+						<div class="card-header align-items-center border-0 py-1.5">
+							<div class="card-title mb-0 d-flex align-items-center gap-2">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-medical-fill text-primary" viewBox="0 0 16 16">
 								  <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM8.5 4.5v2h2a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2h-2a.5.5 0 0 1 0-1h2v-2a.5.5 0 0 1 1 0z"/>
 								</svg>
-								<h4 class="font-weight-bold text-dark mb-0" style="font-size: 0.85rem;">Informasi Resep</h4>
+								<h4 class="font-weight-bold text-dark mb-0" style="font-size: 0.9rem;">Informasi Resep</h4>
 							</div>
 						</div>
-						<div class="card-body pt-0 pb-1 px-2">
+						<div class="card-body pt-0 pb-1.5">
 							<div class="row g-1">
-								<div class="col-12 mb-0">
-									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1;">No. Resep</label>
-									<input type="text" class="form-control" id="NoResep" name="NoResep" placeholder="No Resep" style="height: 24px; font-size: 0.8rem; padding: 2px 6px !important;">
+								<div class="col-4">
+									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.2px; line-height: 1;">No. Resep</label>
+									<input type="text" class="form-control" id="NoResep" name="NoResep" placeholder="Resep" style="height: 26px; font-size: 0.75rem; padding: 2px 6px !important;">
 								</div>
-								<div class="col-12 mb-0">
-									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1;">Nama Dokter</label>
-									<input type="text" class="form-control" id="NamaDokter" name="NamaDokter" placeholder="Nama Dokter" style="height: 24px; font-size: 0.8rem; padding: 2px 6px !important;">
+								<div class="col-4">
+									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.2px; line-height: 1;">Dokter</label>
+									<input type="text" class="form-control" id="NamaDokter" name="NamaDokter" placeholder="Dokter" style="height: 26px; font-size: 0.75rem; padding: 2px 6px !important;">
 								</div>
-								<div class="col-12 mb-0">
-									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1;">Nama Pasien</label>
-									<input type="text" class="form-control" id="NamaPasien" name="NamaPasien" placeholder="Nama Pasien" style="height: 24px; font-size: 0.8rem; padding: 2px 6px !important;">
+								<div class="col-4">
+									<label class="text-muted font-weight-bold mb-0" style="font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.2px; line-height: 1;">Pasien</label>
+									<input type="text" class="form-control" id="NamaPasien" name="NamaPasien" placeholder="Pasien" style="height: 26px; font-size: 0.75rem; padding: 2px 6px !important;">
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<!-- Tactile Dark Touch Keyboard (Alfamart layout style) -->
-					<div class="card card-custom bg-white border-0 p-1 px-2 mb-0" style="flex: 1 1 auto !important; height: auto !important; min-height: 380px !important; border-radius: 14px !important; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;">
-						<div class="d-flex align-items-center justify-content-between mb-1 mt-1">
-							<h4 class="font-weight-bold text-dark mb-0" style="font-size: 0.85rem;">Touch Keyboard</h4>
-							<div class="btn-group" role="group" style="background: #e2e8f0; border-radius: 8px; padding: 2px;">
-								<button type="button" class="btn active" id="btnToggleNum" onclick="toggleKeypadMode('NUM')" style="font-size: 0.8rem !important; font-weight: 900 !important; border-radius: 6px; border: none; transition: all 0.2s; padding: 4px 10px !important;">123</button>
-								<button type="button" class="btn" id="btnToggleAlpha" onclick="toggleKeypadMode('ALPHA')" style="font-size: 0.8rem !important; font-weight: 900 !important; border-radius: 6px; border: none; transition: all 0.2s; padding: 4px 10px !important;">ABC</button>
+					<div class="card card-custom bg-white border-0 p-2 px-3 mb-0" style="flex: 1 1 auto !important; height: auto !important; min-height: 290px !important; border-radius: 24px !important; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;">
+						<div class="d-flex align-items-center justify-content-between mb-2">
+							<h4 class="font-weight-bold text-dark mb-0" style="font-size: 0.95rem;">Touch Keyboard</h4>
+							<div class="btn-group" role="group" style="background: #e2e8f0; border-radius: 10px; padding: 3px;">
+								<button type="button" class="btn active" id="btnToggleNum" onclick="toggleKeypadMode('NUM')" style="font-size: 0.95rem !important; font-weight: 900 !important; border-radius: 8px; border: none; transition: all 0.2s; padding: 6px 16px !important;">123</button>
+								<button type="button" class="btn" id="btnToggleAlpha" onclick="toggleKeypadMode('ALPHA')" style="font-size: 0.95rem !important; font-weight: 900 !important; border-radius: 8px; border: none; transition: all 0.2s; padding: 6px 16px !important;">ABC</button>
 							</div>
 						</div>
 						
 						<!-- Active Input Indicator / Status Banner -->
-						<div id="keypadIndicatorContainer" class="d-flex gap-1 mb-1">
+						<div id="keypadIndicatorContainer" class="d-flex gap-2 mb-2">
 							<div class="flex-grow-1">
 								<div id="_activeInputIndicator" class="badge bg-light-primary text-primary w-100 py-2 font-weight-bold" style="font-size: 0.85rem; border-radius: 12px; letter-spacing: 0.5px;">
 									Kuantitas (Qty)
@@ -1458,7 +1452,7 @@ License: You must have a valid license purchased only from themeforest(the above
 												<li class="list-group-item list-group-item-action border-0 d-flex align-items-center justify-content-between py-2" StsPyment={{$ko->Active}} id={{ $ko->id }} CaraVerifikasi={{$ko->MetodeVerifikasi}} TipePembayaran={{$ko->TipePembayaran}}>
 													<div class="list-left d-flex align-items-center">
 														<span class="d-flex align-items-center justify-content-center rounded svg-icon w-45px h-45px bg-light-dark text-white me-2">
-															<img src="{{ $ko->Image }}" class="bi bi-lightning-fill" width="80%" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktY2FzaCIgdmlld0JveD0iMCAwIDE2IDE2Ij4gPHBhdGggZD0iTTggMTBhMiAyIDAgMTAwLTQgMiAyIDAgMDAwIDR6Ii8+IDxwYXRoIGQ9Ik0wIDRhMiAyIDAgMDExMiAwaDFhMiAyIDAgMDExMiAwdjFIMHYtMXptMTUtMmEyIDIgMCAwMTAgNGgxYTIgMiAwIDAxMCA0djFoLTE1di0xaDFhMiAyIDAgMDEwLTRIMHYtMWgxNXYxeiIvPiA8L3N2Zz4=';">
+															<img src="{{ $ko->Image }}" class="bi bi-lightning-fill" width="80%">
 														</span>
 													  <div class="list-content">
 														<span class="list-title text-body">{{ $ko->NamaMetodePembayaran}}</span>
@@ -1806,41 +1800,6 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="{{ env('MIDTRANS_PROD_URL') }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
 @endif
 
-
-<script>
-    var _globalBarcodeScannerBuffer = "";
-    var _globalBarcodeScannerTimer = null;
-    
-    $(document).on("keypress", function(e) {
-        if (e.target.id === "_Barcode") return; // Ignore if already focused on barcode
-        
-        if (e.key && e.key.length === 1 && !e.ctrlKey && !e.altKey) {
-            _globalBarcodeScannerBuffer += e.key;
-            
-            if (_globalBarcodeScannerTimer) clearTimeout(_globalBarcodeScannerTimer);
-            
-            _globalBarcodeScannerTimer = setTimeout(function() {
-                _globalBarcodeScannerBuffer = "";
-            }, 60); // Scanner types very fast
-            
-        } else if (e.key === "Enter" || e.keyCode === 13) {
-            if (_globalBarcodeScannerBuffer.length >= 3) {
-                // It's a scanner!
-                e.preventDefault();
-                $('#_Barcode').val(_globalBarcodeScannerBuffer);
-                _globalBarcodeScannerBuffer = "";
-                $('#_Barcode').focus();
-                
-                var eEnter = $.Event('keypress');
-                eEnter.which = 13;
-                eEnter.keyCode = 13;
-                $('#_Barcode').trigger(eEnter);
-            } else {
-                _globalBarcodeScannerBuffer = "";
-            }
-        }
-    });
-</script>
 </body>
 <!--end::Body-->
 </html>
@@ -1849,7 +1808,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	var _VoucherDiscountPercent = 0;
 	var _VoucherMaximalDiscount = 0;
 	var _VoucherAppliedCode = "";
-	var _TipeDiskon = '';
+	var _TipeDiskon = '%'; $('#_TipeDiskon').text(' (%)');
 	var _ServicesData = [];
 	var _DiskonGrupCustomer = 0;
 	var _DiskonMemberPersen = 0;
@@ -1870,7 +1829,6 @@ License: You must have a valid license purchased only from themeforest(the above
 	// Tactile Cashier Hybrid Controller State
 	var _AllProducts = [];
 	var _ActiveNumpadField = 'QTY'; // QTY, DISC_P, DISC_R
-	var _LastFocusedInput = null;
 	var _ActiveCategory = 'ALL';
 
 	function loadCatalogProducts() {
@@ -1913,7 +1871,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		products.forEach(function(item) {
 			var priceFormatted = parseFloat(item.HargaJual || 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 			
-			var imgUrl = item.Gambar ? (item.Gambar.startsWith('http://') || item.Gambar.startsWith('https://') || item.Gambar.startsWith('data:') ? item.Gambar : (item.Gambar.startsWith('/') ? `{{ url('') }}${item.Gambar}` : `{{ asset('images') }}/${item.Gambar}`)) : `https://placehold.co/150x100/e2e8f0/475569?text=${encodeURIComponent(item.NamaItem)}`;
+			var imgUrl = item.Gambar ? (item.Gambar.startsWith('http://') || item.Gambar.startsWith('https://') || item.Gambar.startsWith('data:') ? item.Gambar : `{{ asset('assets/img/item') }}/${item.Gambar}`) : `https://placehold.co/150x100/e2e8f0/475569?text=${encodeURIComponent(item.NamaItem)}`;
 
 			var cardHtml = `
 				<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-6 mb-2 px-1">
@@ -1991,46 +1949,29 @@ License: You must have a valid license purchased only from themeforest(the above
 	}
 
 	function pressNumpad(key) {
-		var inputEl = _LastFocusedInput || $('#_Barcode');
-		
-		// If last focused input is read-only, fallback to Qty/Diskon
-		if (inputEl.attr('readonly') || inputEl.attr('disabled')) {
-			if (_ActiveNumpadField === 'QTY') {
-				inputEl = $('#_Qty');
-			} else {
-				inputEl = $('#_Diskon');
-			}
+		var inputEl;
+		if (_ActiveNumpadField === 'QTY') {
+			inputEl = $('#_Qty');
+		} else {
+			inputEl = $('#_Diskon');
 		}
 
-		var currentVal = inputEl.val() || '';
+		var currentVal = inputEl.val() || '0';
 
 		if (key === 'C') {
-			if (inputEl.attr('type') === 'number' || inputEl.attr('id') === '_Qty' || inputEl.attr('id') === '_Diskon') {
-				inputEl.val('0');
-			} else {
-				inputEl.val('');
-			}
+			inputEl.val('0');
 		} else if (key === 'ENTER') {
-			var e = $.Event('keypress');
-			e.keyCode = 13;
-			inputEl.trigger(e);
-			
 			$('#_Barcode').focus();
 			switchActiveInput('QTY');
 		} else {
-			if (inputEl.attr('type') === 'number' || inputEl.attr('id') === '_Qty' || inputEl.attr('id') === '_Diskon') {
-				var valStr = inputEl.val() || '0';
-				if (valStr === '0') {
-					inputEl.val(key);
-				} else {
-					inputEl.val(valStr + key);
-				}
+			if (currentVal === '0') {
+				inputEl.val(key);
 			} else {
 				inputEl.val(currentVal + key);
 			}
 		}
 		
-		inputEl.trigger('change').trigger('input').trigger('keyup');
+		inputEl.trigger('change').trigger('input');
 	}
 
 
@@ -2043,9 +1984,9 @@ License: You must have a valid license purchased only from themeforest(the above
 	            listItems.forEach(i => i.classList.remove('active'));
 
 	            // Add active class to the clicked item
-	            var Sts = $(item).attr('StsPyment') || $(item).attr('stspyment');
-				_MetodeVerifikasiPembayaran = $(item).attr('CaraVerifikasi') || $(item).attr('caraverifikasi');
-				_TipePembayaran = $(item).attr('TipePembayaran') || $(item).attr('tipepembayaran');
+	            var Sts = $('#'+item.id).attr('stspyment');
+				_MetodeVerifikasiPembayaran = $('#'+item.id).attr('CaraVerifikasi');
+				_TipePembayaran = $('#'+item.id).attr('TipePembayaran');
 				
 	            if (Sts =='Y') {
 	            	item.classList.add('active');
@@ -2069,34 +2010,6 @@ License: You must have a valid license purchased only from themeforest(the above
 		jQuery(document).ready(function() {
 
 			$('#_Barcode').focus();
-			
-			_LastFocusedInput = $('#_Barcode');
-			$(document).on('focus', 'input[type="text"], input[type="number"]', function() {
-				_LastFocusedInput = $(this);
-				var id = $(this).attr('id');
-				if (id === 'NoResep') {
-					$('#_activeInputIndicator').text('No. Resep').removeClass('bg-light-primary bg-light-danger bg-light-info text-primary text-danger text-info').addClass('bg-light-success text-success');
-				} else if (id === 'NamaDokter') {
-					$('#_activeInputIndicator').text('Nama Dokter').removeClass('bg-light-primary bg-light-danger bg-light-info text-primary text-danger text-info').addClass('bg-light-success text-success');
-				} else if (id === 'NamaPasien') {
-					$('#_activeInputIndicator').text('Nama Pasien').removeClass('bg-light-primary bg-light-danger bg-light-info text-primary text-danger text-info').addClass('bg-light-success text-success');
-				} else if (id === '_Barcode') {
-					$('#_activeInputIndicator').text('Pencarian').removeClass('bg-light-success bg-light-danger bg-light-info text-success text-danger text-info').addClass('bg-light-primary text-primary');
-				} else if (id === '_Qty') {
-					switchActiveInput('QTY');
-				} else if (id === '_Diskon') {
-					if (_ActiveNumpadField !== 'DISC_P' && _ActiveNumpadField !== 'DISC_R') {
-						switchActiveInput('DISC_P');
-					}
-				}
-			});
-
-			$(document).on('mousedown', '.btn-numpad, .btn-qwerty', function(e) {
-				e.preventDefault();
-			});
-
-			// Fetch Initial Products
-			loadCatalogProducts();
 
 			$('#btnApplyVoucher').click(function() {
 				var code = $('#_VoucherCode').val().trim().toUpperCase();
@@ -2495,7 +2408,9 @@ License: You must have a valid license purchased only from themeforest(the above
 										'HargaPokokPenjualan'	: exactMatches[0]['HargaPokokPenjualan'],
 				            		}
 
-				            		allRowsData.push(item);
+				            		dataSource.store().insert(item).then(function() {
+								        dataSource.reload();
+								    })
 
 				     //        		dataGridInstance.option("dataSource", [...dataGridInstance.option("dataSource"), item]);
 									// dataGridInstance.refresh();
@@ -2605,32 +2520,24 @@ License: You must have a valid license purchased only from themeforest(the above
 			}
 		});
 
-		$('#_Diskon').on("keypress", function(e) {
+		$('#_Diskon').on("input", function(e) {
 			var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
       		var allRowsData  = dataGridInstance.getDataSource().items();
 
-			if (e.keyCode == 13) {
-				var objIndex = allRowsData.findIndex(obj => obj.KodeItem == _LastInputed);
-
-        		// console.log(objIndex);
-        		// console.log(allRowsData)
-        		if (objIndex != -1) {
-        			if (_TipeDiskon == "%" && allRowsData[objIndex].DiskonRp == 0) {
-        				allRowsData[objIndex].DiskonPersen = parseFloat($('#_Diskon').val());
-        			}
-        			else if (_TipeDiskon == "Rp" && allRowsData[objIndex].DiskonPersen == 0) {
-        				allRowsData[objIndex].DiskonRp = parseFloat($('#_Diskon').val());
-        			}
-
-        			bindGrid(allRowsData);
-        			dataGridInstance.refresh();
-
-        			$('#_Diskon').val(0);
-        			$('#_Diskon').focus();
-        		}
-
-        		CalculateTotal();
-			}
+			var objIndex = allRowsData.findIndex(obj => obj.KodeItem == _LastInputed);
+    		if (objIndex != -1) {
+    		    var val = parseFloat($(this).val()) || 0;
+    			if (_TipeDiskon == "%" || _TipeDiskon == "") {
+    				allRowsData[objIndex].DiskonPersen = val;
+    				allRowsData[objIndex].DiskonRp = 0;
+    			} else {
+    				allRowsData[objIndex].DiskonRp = val;
+    				allRowsData[objIndex].DiskonPersen = 0;
+    			}
+    			bindGrid(allRowsData);
+    			dataGridInstance.refresh();
+    		}
+    		CalculateTotal();
 		});
 
 		$('#btPilihLookupData').click(function () {
@@ -3085,7 +2992,7 @@ License: You must have a valid license purchased only from themeforest(the above
             			xHTML += '				<p><strong>Customer Name</strong> '+v.NamaPelanggan+'</p>';
             			xHTML += '				<p><strong>Payment Status</strong> Pending</p>';
             			xHTML += '				<p><strong>Total Item</strong> '+v.TotalItems+' Items</p>';
-            			xHTML += '				<p><strong>Total Transaksi</strong> '+new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(v.TotalHutang).replace("Rp", "Rp. ").trim()+'</p>';
+            			xHTML += '				<p><strong>Total Transaksi</strong> '+v.TotalHutang.toLocaleString('en-US')+'</p>';
             			xHTML += '			</div>';
             			xHTML += '			<div class="d-flex justify-content-end">';
             			xHTML += '				<a class="confirm-delete ms-3" title="Edit" onClick = "editDraft('+xNoTransaksi+')"><i class="fas fa-edit"></i></a>';
@@ -3113,8 +3020,9 @@ License: You must have a valid license purchased only from themeforest(the above
 				icon: "error",
 				title: "Opps...",
 				text: "Printer Belum ditentukan, Silahkan melakukan setting di menu Master -> Pengaturan Toko -> Perusahaan",
+			}).then((result) => {
+				return;
 			});
-			return;
 		}
 
 		if(_Company[0]["LebarKertas"] == ""){
@@ -3122,8 +3030,9 @@ License: You must have a valid license purchased only from themeforest(the above
 				icon: "error",
 				title: "Opps...",
 				text: "Lebar Kertas Belum ditentukan, Silahkan melakukan setting di menu Master -> Pengaturan Toko -> Perusahaan",
+			}).then((result) => {
+				return;
 			});
-			return;
 		}
 
 		if(_Printer["PrinterInterface"] == "Bluetooth"){
@@ -3165,11 +3074,12 @@ License: You must have a valid license purchased only from themeforest(the above
 			window.open(url, "_blank");
 			location.reload();
 		}
-		else {
-			let url = "{{ url('') }}";
-			url += "/fpenjualan/printthermal/"+NoTransaksi;
-			window.open(url, "_blank");
-			location.reload();
+		else{
+			Swal.fire({
+				icon: "error",
+				title: "Opps...",
+				text: "Interface belum tersedia",
+			});
 		}
 	}
 
@@ -3767,10 +3677,11 @@ License: You must have a valid license purchased only from themeforest(the above
 						  location.reload();
 						});
             		}else{
-            			let formattedAmount = new Intl.NumberFormat('id-ID', {
-				            style: 'currency',
-				            currency: 'IDR'
-				        }).format(parseFloat(response.Kembalian)).replace("Rp", "Rp. ").trim();
+            			let formattedAmount = parseFloat(response.Kembalian).toLocaleString('en-US', {
+				            style: 'decimal',
+				            minimumFractionDigits: 2,
+				            maximumFractionDigits: 2
+				        });
 	            		Swal.fire({
 						  title: "KEMBALIAN "+formattedAmount,
 						  text: "Cetak Struk ?",
@@ -3912,24 +3823,8 @@ License: You must have a valid license purchased only from themeforest(the above
 		})
 		.then(response => response.json())
 		.then(data => {
-			if (data.provider == 'xendit' && data.qr_string) {
-                Swal.fire({
-                    title: 'Scan QRIS',
-                    html: '<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(data.qr_string) + '" /><br><br><p>Tunggu hingga Pelanggan berhasil membayar.</p>',
-                    showCancelButton: true,
-                    confirmButtonText: 'Selesai & Tutup Transaksi',
-                    cancelButtonText: 'Batal',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $('#NomorRefrensiPembayaran').val(data.order_id);
-                        SaveData(Status, ButonObject, ButtonDefaultText);
-                    } else {
-                        Swal.fire('Dibatalkan', 'Transaksi dibatalkan', 'error');
-                    }
-                });
-            } else if (data.snap_token) {
-                snap.pay(data.snap_token, {
+			if (data.snap_token) {
+				snap.pay(data.snap_token, {
 					onSuccess: function(result){
 						// console.log(result);
 						if(result.transaction_status == "cancel"){
@@ -4011,7 +3906,11 @@ License: You must have a valid license purchased only from themeforest(the above
 		
 		input.attr("originalvalue", parsedAmount);
 		
-		let valToFormat = parsedAmount; if (isNaN(valToFormat)) valToFormat = 0; let formattedAmount = "Rp. " + parseFloat(valToFormat).toLocaleString("id-ID", {minimumFractionDigits: 0, maximumFractionDigits: 0});
+		let formattedAmount = parsedAmount.toLocaleString('en-US', {
+			style: 'decimal',
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
 
 		input.val(formattedAmount);
 	}
@@ -4073,7 +3972,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
 		// console.log(_tempTotalTax)
 
-	    $('#_TotalItem').text(_tempTotalItem);
+	    formatCurrency($('#_TotalItem'), _tempTotalItem);
 	    formatCurrency($('#_SubTotal'), _tempSubTotal);
 	    formatCurrency($('#_TotalDiskon'), _tempTotalDiskon);
 	    formatCurrency($('#_TotalServices'), _tempTotalServices);
@@ -4130,9 +4029,9 @@ License: You must have a valid license purchased only from themeforest(the above
     		ErrorCount +=1;	
     	}
 
-    	if (parseFloat($('#JumlahBayar').attr('originalvalue') || 0) < parseFloat($('#_TotalNetBayar').attr('originalvalue') || 0)) {
-    		ErrorCount +=1;
-    	}
+    	// if ($('#JumlahBayar').attr('originalvalue') < $('#_TotalTagihan').val()) {
+    	// 	ErrorCount +=1;
+    	// }
 
     	if (ErrorCount >0) {
     		$('#btSimpanPembayaran').attr('disabled',true);
@@ -4145,8 +4044,8 @@ License: You must have a valid license purchased only from themeforest(the above
     function editDraft(NoTransaksi) {
     	jQuery('#_NoTransaksi').text(NoTransaksi)
     	var dataGridInstance = jQuery('#gridContainerDetail').dxDataGrid('instance');
-        // Cleared array safely
-		allRowsData = [];
+        var dataSource = dataGridInstance.getDataSource();
+        dataGridInstance.option("dataSource", []);
     	// Load Header
     	$.ajax({
 			async:false,
@@ -4162,9 +4061,6 @@ License: You must have a valid license purchased only from themeforest(the above
             	if (response.data.length > 0) {
             		jQuery('#KodePelanggan').val(response.data[0]['KodePelanggan']).trigger('change');
             		jQuery('#KodeSales').val(response.data[0]['KodeSales']).trigger('change');
-            		jQuery('#NoResep').val(response.data[0]['NoResep'] || '');
-            		jQuery('#NamaDokter').val(response.data[0]['NamaDokter'] || '');
-            		jQuery('#NamaPasien').val(response.data[0]['NamaPasien'] || '');
             	}
             	else{
 
@@ -4202,12 +4098,12 @@ License: You must have a valid license purchased only from themeforest(the above
 	        			'Total' 	 	: 0
 	        		}
 
-	        		allRowsData.push(item);
+	        		dataSource.store().insert(item).then(function() {
+				        dataSource.reload();
+				    })
 				    xLine +=1;
-        	});
-        	dataGridInstance.option('dataSource', allRowsData);
-        	dataGridInstance.refresh();
-        	CalculateTotal()
+            	});
+            	CalculateTotal()
 
             	jQuery('#folderpop').modal('hide');
             }
@@ -4333,20 +4229,22 @@ License: You must have a valid license purchased only from themeforest(the above
 
 	// Alphanumeric QWERTY key presses
 	function pressQwerty(char) {
-		var targetInput = _LastFocusedInput || $('#_Barcode');
+		var targetInput = $('#_Barcode');
 		
+		if ($('#_CatalogSearch').is(':focus')) {
+			targetInput = $('#_CatalogSearch');
+		}
+
 		var currentVal = targetInput.val() || '';
 
 		if (char === 'BACKSPACE') {
 			targetInput.val(currentVal.substring(0, currentVal.length - 1));
 			targetInput.trigger('input');
 			targetInput.trigger('keyup');
-			targetInput.trigger('change');
 		} else if (char === 'SPACE') {
 			targetInput.val(currentVal + ' ');
 			targetInput.trigger('input');
 			targetInput.trigger('keyup');
-			targetInput.trigger('change');
 		} else if (char === 'ENTER') {
 			var e = $.Event('keypress');
 			e.keyCode = 13;
@@ -4355,7 +4253,6 @@ License: You must have a valid license purchased only from themeforest(the above
 			targetInput.val(currentVal + char.toUpperCase());
 			targetInput.trigger('input');
 			targetInput.trigger('keyup');
-			targetInput.trigger('change');
 		}
 	}
 </script>

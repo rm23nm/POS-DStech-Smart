@@ -57,7 +57,7 @@
 	                            		<div class="col-md-12">
 	                            			<label  class="text-body">Kode Supplier (*)</label>
 	                            			<fieldset class="form-group mb-3">
-	                            				<input type="text" class="form-control" id="KodeSupplier" name="KodeSupplier" placeholder="<AUTO>" value="{{ count($supplier) > 0 ? $supplier[0]['KodeSupplier'] : '' }}" readonly="" >
+	                            				<input type="text" class="form-control" id="KodeSupplier" name="KodeSupplier" placeholder="Otomatis" readonly value="{{ count($supplier) > 0 ? $supplier[0]['KodeSupplier'] : '' }}" readonly="" >
 	                            			</fieldset>
 	                            			
 	                            		</div>

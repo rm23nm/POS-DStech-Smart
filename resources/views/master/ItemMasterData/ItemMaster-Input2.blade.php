@@ -96,17 +96,17 @@
 
                             		<div class="col-md-3"> 
                             			<div class="checkbox">
-                            				<label for="chkAutoNumbering">Kode Item</label>
+                            				<label for="chkAutoNumbering" class="text-body">Kode Item <span class="text-danger">*</span></label>
                             				<!-- <input type="checkbox" class="checkbox-input" id="chkAutoNumbering" {{ count($itemmaster) > 0 ? 'disabled' : '' }}> -->
                             			</div>
                             			<fieldset class="form-group mb-3">
-                            				<input type="text" class="form-control" id="KodeItem" name="KodeItem" placeholder="Masukan Kode Item" value="{{ count($itemmaster) > 0 ? $itemmaster[0]['KodeItem'] : '' }}" required="" {{ count($itemmaster) > 0 ? 'readonly' : '' }} >
+                            				<input type="text" class="form-control" id="KodeItem" name="KodeItem" placeholder="AUTO" value="{{ count($itemmaster) > 0 ? $itemmaster[0]['KodeItem'] : 'AUTO' }}" required="" readonly >
                             			</fieldset>
                             			
                             		</div>
                             		
                             		<div class="col-md-9">
-                            			<label  class="text-body">Nama Item</label>
+                            			<label  class="text-body">Nama Item <span class="text-danger">*</span></label>
                             			<fieldset class="form-group mb-3">
                             				<input type="text" class="form-control" id="NamaItem" name="NamaItem" placeholder="Masukan Nama Item" value="{{ count($itemmaster) > 0 ? $itemmaster[0]['NamaItem'] : '' }}" required="" onchange="SetEnableCommand();">
                             			</fieldset>
@@ -145,6 +145,30 @@
 												<option value="-99" style="color: blue;">
 													+ Tambah Baru
 												</option>
+											</select>
+                            			</fieldset>
+                            		</div>
+
+                            		<div class="col-md-4">
+                            			<label  class="text-body">Kategori Tampil POS</label>
+                            			<fieldset class="form-group mb-3">
+                            				<select name="KategoriPOS" id="KategoriPOS" class="js-example-basic-single js-states form-control bg-transparent">
+												<option value="FNB" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'FNB') ? 'selected' : '' }}>Menu FNB</option>
+												<option value="TIKET" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'TIKET') ? 'selected' : '' }}>Tiket Masuk</option>
+												<option value="JASA" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'JASA') ? 'selected' : '' }}>Jasa / Sewa</option>
+                                                <option value="UMUM" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'UMUM') ? 'selected' : '' }}>Lainnya / Umum</option>
+											</select>
+                            			</fieldset>
+                            		</div>
+
+                            		<div class="col-md-4">
+                            			<label  class="text-body">Kategori Tampil POS</label>
+                            			<fieldset class="form-group mb-3">
+                            				<select name="KategoriPOS" id="KategoriPOS" class="js-example-basic-single js-states form-control bg-transparent">
+												<option value="FNB" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'FNB') ? 'selected' : '' }}>Menu FNB</option>
+												<option value="TIKET" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'TIKET') ? 'selected' : '' }}>Tiket Masuk</option>
+												<option value="JASA" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'JASA') ? 'selected' : '' }}>Jasa / Sewa</option>
+                                                <option value="UMUM" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'UMUM') ? 'selected' : '' }}>Lainnya / Umum</option>
 											</select>
                             			</fieldset>
                             		</div>
@@ -303,9 +327,9 @@
 					                            		</div>
 
 					                            		<div class="col-md-4">
-					                            			<label  class="text-body">Komisi Mekanik (Rp)</label>
+					                            			<label  class="text-body">Komisi Sales (Rp)</label>
 					                            			<fieldset class="form-group mb-3">
-					                            				<input type="text" class="form-control" id="KomisiMekanik" name="KomisiMekanik" value="{{ count($itemmaster) > 0 ? (isset($itemmaster[0]['KomisiMekanik']) ? $itemmaster[0]['KomisiMekanik'] : '0') : '0' }}">
+					                            				<input type="text" class="form-control" id="KomisiSales" name="KomisiSales" value="{{ count($itemmaster) > 0 ? (isset($itemmaster[0]['KomisiSales']) ? $itemmaster[0]['KomisiSales'] : '0') : '0' }}">
 					                            			</fieldset>
 					                            		</div>
 
@@ -1021,6 +1045,7 @@
 			'KodeJenisItem' : jQuery('#KodeJenisItem').val(),
 			'KodeMerk' : jQuery('#KodeMerk').val(),
 			'TypeItem' : jQuery('#TypeItem').val(),
+			'KategoriPOS' : jQuery('#KategoriPOS').val(),
 			'Rak' : jQuery('#Rak').val(),
 			'KodeGudang' : jQuery('#KodeGudang').val(),
 			'KodeSupplier' : jQuery('#KodeSupplier').val(),
@@ -1029,7 +1054,7 @@
 			'Gambar' : jQuery('#Gambar').val(),
 			'HargaPokokPenjualan' : jQuery('#HargaPokokPenjualan').val(),
 			'HargaJual' : jQuery('#HargaJual').val(),
-			'KomisiMekanik' : jQuery('#KomisiMekanik').val(),
+			'KomisiSales' : jQuery('#KomisiSales').val(),
 			'HargaBeliTerakhir' : jQuery('#HargaBeliTerakhir').val(),
 			'ExpiredDate' : jQuery('#ExpiredDate').val(),
 			'Stock' : jQuery('#Stock').val(),

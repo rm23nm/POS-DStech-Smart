@@ -1,0 +1,2009 @@
+<!-- Row: Service Type (Dine In / Take Away) -->
+                    <div class="pp-row" style="margin-top: 15px; background: #fffde7; padding: 10px; border-radius: 8px; border: 1px solid #fff9c4;">
+                        <div class="pp-field">
+                            <label class="pp-label" style="color: #f57f17;"><i class="fas fa-hand-holding-heart"></i> Tipe Layanan</label>
+                            <div style="display: flex; gap: 20px; margin-top: 8px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #1a237e;">
+                                    <input type="radio" name="ppServiceType" value="DINE_IN" checked> Makan di Tempat
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #e65100;">
+                                    <input type="radio" name="ppServiceType" value="TAKE_AWAY"> Bawa Pulang
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row: Opsi Bayar -->
+                    <div class="pp-row" style="margin-top: 20px; border-top: 1px dashed #cfd8dc; padding-top: 15px;">
+                        <div class="pp-field">
+                            <label class="pp-label"><i class="fas fa-cash-register"></i> Pembayaran</label>
+                            <div style="display: flex; gap: 15px; margin-top: 5px;">
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 600;">
+                                    <input type="radio" name="OpsiBayar" value="NANTI" checked onchange="toggleBayarLangsung()"> Bayar Nanti
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 600;">
+                                    <input type="radio" name="OpsiBayar" value="LANGSUNG" onchange="toggleBayarLangsung()"> Bayar Langsung
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detail Bayar Langsung Container -->
+                    <div id="ppDetailBayar" style="display: none; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 8px; padding: 15px; margin-top: 15px;">
+                        
+                        <div class="detail-calc-row">
+                            <span>Subtotal Paket (x<span id="calcQty">1</span>):</span>
+                            <span id="calcSubtotal">Rp 0</span>
+                        </div>
+                        
+                        <div class="detail-calc-row">
+                            <span>Subtotal FnB:</span>
+                            <span id="ppSumFnb">Rp 0</span>
+                        </div>
+                        
+                        <div class="detail-calc-row">
+                            <span>Diskon Member (<span id="calcDiskonPersen">0</span>%):</span>
+                            <span id="calcDiskonRp" style="color: #e53935;">- Rp 0</span>
+                        </div>
+                        
+                        <div class="pp-row mt-1" style="margin-bottom: 8px;">
+                            <div class="pp-field">
+                                <label class="pp-label" style="font-size: 0.75rem;">Kode Voucher</label>
+                                <input type="text" class="pp-input" id="ppKodeVoucher" placeholder="Masukkan voucher..." oninput="onVoucherInput()" style="padding: 6px 10px;">
+                                <div id="ppVoucherStatus" style="font-size: 0.75rem; margin-top: 4px;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-calc-row">
+                            <span>Voucher / Potongan Lain:</span>
+                            <span id="calcVoucherRp" style="color: #e53935;">- Rp 0</span>
+                        </div>
+
+                        <div class="detail-calc-row">
+                            <span>PPN (<span id="calcPpnPersen">0</span>%):</span>
+                            <span id="calcPpnRp">Rp 0</span>
+                        </div>
+                        <div class="detail-calc-row">
+                            <span>Pajak Hiburan (<span id="calcPb1Persen">0</span>%):</span>
+                            <span id="calcPb1Rp">Rp 0</span>
+                        </div>
+                        <div class="detail-calc-row" id="rowBiayaAdmin" style="display: none;">
+                            <span>Biaya Admin:</span>
+                            <span id="calcAdminRp">Rp 0</span>
+                        </div>
+                        
+                        <hr style="border-top: 1px dashed #aed581; border-bottom: none; margin: 10px 0;">
+
+                        <div class="detail-calc-row" style="font-size: 1.1rem; font-weight: 700;">
+                            <span>GRAND TOTAL:</span>
+                            <span id="calcGrandTotal" style="color: #2e7d32;">Rp 0</span>
+                        </div>
+
+                        <div class="pp-row" style="margin-top: 15px;">
+                            <div class="pp-field">
+                                <label class="pp-label">Metode Pembayaran</label>
+                                <select class="pp-input" id="ppMetodePembayaran" name="MetodePembayaran" onchange="calculateTotal()">
+                                    @foreach($metodepembayaran as $mp)
+                                        <option value="{{ $mp->id }}" 
+                                            data-tipe="{{ $mp->TipePembayaran }}"
+                                            data-percent="{{ $mp->BiayaAdminPercent ?? 0 }}"
+                                            data-rupiah="{{ $mp->BiayaAdminRupiah ?? 0 }}"
+                                            data-verifikasi="{{ $mp->MetodeVerifikasi }}">
+                                            {{ $mp->NamaMetodePembayaran }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pp-row pp-row-2" style="margin-top: 10px;">
+                            <div class="pp-field">
+                                <label class="pp-label">Nominal Bayar</label>
+                                <input type="text" class="pp-input" id="ppNominalBayar" oninput="formatRupiahInput(this); calculateTotal(true)" value="0">
+                            </div>
+                            <div class="pp-field">
+                                <label class="pp-label">Kembalian</label>
+                                <input type="text" class="pp-input" id="ppKembalian" readonly value="Rp 0">
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="pp-footer">
+                <button type="button" class="pp-btn-cancel" onclick="closePilihPaketModal()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button type="button" class="pp-btn-confirm" id="ppBtnConfirm" onclick="onKonfirmasiPaket()">
+                    <i class="fas fa-check"></i> Konfirmasi & Mulai
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== MODAL TAMBAH MAKANAN ===== -->
+    <div id="modalTambahMakanan" class="pp-overlay">
+        <div class="pp-modal" style="max-width: 800px;">
+            <!-- Header -->
+            <div class="pp-header">
+                <div>
+                    <div class="pp-header-label"><i class="fas fa-utensils"></i> Tambah Makanan & Minuman</div>
+                    <div class="pp-header-titik" id="mdFnbTitikNama">--</div>
+                </div>
+                <button class="pp-close" onclick="closeTambahMakananModal()">&times;</button>
+            </div>
+
+            <!-- Body -->
+            <div class="pp-body">
+
+                <!-- Row: FnB Ordering (Harmonized with Self-Service) -->
+                <div class="fnb-selection-area">
+                    <div class="fnb-header">
+                        <span style="font-size: 0.9rem;"><i class="fas fa-utensils"></i> PILIH MAKANAN & MINUMAN</span>
+                        <span id="fnbTotalCount" class="badge" style="background: #1a237e; color: #fff; font-size: 0.75rem; border-radius: 10px; padding: 4px 10px;">0 Item</span>
+                    </div>
+                    <div style="padding: 10px; border-bottom: 1px solid #eee; background: #fff;">
+                        <div style="display:flex; gap:10px;">
+                                <select id="fnbCategoryFilter" onchange="filterFnbGrid($('#fnbSearchInput').val(), 'fnbMenuList', this.value)" style="display:none; border-radius: 15px; padding: 5px 10px; border: 1px solid #ccc; outline: none;">
+                                    <option value="FNB">Menu FNB</option>
+                                    <option value="TIKET">Tiket Masuk</option>
+                                    <option value="JASA">Jasa / Sewa</option>
+                                    <option value="ALL">Semua Kategori</option>
+                                </select>
+                                <input type="text" class="pp-input" id="fnbSearchInput" placeholder="Ketik nama makanan atau minuman..." onkeyup="filterFnbGrid(this.value, 'fnbMenuList', $('#fnbCategoryFilter').val())" style="flex:1; border-radius: 20px; padding-left: 15px; height: 38px;">
+                            </div>
+                    </div>
+                    
+                    <div class="fnb-list-container" id="fnbMenuList" style="max-height: 400px;">
+                        @foreach($itemmaster as $item)
+                            @if(in_array($item->TypeItem, [1,2,3,5]))
+                            <div class="fnb-item" data-name="{{ strtolower($item->NamaItem) }}"
+             @php
+                $cat = $item->KategoriPOS ?? "FNB";
+             @endphp
+             data-category="{{ $cat }}" style="display:{{ $cat == 'FNB' ? 'flex' : 'none' }} !important;">
+                                <img src="{{ $item->Gambar ? (str_starts_with($item->Gambar, 'http') ? $item->Gambar : asset('assets/img/item/' . $item->Gambar)) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTUwIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNhYWEiIGR5PSIuM2VtIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkZvb2Q8L3RleHQ+PC9zdmc+' }}" 
+                                     class="fnb-item-img" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTUwIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNhYWEiIGR5PSIuM2VtIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkZvb2Q8L3RleHQ+PC9zdmc+'">
+                                <div class="fnb-item-info">
+                                    <div class="fnb-item-name">{{ $item->NamaItem }}</div>
+                                    <div class="fnb-item-price">Rp {{ number_format($item->HargaJual) }}</div>
+                                    <div class="fnb-item-stock">Stok: {{ $item->Stock }}</div>
+                                </div>
+                                <div class="fnb-qty-ctrl">
+                                    <button type="button" class="fnb-qty-btn" onclick='addFnbToCart(@json($item), -1)'>-</button>
+                                    <span class="fnb-qty-val fnb-qty-val" data-kode="{{ $item->KodeItem }}">0</span>
+                                    <button type="button" class="fnb-qty-btn" onclick='addFnbToCart(@json($item), 1)'>+</button>
+                                </div>
+                            </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Row: Service Type (Dine In / Take Away) -->
+                <div class="pp-row" style="margin-top: 15px; background: #fffde7; padding: 10px; border-radius: 8px; border: 1px solid #fff9c4;">
+                    <div class="pp-field">
+                        <label class="pp-label" style="color: #f57f17;"><i class="fas fa-hand-holding-heart"></i> Tipe Layanan</label>
+                        <div style="display: flex; gap: 20px; margin-top: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #1a237e;">
+                                <input type="radio" name="fnbServiceType" value="DINE_IN" checked> Makan di Tempat
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #e65100;">
+                                <input type="radio" name="fnbServiceType" value="TAKE_AWAY"> Bawa Pulang
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pp-row" style="margin-top:15px; background: #f8f9fa; padding: 12px; border-radius: 10px; border: 1px solid #e0e0e0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 1.1rem; color: #1a237e;">
+                        <span>TOTAL PESANAN:</span>
+                        <span id="fnbTotalItem">Rp 0</span>
+                    </div>
+                </div>
+
+                <!-- Opsi Bayar Row -->
+                <div class="pp-row" style="margin-top: 20px; border-top: 1px dashed #cfd8dc; padding-top: 15px;">
+                    <div class="pp-field">
+                        <label class="pp-label"><i class="fas fa-cash-register"></i> Pembayaran</label>
+                        <div style="display: flex; gap: 15px; margin-top: 5px;">
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 600;">
+                                <input type="radio" name="FnbOpsiBayar" value="NANTI" checked onchange="toggleFnbPaymentSection()"> Bayar Nanti
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 600;">
+                                <input type="radio" name="FnbOpsiBayar" value="LANGSUNG" onchange="toggleFnbPaymentSection()"> Bayar Langsung
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Section Details -->
+                <div id="fnbPaymentSection" style="display: none; background: #e3f2fd; border: 1px solid #bbdefb; border-radius: 8px; padding: 15px; margin-top: 15px;">
+                    <div class="detail-calc-row">
+                        <span>Total Pesanan:</span>
+                        <span id="fnbCalcSubtotal">Rp 0</span>
+                    </div>
+                    <div class="detail-calc-row">
+                        <span>PPN (<span id="fnbCalcPpnPersen">{{ $company[0]->PPN ?? 0 }}</span>%):</span>
+                        <span id="fnbCalcPpnRp">Rp 0</span>
+                    </div>
+                    <div class="detail-calc-row">
+                        <span>Biaya Layanan (<span id="fnbCalcServicePersen">{{ $company[0]->ServiceCharge ?? 0 }}</span>%):</span>
+                        <span id="fnbCalcServiceRp">Rp 0</span>
+                    </div>
+                    <div class="detail-calc-row" id="rowFnbAdmin" style="display: none;">
+                        <span>Biaya Admin:</span>
+                        <span id="fnbCalcAdminRp">Rp 0</span>
+                    </div>
+                    <hr style="border-top: 1px dashed #90caf9; border-bottom: none; margin: 10px 0;">
+                    <div class="detail-calc-row" style="font-size: 1.1rem; font-weight: 700;">
+                        <span>GRAND TOTAL:</span>
+                        <span id="fnbCalcGrandTotal" style="color: #1565c0;">Rp 0</span>
+                    </div>
+
+                    <div class="pp-row" style="margin-top: 15px;">
+                        <div class="pp-field">
+                            <label class="pp-label">Metode Pembayaran</label>
+                            <select class="pp-input" id="fnbMetodePembayaran" onchange="calculateFnbTotal()">
+                                @foreach($metodepembayaran as $mp)
+                                    <option value="{{ $mp->id }}" 
+                                        data-percent="{{ $mp->BiayaAdminPercent ?? 0 }}"
+                                        data-rupiah="{{ $mp->BiayaAdminRupiah ?? 0 }}"
+                                        data-verifikasi="{{ $mp->MetodeVerifikasi }}">
+                                        {{ $mp->NamaMetodePembayaran }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="pp-row pp-row-2" style="margin-top: 10px;">
+                        <div class="pp-field">
+                            <label class="pp-label">Nominal Bayar</label>
+                            <input type="text" class="pp-input" id="fnbNominalBayar" oninput="formatRupiahInput(this); calculateFnbTotal(true)" value="0">
+                        </div>
+                        <div class="pp-field">
+                            <label class="pp-label">Kembalian</label>
+                            <input type="text" class="pp-input" id="fnbKembalian" readonly value="Rp 0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="pp-footer">
+                <button class="pp-btn-cancel" onclick="closeTambahMakananModal()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button class="pp-btn-confirm" id="btnConfirmFnb" onclick="submitFnbOrder()">
+                    <i class="fas fa-save"></i> Simpan Pesanan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL TAMBAH DURASI ===== -->
+    <div id="modalTambahDurasi" class="pp-overlay">
+        <div class="pp-modal" style="max-width: 500px;">
+            <div class="pp-header">
+                <div>
+                    <div class="pp-header-label"><i class="fas fa-clock"></i> Tambah Durasi</div>
+                    <div class="pp-header-titik" id="mdDurasiTitikNama">--</div>
+                </div>
+                <button class="pp-close" onclick="closeTambahDurasiModal()">&times;</button>
+            </div>
+
+            <div class="pp-body">
+                <div class="pp-row">
+                    <div class="pp-field">
+                        <label class="pp-label">Pilih Paket Ekstensi</label>
+                        <select class="pp-input" id="tdPaketId" onchange="onTambahDurasiPaketChange()">
+                            <!-- Populated via JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pp-row pp-row-2" style="margin-top: 10px;">
+                    <div class="pp-field">
+                        <label class="pp-label">Durasi Tambahan</label>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button type="button" class="btn-qty" onclick="adjTambahDurasi(-1)">-</button>
+                            <input type="number" id="tdDurasi" class="pp-input" style="text-align:center; flex:1;" value="1" min="1" onchange="calculateTambahDurasi()">
+                            <button type="button" class="btn-qty" onclick="adjTambahDurasi(1)">+</button>
+                            <span id="tdUnitLabel" style="font-weight:600; color:#444; width:50px;">Jam</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pp-row" style="margin-top: 20px; border-top: 1px dashed #cfd8dc; padding-top: 15px;">
+                    <div class="pp-field">
+                        <label class="pp-label"><i class="fas fa-cash-register"></i> Pembayaran</label>
+                        <div style="display: flex; gap: 15px; margin-top: 5px;">
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 600;">
+                                <input type="radio" name="TdOpsiBayar" value="NANTI" checked onchange="toggleTdPaymentSection()"> Bayar Nanti
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 600;">
+                                <input type="radio" name="TdOpsiBayar" value="LANGSUNG" onchange="toggleTdPaymentSection()"> Bayar Langsung
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tdPaymentSection" style="display: none; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 8px; padding: 15px; margin-top: 15px;">
+                    <div class="detail-calc-row">
+                        <span>Tambahan Biaya:</span>
+                        <span id="tdCalcSubtotal">Rp 0</span>
+                    </div>
+                    <div class="detail-calc-row">
+                        <span>PPN (<span id="tdCalcPpnPersen">{{ $company[0]->PPN ?? 0 }}</span>%):</span>
+                        <span id="tdCalcPpnRp">Rp 0</span>
+                    </div>
+                    <div class="detail-calc-row">
+                        <span>Biaya Layanan (<span id="tdCalcServicePersen">{{ $company[0]->ServiceCharge ?? 0 }}</span>%):</span>
+                        <span id="tdCalcServiceRp">Rp 0</span>
+                    </div>
+                    <div class="detail-calc-row" id="rowTdAdmin" style="display: none;">
+                        <span>Biaya Admin:</span>
+                        <span id="tdCalcAdminRp">Rp 0</span>
+                    </div>
+                    <hr style="border-top: 1px dashed #9ccc65; border-bottom: none; margin: 10px 0;">
+                    <div class="detail-calc-row" style="font-size: 1.1rem; font-weight: 700;">
+                        <span>GRAND TOTAL:</span>
+                        <span id="tdCalcGrandTotal" style="color: #388e3c;">Rp 0</span>
+                    </div>
+
+                    <div class="pp-row" style="margin-top: 15px;">
+                        <div class="pp-field">
+                            <label class="pp-label">Metode Pembayaran</label>
+                            <select class="pp-input" id="tdMetodePembayaran" onchange="calculateTambahDurasi()">
+                                @foreach($metodepembayaran as $mp)
+                                    <option value="{{ $mp->id }}" 
+                                        data-percent="{{ $mp->BiayaAdminPercent ?? 0 }}"
+                                        data-rupiah="{{ $mp->BiayaAdminRupiah ?? 0 }}"
+                                        data-verifikasi="{{ $mp->MetodeVerifikasi }}">
+                                        {{ $mp->NamaMetodePembayaran }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="pp-row pp-row-2" style="margin-top: 10px;">
+                        <div class="pp-field">
+                            <label class="pp-label">Nominal Bayar</label>
+                            <input type="text" class="pp-input" id="tdNominalBayar" oninput="formatRupiahInput(this); calculateTambahDurasi(true)" value="0">
+                        </div>
+                        <div class="pp-field">
+                            <label class="pp-label">Kembalian</label>
+                            <input type="text" class="pp-input" id="tdKembalian" readonly value="Rp 0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pp-footer">
+                <button class="pp-btn-cancel" onclick="closeTambahDurasiModal()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button class="pp-btn-confirm" id="btnConfirmTambahDurasi" onclick="submitTambahDurasi()">
+                    <i class="fas fa-save"></i> Perpanjang Durasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL RECEIPT PREVIEW ===== -->
+    <div id="modalReceiptPreview" class="receipt-overlay">
+        <div class="receipt-container">
+            <div class="receipt-paper" id="receiptContent">
+                <div class="receipt-header">
+                    <div class="receipt-logo" id="rcptCompanyName">D'BILLIARD</div>
+                    <div class="receipt-address" id="rcptCompanyAddress">Alamat Perusahaan</div>
+                    <div class="receipt-address" id="rcptCompanyPhone">Telp: 08123456789</div>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <div class="receipt-info">
+                    <div class="receipt-info-row">
+                        <span>No: <strong id="rcptNoFaktur">#12345</strong></span>
+                        <span id="rcptDate">27/03/2026 15:30</span>
+                    </div>
+                    <div class="receipt-info-row">
+                        <span>Kasir: <span id="rcptCashier">{{ Auth::user()->name }}</span></span>
+                        <span>Meja: <span id="rcptTable">-</span></span>
+                    </div>
+                    <div class="receipt-info-row">
+                        <span>Pelanggan:</span>
+                        <span id="rcptCustomer">Umum</span>
+                        <span id="rcptCustomerEmail" style="display:none;"></span>
+                    </div>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th style="text-align:center;">Qty</th>
+                            <th style="text-align:right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rcptItems">
+                        <!-- Items populate here -->
+                    </tbody>
+                </table>
+
+                <div class="receipt-divider"></div>
+
+                <div class="receipt-totals">
+                    <div class="receipt-total-row">
+                        <span>Subtotal:</span>
+                        <span id="rcptSubtotal">Rp 0</span>
+                    </div>
+                    <div class="receipt-total-row" id="rcptRowDiskon" style="display:none;">
+                        <span>Diskon:</span>
+                        <span id="rcptDiskon">-Rp 0</span>
+                    </div>
+                    <div class="receipt-total-row">
+                        <span>Pajak:</span>
+                        <span id="rcptPajak">Rp 0</span>
+                    </div>
+                    <div class="receipt-total-row" id="rcptRowPajakHiburan" style="display:none;">
+                        <span>Pajak Hiburan:</span>
+                        <span id="rcptPajakHiburan">Rp 0</span>
+                    </div>
+                    <div class="receipt-total-row">
+                        <span>Layanan / Admin:</span>
+                        <span id="rcptLayanan">Rp 0</span>
+                    </div>
+                    <div class="receipt-total-row receipt-grand-total">
+                        <span>GRAND TOTAL:</span>
+                        <span id="rcptGrandTotal">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="receipt-divider"></div>
+
+                <div class="receipt-info">
+                    <div class="receipt-info-row">
+                        <span>Metode: <span id="rcptMetode">Tunai</span></span>
+                    </div>
+                    <div class="receipt-info-row">
+                        <span>Bayar:</span>
+                        <span id="rcptBayar">Rp 0</span>
+                    </div>
+                    <div class="receipt-info-row" style="font-weight:700;">
+                        <span>Kembali:</span>
+                        <span id="rcptKembali">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="receipt-footer">
+                    Terima kasih atas kunjungan Anda!<br>
+                    Silahkan datang kembali.
+                </div>
+            </div>
+
+            <div class="receipt-actions">
+                <button class="btn-receipt btn-receipt-print" onclick="printReceipt()"><i class="fas fa-print"></i> Cetak</button>
+                <button class="btn-receipt btn-receipt-email" onclick="sendReceiptEmail()"><i class="fas fa-envelope"></i> Email</button>
+                <button class="btn-receipt btn-receipt-wa" onclick="shareReceiptWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn-receipt btn-receipt-close" onclick="closeReceiptModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL ORDER -->
+
+
+    <div id="modalDetailOrder" class="modal-pos">
+        <div class="modal-pos-content">
+            <div class="modal-pos-header">
+                <h2 id="mdTitle">Detail Order</h2>
+                <span class="modal-close" onclick="closeDetailModal()">&times;</span>
+            </div>
+            <div class="modal-pos-body">
+                <div class="detail-info-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">No. Transaksi</span>
+                        <span class="detail-value" id="mdNoTransaksi">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Nama Pelanggan</span>
+                        <span class="detail-value" id="mdNamaPelanggan">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Jam Mulai</span>
+                        <span class="detail-value" id="mdJamMulai">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Jam Selesai</span>
+                        <span class="detail-value" id="mdJamSelesai">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Paket / Durasi</span>
+                        <span class="detail-value" id="mdPaketDurasi">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Harga Per Durasi</span>
+                        <span class="detail-value" id="mdHargaSatuan">-</span>
+                    </div>
+                </div>
+
+                <div class="summary-details" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; background:#f5faff; padding:15px; border-radius:8px; border:1px solid #d1e4ff;">
+                    <div class="summary-row"><span>Total Paket</span> <span id="mdTotalPaket">Rp 0</span></div>
+                    <div class="summary-row"><span>Diskon</span> <span id="mdDiskon" style="color:#e53935;">Rp 0</span></div>
+                    <div class="summary-row"><span>Pajak (PPN)</span> <span id="mdPajak">Rp 0</span></div>
+                    <div class="summary-row"><span>Pajak Hiburan</span> <span id="mdPajakHiburan">Rp 0</span></div>
+                    <div class="summary-row"><span>Biaya Layanan</span> <span id="mdLayanan">Rp 0</span></div>
+                    <div class="summary-row"><span>Total Makanan &amp; Minuman</span> <span id="mdTotalMakanan">Rp 0</span></div>
+                    <div class="summary-row" style="font-weight:700; border-top:1px solid #bddbff; padding-top:8px; grid-column: span 2; font-size:1.1rem;">
+                        <span>Grand Total (Paket + FnB)</span> <span id="mdGrandTotal">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <span>Daftar Pesanan FnB</span>
+                    <span id="fnbCountBadge" style="background:#1a237e; color:#fff; font-size:0.75rem; padding:2px 8px; border-radius:10px;">0 Item</span>
+                </div>
+                <div style="max-height: 200px; overflow-y: auto;">
+                    <table class="fnb-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Harga</th>
+                                <th style="text-align:right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mdFnBList">
+                            <!-- JS populated -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="mdPaymentSection" style="display: none; background:#fff8e1; border:1px solid #ffe082; border-radius:10px; padding:16px; margin-top:12px;">
+                    <div style="font-weight:700; font-size:0.95rem; color:#e65100; margin-bottom:10px;"><i class="fas fa-exclamation-circle"></i> Ada Sisa Tagihan</div>
+
+                    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:12px;">
+                        <div><span style="font-size:0.82rem; color:#555;">Total Tagihan</span><br><strong id="mdSumTagihan" style="font-size:1rem;">Rp 0</strong></div>
+                        <div><span style="font-size:0.82rem; color:#555;">Sudah Terbayar</span><br><strong id="mdSumTerbayar" style="color:#2e7d32; font-size:1rem;">Rp 0</strong></div>
+                        <div style="grid-column:span 2; background:#fff3cd; border-radius:6px; padding:8px 10px;">
+                            <span style="font-size:0.82rem; color:#555;">Sisa Tagihan</span><br>
+                            <strong id="mdSumOutstanding" style="color:#c62828; font-size:1.15rem;">Rp 0</strong>
+                        </div>
+                    </div>
+
+                    <hr style="border:none; border-top:1px dashed #ffc107; margin:10px 0;">
+                    <div style="font-weight:600; font-size:0.88rem; color:#555; margin-bottom:8px;">Pembayaran Sisa</div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div style="grid-column:span 2;">
+                            <label style="font-size:0.82rem; color:#666; display:block; margin-bottom:3px;">Metode Pembayaran</label>
+                            <select id="mdMetodePembayaran" class="pp-input" style="width:100%;" onchange="onDetailMetodeChange()">
+                                @foreach($metodepembayaran as $mp)
+                                    <option value="{{ $mp->id }}"
+                                        data-nama="{{ $mp->NamaMetodePembayaran }}"
+                                        data-percent="{{ $mp->BiayaAdminPercent ?? 0 }}"
+                                        data-rupiah="{{ $mp->BiayaAdminRupiah ?? 0 }}">
+                                        {{ $mp->NamaMetodePembayaran }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div id="mdAdminFeeRow" style="grid-column:span 2; display:none; background:#fce4ec; border-radius:6px; padding:8px 10px;">
+                            <span style="font-size:0.82rem; color:#555;">Biaya Admin / Layanan</span><br>
+                            <strong id="mdAdminFeeValue" style="color:#c62828;">Rp 0</strong>
+                        </div>
+
+                        <div style="grid-column:span 2;">
+                            <label style="font-size:0.82rem; color:#666; display:block; margin-bottom:3px;">Nominal Bayar</label>
+                            <input type="text" id="mdNominalBayar" class="pp-input" style="width:100%; font-size:1rem; font-weight:600;" placeholder="0" oninput="formatRupiahInput(this); onDetailNominalChange(true)" value="0">
+                        </div>
+
+                        <div style="grid-column:span 2; background:#e8f5e9; border-radius:6px; padding:8px 10px;">
+                            <span style="font-size:0.82rem; color:#555;">Kembalian</span><br>
+                            <strong id="mdKembalian" style="color:#2e7d32; font-size:1.1rem;">Rp 0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-pos-footer">
+                <button class="btn-modal-action btn-modal-close" onclick="closeDetailModal()">Tutup</button>
+                <button id="mdBtnCheckOut" class="btn-modal-action btn-modal-pay" onclick="onBayarFromDetail()" style="display: none;"><i class="fas fa-money-bill-wave"></i> Bayar</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    /* ===== MODAL PILIH PAKET ===== */
+    .pp-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        z-index: 5000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(3px);
+    }
+    .pp-overlay.open { display: flex; }
+
+    .pp-modal {
+        background: #fff;
+        border-radius: 16px;
+        width: 95%;
+        max-width: 600px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+        animation: ppSlideIn 0.25s ease;
+    }
+    @keyframes ppSlideIn {
+        from { opacity: 0; transform: translateY(-30px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+
+    /* Header */
+    .pp-header {
+        background: linear-gradient(135deg, #1a237e, #3949ab);
+        color: #fff;
+        padding: 18px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .pp-header-label {
+        font-size: 0.82rem;
+        opacity: 0.8;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+    .pp-header-titik {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .pp-close {
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: #fff;
+        font-size: 1.6rem;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+    .pp-close:hover { background: rgba(255,255,255,0.3); }
+
+    /* Body */
+    .pp-body {
+        padding: 20px 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+    .pp-row { margin-bottom: 14px; }
+    .pp-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+    .pp-field { display: flex; flex-direction: column; }
+    .pp-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #546e7a;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+    .pp-label i { margin-right: 4px; }
+    .pp-input {
+        border: 1.5px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 0.95rem;
+        color: #263238;
+        outline: none;
+        transition: border-color 0.2s;
+        width: 100%;
+        background: #fafafa;
+    }
+    .pp-input:focus { border-color: #3949ab; background: #fff; }
+    .titik-box.status-2 { background: #fb8c00; color: #fff; }
+    .titik-box.active-selected {
+        outline: 3px solid #2196f3;
+        outline-offset: 2px;
+        transform: scale(1.05);
+        z-index: 10;
+    }
+
+    /* Paid Badge inside Titik Box */
+    .titik-box {
+        position: relative;
+    }
+    .paid-badge {
+        position: absolute;
+        top: -10px;
+        right: -8px;
+        background: #4caf50;
+        color: white;
+        border-radius: 4px;
+        padding: 3px 10px;
+        font-size: 11px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border: 1.5px solid white;
+        z-index: 5;
+        text-transform: uppercase;
+        line-height: 1;
+    }
+
+    /* Timer inside Titik Box */
+    .table-timer {
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        font-size: 12px;
+        font-weight: 800;
+        text-align: center;
+        background: rgba(0,0,0,0.15);
+        padding: 3px 0;
+        pointer-events: none;
+        color: #333;
+    }
+    .status-0 .table-timer { display: none; }
+    /* Durasi stepper */
+    .pp-durasi-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .pp-dur-btn {
+        width: 36px;
+        height: 36px;
+        border: 1.5px solid #3949ab;
+        border-radius: 8px;
+        background: #fff;
+        color: #3949ab;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        transition: background 0.15s;
+        flex-shrink: 0;
+    }
+    .pp-dur-btn:hover { background: #3949ab; color: #fff; }
+    .pp-dur-input { text-align: center; flex: 1; }
+
+    /* Footer */
+    .pp-footer {
+        padding: 14px 24px;
+        background: #f8f9fb;
+        border-top: 1px solid #e8eaf6;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+    
+    /* Calc Detail Row */
+    .detail-calc-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #455a64;
+        margin-bottom: 6px;
+    }
+    .pp-btn-cancel {
+        padding: 10px 22px;
+        border-radius: 8px;
+        border: 1.5px solid #b0bec5;
+        background: #fff;
+        color: #546e7a;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .pp-btn-cancel:hover { background: #eceff1; }
+    .pp-btn-confirm {
+        padding: 10px 26px;
+        border-radius: 8px;
+        border: none;
+        background: linear-gradient(135deg, #2e7d32, #43a047);
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: opacity 0.15s, transform 0.12s;
+        box-shadow: 0 4px 12px rgba(46,125,50,0.3);
+    }
+        .pp-btn-confirm:hover { opacity: 0.88; transform: translateY(-1px); }
+    .pp-btn-confirm:disabled { background: #b0bec5; cursor: not-allowed; box-shadow: none; opacity: 0.7; }
+
+    /* Slots */
+    .slot-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        background: #f8f9fb;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        max-height: 180px;
+        overflow-y: auto;
+    }
+    .slot-box {
+        padding: 6px 12px;
+        border: 1.5px solid #b0bec5;
+        border-radius: 6px;
+        background: #fff;
+        color: #37474f;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        user-select: none;
+    }
+    .slot-box:hover:not(.booked) {
+        border-color: #3949ab;
+        color: #3949ab;
+    }
+    .slot-box.selected {
+        background: #3949ab;
+        color: #fff;
+        border-color: #3949ab;
+    }
+    .slot-box.booked {
+        background: #e0e0e0;
+        color: #9e9e9e;
+        border-color: #d5d5d5;
+        cursor: not-allowed;
+    }
+    /* Slot yang sudah dimulai tapi belum selesai (customer terlambat) */
+    .slot-box.late {
+        background: #fff8e1;
+        color: #e65100;
+        border-color: #ffca28;
+        cursor: pointer;
+    }
+    .slot-box.late:hover {
+        background: #fff3cd;
+        border-color: #f9a825;
+        color: #bf360c;
+    }
+    .slot-box.late .slot-late-label {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 600;
+        line-height: 1;
+        margin-top: 2px;
+        color: #e65100;
+    }
+    .slot-loading { font-size: 0.85rem; color: #78909c; width: 100%; text-align: center; font-style: italic; }
+    .mt-1 { margin-top: 6px; }
+
+    /* Fix SweetAlert being behind modal (ULTRA-HIGH) */
+    .swal2-container, 
+    .sweet-overlay, 
+    .swal-overlay,
+    .swal-container { 
+        z-index: 999999 !important; 
+    }
+    .swal2-popup, 
+    .sweet-alert, 
+    .swal-modal,
+    .swal-popup { 
+        z-index: 1000000 !important; 
+    }
+    </style>
+
+    <script>
+    // ===== DATA INJECTIONS =====
+    var dataPaketAll = {!! json_encode($paket) !!};
+    var dataPelangganAll = {!! json_encode($pelanggan) !!}; // Data Member Injected
+    var dataCustomerMemberships = {!! json_encode($customerMemberships ?? []) !!}; // Active Memberships
+    @php $gruppelanggan = \App\Models\GrupPelanggan::where('RecordOwnerID', \Auth::user()->RecordOwnerID)->get(); @endphp
+    var dataGrupPelanggan = {!! json_encode($gruppelanggan) !!}; // Member Group
+    var confCompany = {!! json_encode(count($company) > 0 ? $company[0] : null) !!};
+
+    var selectedSlots = []; // menampung jam slot yang di click
+    var rawSlots = [];      // var nyimpan data asli slot dari json
+    var activeHargaPaket = 0;
+
+    // ===== MODAL PILIH PAKET LOGIC (UI Only) =====
+    function onJenisPaketChange(jenis) {
+        var sel = document.getElementById('ppPaketId');
+        sel.innerHTML = '<option value="">-- Pilih Paket --</option>';
+        document.getElementById('ppHargaNormal').value = '';
+        
+        var rowSlot = document.getElementById('ppRowSlot');
+        var rowJam = document.getElementById('ppRowJamMulai');
+        selectedSlots = [];
+
+        if (!jenis) {
+            rowSlot.style.display = 'none';
+            rowJam.style.display = 'grid';
+            return;
+        }
+
+        var btnMin = document.getElementById('btnMinDurasi');
+        var btnPlus = document.getElementById('btnPlusDurasi');
+        var inputDurasi = document.getElementById('ppDurasi');
+
+        if (jenis === 'MENITREALTIME' || jenis === 'PAYPERUSE') {
+            inputDurasi.disabled = true;
+            btnMin.disabled = true;
+            btnPlus.disabled = true;
+            inputDurasi.style.backgroundColor = '#f3f6f9';
+            btnMin.style.backgroundColor = '#f3f6f9';
+            btnPlus.style.backgroundColor = '#f3f6f9';
+            inputDurasi.value = '1';
+        } else {
+            // Always enable duration input, relying on package default (DurasiPaket)
+            inputDurasi.disabled = false;
+            btnMin.disabled = false;
+            btnPlus.disabled = false;
+            inputDurasi.style.backgroundColor = '';
+            btnMin.style.backgroundColor = '';
+            btnPlus.style.backgroundColor = '';
+        }
+
+        if (jenis === 'JAM' || jenis === 'PAKETMEMBER') {
+            rowSlot.style.display = 'block';
+            rowJam.style.display = 'none'; // Sembunyikan Jam Mulai krn pakai slot
+            fetchSlots();
+        } else {
+            rowSlot.style.display = 'none';
+            rowJam.style.display = 'grid';
+        }
+
+        var cat = selectedTitik && selectedTitik.namakelompok ? selectedTitik.namakelompok.toUpperCase() : "";
+        
+        if (jenis === 'PAKETMEMBER') {
+            var memberId = document.getElementById('ppKodePelanggan').value.trim();
+            var kelLampu = selectedTitik ? (selectedTitik.KelompokLampu || selectedTitik.kelompoklampu || "").toString().trim() : "";
+            
+            console.log("=== DEBUG PAKET MEMBER ===");
+            console.log("memberId: ", memberId);
+            console.log("kelLampu (from selectedTitik): ", kelLampu, typeof kelLampu);
+            console.log("selectedTitik: ", selectedTitik);
+            console.log("dataCustomerMemberships: ", dataCustomerMemberships);
+            
+            var validMemberships = [];
+            if (memberId) {
+                var memberData = dataPelangganAll.find(m => m.KodePelanggan == memberId);
+                if (memberData && memberData.maxTimePerPlay) {
+                    document.getElementById('ppDurasi').value = parseInt(memberData.maxTimePerPlay) || 1;
+                }
+                validMemberships = dataCustomerMemberships.filter(function(m) {
+                    var mId = (m.KodePelanggan || "").toString().trim();
+                    var mKl = (m.KelompokLampu || "").toString().trim();
+                    return mId == memberId && (!mKl || mKl == kelLampu);
+                });
+                console.log("validMemberships after filter: ", validMemberships);
+            }
+
+            validMemberships.forEach(function(m) {
+                var opt = document.createElement('option');
+                opt.value = m.KodePaketMember; // Gunakan string ID PaketMember 
+                opt.text = (m.NamaPaket || m.KodePaketMember) + " (Berlaku s/d " + m.ValidUntil + ")";
+                opt.dataset.harga = 0;
+                opt.dataset.durasi = m.maxTimePerPlay || 1;
+                sel.appendChild(opt);
+            });
+            
+            // Set Unit Label
+            document.getElementById('tdUnitLabel').textContent = 'Jam';
+            
+            if (sel.options.length === 1) { // Hanya "-- Pilih Paket --"
+                swal("Info", "Member belum dipilih atau tidak memiliki paket aktif untuk meja ini.", "info");
+                return;
+            }
+        } else {
+            dataPaketAll.forEach(function(p) {
+                if (p.JenisPaket === jenis) {
+                    // Filter berdasarkan kategori meja
+                    if (cat === "" || p.NamaPaket.toUpperCase().includes(cat)) {
+                        var opt = document.createElement('option');
+                        opt.value = p.id;
+                        opt.text = p.NamaPaket;
+                        opt.dataset.harga = p.HargaNormal || 0;
+                        opt.dataset.durasi = p.DurasiPaket || 1; // Inject package base durasi
+                        sel.appendChild(opt);
+                    }
+                }
+            });
+            
+            if (sel.options.length === 1) {
+                swal("Info", "Tidak ada paket tambahan yang tersedia untuk jenis paket ini.", "info");
+                return;
+            }
+        }
+        
+        updateJamSelesai();
+        validateForm();
+    }
+
+    document.getElementById('ppTglTransaksi').addEventListener('change', function() {
+        var jenis = document.getElementById('ppJenisPaket').value;
+        if (jenis === 'JAM' || jenis === 'PAKETMEMBER') {
+            fetchSlots();
+        }
+    });
+
+    function fetchSlots() {
+        var tgl = document.getElementById('ppTglTransaksi').value;
+        var table_id = selectedTitik ? selectedTitik.id : null;
+        var container = document.getElementById('ppSlotContainer');
+        
+        if (!tgl || !table_id) return;
+        
+        container.innerHTML = '<div class="slot-loading">Memuat slot...</div>';
+        selectedSlots = [];
+        
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        fetch('/billing/getAvailableSlots', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify({ tanggal: tgl, table_id: table_id })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) {
+                renderSlots(res.data);
+            } else {
+                container.innerHTML = '<div class="slot-loading">Gagal memuat slot: '+res.message+'</div>';
+            }
+        })
+        .catch(err => {
+            container.innerHTML = '<div class="slot-loading">Terdapat kesalahan sistem.</div>';
+        });
+    }
+
+    function renderSlots(slotsData) {
+        rawSlots = slotsData;
+        var container = document.getElementById('ppSlotContainer');
+        container.innerHTML = '';
+        
+        if (slotsData.length === 0) {
+            container.innerHTML = '<div class="slot-loading">Tidak ada slot tersedia di hari tersebut.</div>';
+            return;
+        }
+
+        var jenis = document.getElementById('ppJenisPaket').value;
+        var isMemberValid = true;
+        var memberError = '';
+
+        if (jenis === 'PAKETMEMBER') {
+            var memberId = document.getElementById('ppKodePelanggan').value;
+            if (!memberId) {
+                isMemberValid = false;
+                memberError = 'Pilih Member terlebih dahulu untuk melihat ketersediaan slot.';
+            } else {
+                var memberData = dataPelangganAll.find(m => m.KodePelanggan == memberId);
+                if (!memberData) {
+                    isMemberValid = false;
+                    memberError = 'Member tidak ditemukan (Harap Refresh).';
+                } else if (memberData.isPaidMembership != 1) {
+                    isMemberValid = false;
+                    memberError = 'Member tidak memiliki Membership Aktif (Nilai saat ini: ' + memberData.isPaidMembership + '). Harap Refresh halaman jika baru membayar.';
+                }
+            }
+        }
+
+        if (!isMemberValid) {
+            var errorDiv = document.createElement('div');
+            errorDiv.style.width = '100%';
+            errorDiv.style.textAlign = 'center';
+            errorDiv.style.marginBottom = '10px';
+            errorDiv.innerHTML = '<span style="color:#e53935; font-size: 0.85rem;"><i class="fas fa-ban"></i> ' + memberError + '</span>';
+            container.appendChild(errorDiv);
+        }
+
+        slotsData.forEach((s, idx) => {
+            // Force block slot if member is invalid for PAKETMEMBER
+            var isSlotBooked = s.booked || !isMemberValid;
+            // Slot sudah dimulai tapi belum selesai (customer terlambat) — hanya berlaku jika tidak diboking orang lain
+            var isSlotLate   = s.isLate && !isSlotBooked;
+
+            var d = document.createElement('div');
+
+            // Tentukan class CSS berdasarkan status slot
+            if (isSlotBooked) {
+                d.className = 'slot-box booked';
+                d.textContent = s.time;
+            } else if (isSlotLate) {
+                d.className = 'slot-box late';
+                d.innerHTML = s.time + '<span class="slot-late-label">⚠ Telat</span>';
+            } else {
+                d.className = 'slot-box';
+                d.textContent = s.time;
+            }
+
+            d.dataset.idx = idx;
+
+            if (!isSlotBooked) {
+                d.addEventListener('click', function() {
+                    if (isSlotLate) {
+                        // Tampilkan popup peringatan sebelum mengaktifkan transaksi terlambat
+                        confirmLateSlot(this, idx, s);
+                    } else {
+                        toggleSlot(this, idx, s);
+                    }
+                });
+            }
+            container.appendChild(d);
+        });
+    }
+
+    /**
+     * Tampilkan konfirmasi keterlambatan sebelum kasir memilih slot
+     * Waktu tetap dihitung dari awal slot (bukan dari jam sekarang)
+     * Menggunakan SweetAlert2 v7 — result.value (bukan result.isConfirmed)
+     */
+    function confirmLateSlot(el, idx, slot) {
+        var slotHour  = parseInt(slot.time.split(':')[0]);
+        var slotMin   = parseInt(slot.time.split(':')[1]);
+        var nowDate   = new Date();
+        var menit     = (nowDate.getHours() * 60 + nowDate.getMinutes()) - (slotHour * 60 + slotMin);
+        if (menit < 0) menit = 0;
+
+        var sisaMenit = 60 - menit;
+        if (sisaMenit < 0) sisaMenit = 0;
+
+        var htmlMsg = '<div style="text-align:left;font-size:0.9rem;line-height:1.8">'
+                    + '<p>Slot sudah dimulai sejak <b>' + slot.time + '</b>.</p>'
+                    + '<p>Customer terlambat <b style="color:#e65100">\u00b1' + menit + ' menit</b>.</p>'
+                    + '<p>Sisa waktu bermain: <b style="color:#1565c0">\u00b1' + sisaMenit + ' menit</b>.</p>'
+                    + '<hr style="margin:8px 0">'
+                    + '<p style="color:#c62828;font-size:0.82rem">'
+                    + '\u26a0 Waktu tetap dihitung dari <b>' + slot.time + '</b>. '
+                    + 'Resiko keterlambatan ditanggung konsumen.</p>'
+                    + '</div>';
+
+        // SweetAlert2 v7: gunakan result.value (bukan result.isConfirmed)
+        Swal.fire({
+            title: '\u26a0 Customer Terlambat',
+            html: htmlMsg,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Aktifkan Transaksi',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#e65100',
+            cancelButtonColor: '#78909c',
+            reverseButtons: false
+        }).then(function(result) {
+            if (result.value) {
+                toggleSlot(el, idx, slot);
+            }
+        });
+    }
+
+    function toggleSlot(el, idx, slot) {
+        if (el.classList.contains('selected')) {
+            // Remove
+            var pos = selectedSlots.findIndex(x => x.idx === idx);
+            if (pos !== -1) selectedSlots.splice(pos, 1);
+            el.classList.remove('selected');
+        } else {
+            // Add
+            selectedSlots.push({ idx: idx, slot: slot });
+            el.classList.add('selected');
+        }
+        
+        // Sort
+        selectedSlots.sort((a,b) => a.idx - b.idx);
+        validateSlotContinuity();
+        
+        // Update Durasi (asumsi tiap slot = 1 jam)
+        if (selectedSlots.length > 0) {
+            document.getElementById('ppDurasi').value = selectedSlots.length;
+            // Kita override JamMulai & Selesai value logic asli agar dikirim benar saat submit
+            document.getElementById('ppJamMulai').value = selectedSlots[0].slot.time;
+        } else {
+            document.getElementById('ppDurasi').value = 1;
+        }
+        updateJamSelesai();
+
+        // Auto-select next slots for member package IF they just selected the first slot
+        var jenis = document.getElementById('ppJenisPaket').value;
+        if (jenis === 'PAKETMEMBER' && el.classList.contains('selected') && selectedSlots.length === 1) {
+            var memberId = document.getElementById('ppKodePelanggan').value;
+            if (memberId) {
+                var memberData = dataPelangganAll.find(m => m.KodePelanggan == memberId);
+                if (memberData && memberData.maxTimePerPlay) {
+                    var maxTime = parseInt(memberData.maxTimePerPlay) || 1;
+                    if (maxTime > 1) {
+                        var nextSlotsNeeded = maxTime - 1;
+                        var allSlotDivs = document.querySelectorAll('.slot-box:not(.booked)');
+                        var startIndex = -1;
+                        for(var i=0; i<allSlotDivs.length; i++) {
+                            if (allSlotDivs[i].dataset.idx == idx) {
+                                startIndex = i; break;
+                            }
+                        }
+                        if (startIndex !== -1) {
+                            for(var i=1; i<=nextSlotsNeeded; i++) {
+                                var nextDiv = allSlotDivs[startIndex + i];
+                                if (nextDiv && parseInt(nextDiv.dataset.idx) === parseInt(idx) + i) {
+                                    nextDiv.click(); // Programmatically click the next slot
+                                } else {
+                                    break; // Stop if not consecutive or booked
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function validateSlotContinuity() {
+        var helper = document.getElementById('ppSlotHelper');
+        var jenis = document.getElementById('ppJenisPaket').value;
+        var reqSlots = 0;
+
+        if (jenis === 'PAKETMEMBER') {
+            var memberId = document.getElementById('ppKodePelanggan').value;
+            if (memberId) {
+                var memberData = dataPelangganAll.find(m => m.KodePelanggan == memberId);
+                if (memberData && memberData.maxTimePerPlay) {
+                    reqSlots = parseInt(memberData.maxTimePerPlay) || 0;
+                }
+            }
+        }
+
+        var isConsecutive = true;
+        if (selectedSlots.length > 1) {
+            for(var i=1; i<selectedSlots.length; i++) {
+                if (selectedSlots[i].idx !== selectedSlots[i-1].idx + 1) {
+                    isConsecutive = false; break;
+                }
+            }
+        }
+
+        if (!isConsecutive) {
+            helper.innerHTML = '<span style="color:#e53935;"><i class="fas fa-exclamation-circle"></i> Slot harus berurutan!</span>';
+            document.getElementById('ppBtnConfirm').disabled = true;
+            return;
+        }
+
+        if (jenis === 'PAKETMEMBER' && reqSlots > 0 && selectedSlots.length !== reqSlots) {
+            helper.innerHTML = '<span style="color:#e53935;"><i class="fas fa-exclamation-circle"></i> Wajib '+reqSlots+' Jam berurutan (Cari jam kosong yang cukup).</span>';
+            document.getElementById('ppBtnConfirm').disabled = true;
+            return;
+        }
+
+        if (selectedSlots.length > 0) {
+            helper.innerHTML = '<span style="color:#43a047;"><i class="fas fa-check-circle"></i> Slot valid ('+selectedSlots.length+' Jam).</span>';
+            validateForm();
+        } else {
+            if (jenis === 'PAKETMEMBER' && reqSlots > 0) {
+                helper.innerHTML = 'Pilih slot kosong yang cukup untuk '+reqSlots+' Jam.';
+            } else {
+                helper.innerHTML = 'Pilih 1 atau lebih slot berurutan.';
+            }
+            validateForm();
+        }
+    }
+
+    $('#ppPaketId').on('change', function() {
+        var selectedOpt = this.options[this.selectedIndex];
+        var inputHarga = document.getElementById('ppHargaNormal');
+        var inputDurasi = document.getElementById('ppDurasi');
+        
+        if (selectedOpt && selectedOpt.value !== "") {
+            var hrg = parseFloat(selectedOpt.dataset.harga) || 0;
+            var defaultDur = parseInt(selectedOpt.dataset.durasi) || 1;
+            
+            // Format to Rupiah standard
+            inputHarga.value = formatRp(hrg);
+            
+            // Set Base & Minimum Durasi depending on package's preset
+            inputDurasi.min = defaultDur;
+            inputDurasi.value = defaultDur;
+            window.activePaketDurasi = defaultDur; // Global tracker to manage increments
+        } else {
+            inputHarga.value = '';
+            inputDurasi.value = '1';
+            inputDurasi.min = '1';
+            window.activePaketDurasi = 1;
+        }
+        updateJamSelesai();
+        calculateTotal(); // Ensure totals are updated
+        validateForm();
+    });
+
+    function changeDurasi(delta) {
+        var inp = document.getElementById('ppDurasi');
+        var val = parseInt(inp.value) || 1;
+        var step = window.activePaketDurasi || 1;
+        
+        // Cek target increment, apakah kelipatan aktif durasi atau 1 (kalo realtime dll)
+        if (!step) step = 1;
+
+        // Tambah/Kurang berdasarkan default step paket
+        var newVal = val + (delta * step);
+
+        // Jangan pernah di bawah batas minimal (step itu sendiri)
+        val = Math.max(step, newVal);
+        inp.value = val;
+        updateJamSelesai();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var durEl = document.getElementById('ppDurasi');
+        if (durEl) durEl.addEventListener('input', updateJamSelesai);
+        var jamEl = document.getElementById('ppJamMulai');
+        if (jamEl) {
+            // Set now
+            var now = new Date();
+            jamEl.value = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+            jamEl.addEventListener('change', updateJamSelesai);
+            jamEl.addEventListener('input', updateJamSelesai); // Real-time calc as they type
+        }
+    });
+
+    document.getElementById('ppKodePelanggan').addEventListener('change', function() {
+        var memberId = this.value;
+        if (memberId) {
+            var memberData = dataPelangganAll.find(m => m.KodePelanggan == memberId);
+            if (memberData) {
+                syncCustomerGreeting(memberData.NamaPelanggan);
+            }
+        }
+
+        var jenis = document.getElementById('ppJenisPaket').value;
+        if(jenis === 'PAKETMEMBER') {
+            var mId = document.getElementById('ppKodePelanggan').value;
+            if (mId) {
+                var mData = dataPelangganAll.find(m => m.KodePelanggan == mId);
+                if (mData && mData.maxTimePerPlay) {
+                    document.getElementById('ppDurasi').value = parseInt(mData.maxTimePerPlay) || 1;
+                }
+            }
+
+            // Panggil fungsi ini untuk merefresh ulang dropdown paket berlangganan
+            onJenisPaketChange('PAKETMEMBER');
+            
+            updateJamSelesai();
+            
+            // Re-render slots to reflect new member status (lock/unlock)
+            if (rawSlots && rawSlots.length > 0) {
+                // Clear selections
+                selectedSlots = [];
+                // document.getElementById('ppDurasi').value = 1;
+                renderSlots(rawSlots);
+            }
+        }
+        validateForm();
+    });
+
+    function updateJamSelesai() {
+        var jenisPaket = document.getElementById('ppJenisPaket').value;
+        var jamMulai = document.getElementById('ppJamMulai').value;
+        var durasiInp = document.getElementById('ppDurasi');
+        var durasi = parseInt(durasiInp.value) || 0;
+        var helper = document.getElementById('ppSlotHelper');
+        var confirmBtn = document.getElementById('ppBtnConfirm');
+        var inputJamSelesai = document.getElementById('ppJamSelesai');
+
+        if (!jamMulai || !durasi) { inputJamSelesai.value = ''; return; }
+        
+        // Cek rule PAKETMEMBER
+        if (jenisPaket === 'PAKETMEMBER') {
+            var memberId = document.getElementById('ppKodePelanggan').value;
+            if (!memberId) {
+                if (helper) helper.innerHTML = '<span style="color:#e53935;"><i class="fas fa-ban"></i> Harap pilih Member untuk PAKETMEMBER!</span>';
+                confirmBtn.disabled = true;
+                inputJamSelesai.value = '';
+                return;
+            }
+            
+            var memberData = dataPelangganAll.find(m => m.KodePelanggan == memberId);
+            if (!memberData) {
+                if (helper) helper.innerHTML = '<span style="color:#e53935;"><i class="fas fa-ban"></i> Member tidak ditemukan (Harap Refresh).</span>';
+                confirmBtn.disabled = true;
+                inputJamSelesai.value = '';
+                return;
+            } else if (memberData.isPaidMembership != 1) {
+                if (helper) helper.innerHTML = '<span style="color:#e53935;"><i class="fas fa-ban"></i> Member belum aktif (Nilai: ' + memberData.isPaidMembership + '). Harap Refresh!</span>';
+                confirmBtn.disabled = true;
+                inputJamSelesai.value = '';
+                return;
+            }
+
+            // Batasi durasi dengan maxTimePerPlay 
+            // Anggap maxTimePerPlay adalah dalam jumlah SLOT atau JAM
+            var maxTime = parseInt(memberData.maxTimePerPlay) || 0;
+            if (durasi > maxTime) {
+                if (helper) helper.innerHTML = '<span style="color:#e53935;"><i class="fas fa-exclamation"></i> Melebihi batas Max Time ('+maxTime+' Slot)!</span>';
+                confirmBtn.disabled = true;
+                return;
+            }
+        }
+
+        var parts = jamMulai.split(':');
+        var d = new Date();
+        // Pakai tanggal yang diinput atau hari ini
+        var tglInp = document.getElementById('ppTglTransaksi').value;
+        if (tglInp) {
+            var tParts = tglInp.split('-');
+            d = new Date(tParts[0], tParts[1]-1, tParts[2]);
+        }
+        
+        d.setHours(parseInt(parts[0]), parseInt(parts[1]), 0);
+
+        // Logic Increment:
+        switch(jenisPaket) {
+            case 'MENIT':
+                d.setMinutes(d.getMinutes() + durasi);
+                break;
+            case 'JAM':
+            case 'JAMREALTIME':
+            case 'PAKETMEMBER':
+                d.setMinutes(d.getMinutes() + (durasi * 60) - 1); // dikurangi 1 menit seperti logic awal
+                break;
+            case 'DAILY':
+                d.setDate(d.getDate() + durasi);
+                break;
+            case 'MONTHLY':
+                d.setMonth(d.getMonth() + durasi);
+                break;
+            case 'YEARLY':
+                d.setFullYear(d.getFullYear() + durasi);
+                break;
+            case 'MENITREALTIME':
+            case 'PAYPERUSE':
+                // Abaikan durasi, jam selesai tidak di set / dikosongkan
+                inputJamSelesai.type = 'text';
+                inputJamSelesai.value = '-';
+                calculateTotal(); // Trigger ulang kalkulasi
+                return; 
+            default:
+                d.setMinutes(d.getMinutes() + (durasi * 60) - 1); // Default as Jam
+                break;
+        }
+
+        // Tampilkan hasil format HH:mm ke input JAM (utk jam dan menit)
+        if (['DAILY', 'MONTHLY', 'YEARLY'].includes(jenisPaket)) {
+            var datePart = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+            var timePart = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+            inputJamSelesai.value = datePart + ' ' + timePart;
+        } else {
+            inputJamSelesai.value = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+        }
+
+        // Trigger ulang kalkulasi jika Opsi Bayar Langsung terbuka
+        calculateTotal();
+    }
+
+    // ==== BAYAR LANGSUNG LOGIC ====
+    function toggleBayarLangsung() {
+        var isLangsung = document.querySelector('input[name="OpsiBayar"]:checked').value === 'LANGSUNG';
+        document.getElementById('ppDetailBayar').style.display = isLangsung ? 'block' : 'none';
+        if(isLangsung) {
+            calculateTotal();
+        } else {
+            validateForm(); // Re-validate if switched back to Bayar Nanti
+        }
+    }
+
+    function formatRp(value) {
+        if (value === null || value === undefined) return 'Rp 0';
+        return 'Rp ' + parseFloat(value).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function parseFormattedRp(rpString) {
+        if (!rpString) return 0;
+        // Ambil bagian utuh sebelum koma desimal (,00) agar tidak dirubah jadi angka ribuan
+        var wholePart = rpString.split(',')[0];
+        return parseFloat(wholePart.replace(/[^0-9-]/g, '')) || 0;
+    }
+
+    function formatRupiahInput(elm) {
+        var num = elm.value.replace(/[^0-9]/g, '');
+        if(num === '') { elm.value = ''; return; }
+        elm.value = new Intl.NumberFormat('id-ID').format(Number(num));
+    }
+
+    function toRupiah(num) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num || 0);
+    }
+
+    function calculateTotal(isFromInput = false) {
+        // 1. Base Data (Paket)
+        var durasi = parseInt(document.getElementById('ppDurasi').value) || 1;
+        var baseDurasi = window.activePaketDurasi || 1; 
+        var hargaInp = document.getElementById('ppHargaNormal').value;
+        var harga = parseFormattedRp(hargaInp);
+        
+        var subtotalPaket = (durasi / baseDurasi) * harga;
+        
+        // Debug check if result is NaN or 0 unexpectedly
+        if (isNaN(subtotalPaket)) subtotalPaket = 0;
+        
+        $('#calcSubtotal').text(formatRp(subtotalPaket));
+        $('#calcQty').text(durasi);
+
+        // 2. FnB Data
+        var fnbTotal = ppFnbCart.reduce((acc, item) => acc + (item.Qty * item.Harga), 0);
+        $('#ppSumFnb').text(formatRp(fnbTotal));
+        
+        var subtotalCombined = subtotalPaket + fnbTotal;
+
+        // 3. Discounts
+        var discPer = 0;
+        var custId = document.getElementById('ppKodePelanggan').value;
+        if(custId) {
+            var cust = dataPelangganAll.find(m => m.KodePelanggan == custId);
+            if(cust && cust.GroupID) {
+                var grp = dataGrupPelanggan.find(g => g.id == cust.GroupID);
+                if(grp && grp.DiskonPersen) discPer = parseFloat(grp.DiskonPersen);
+            }
+        }
+        var diskonRp = subtotalPaket * (discPer / 100);
+        $('#calcDiskonPersen').text(discPer);
+        $('#calcDiskonRp').text('- ' + formatRp(diskonRp));
+
+        var voucherRp = window.activeVoucherRp || 0; 
+        $('#calcVoucherRp').text('- ' + formatRp(voucherRp));
+
+        // 4. DPP & Taxes
+        var ppnPer = confCompany ? parseFloat(confCompany.PPN) || 0 : 0;
+        var pb1Per = confCompany ? parseFloat(confCompany.PajakHiburan) || 0 : 0;
+        
+        var dpp = subtotalCombined - diskonRp - voucherRp;
+        if (dpp < 0) dpp = 0;
+
+        var ppnRp = dpp * (ppnPer / 100);
+        var pb1Rp = dpp * (pb1Per / 100);
+        
+        $('#calcPpnPersen').text(ppnPer);
+        $('#calcPpnRp').text(formatRp(ppnRp));
+        $('#calcPb1Persen').text(pb1Per);
+        $('#calcPb1Rp').text(formatRp(pb1Rp));
+
+        var grandTotal = dpp + ppnRp + pb1Rp;
+
+        // 5. Admin Fee (based on Payment Method)
+        var nominalInp = document.getElementById('ppNominalBayar');
+        var selMp = document.getElementById('ppMetodePembayaran');
+        var tipePembayaran = '';
+        var adminPercent = 0;
+        var adminRupiah = 0;
+
+        if (selMp && selMp.options.length > 0 && selMp.selectedIndex >= 0) {
+            var opt = selMp.options[selMp.selectedIndex];
+            tipePembayaran = opt.getAttribute('data-tipe');
+            adminPercent = parseFloat(opt.getAttribute('data-percent')) || 0;
+            adminRupiah = parseFloat(opt.getAttribute('data-rupiah')) || 0;
+        }
+
+        var adminFeeRp = 0;
+        if (adminPercent > 0) {
+            adminFeeRp = (adminPercent / 100) * grandTotal;
+        } else if (adminRupiah > 0) {
+            adminFeeRp = adminRupiah;
+        }
+
+        if (adminFeeRp > 0) {
+            $('#rowBiayaAdmin').show();
+            $('#calcAdminRp').text(formatRp(adminFeeRp));
+        } else {
+            $('#rowBiayaAdmin').hide();
+        }
+
+        grandTotal += adminFeeRp;
+        $('#calcGrandTotal').text(formatRp(grandTotal));
+
+        // 6. Payment Logic
+        var isNonTunai = tipePembayaran && tipePembayaran.toUpperCase().indexOf('NON') !== -1;
+        if (isNonTunai) {
+            nominalInp.value = formatRupiahVal(grandTotal);
+            nominalInp.readOnly = true;
+            nominalInp.style.backgroundColor = '#f5f5f5';
+        } else {
+            nominalInp.readOnly = false;
+            nominalInp.style.backgroundColor = '';
+            if (!isFromInput) {
+                nominalInp.value = formatRupiahVal(grandTotal);
+            }
+        }
+
+        // 7. Change (Kembalian)
+        let pay = parseFormattedRp(nominalInp.value || '0');
+        let change = pay - grandTotal;
+        let kembalianEl = document.getElementById('ppKembalian');
+        if (change < 0) {
+            $('#ppKembalian').text('Kurang: ' + formatRp(Math.abs(change))).css('color', '#e53935');
+        } else {
+            $('#ppKembalian').text(formatRp(change)).css('color', '#2e7d32');
+        }
+
+        // 8. Sync Customer Display
+        const syncData = {
+            data: [{ NamaItem: "Paket (" + durasi + ")", Qty: 1, Harga: subtotalPaket }],
+            Total: subtotalCombined,
+            Discount: diskonRp + voucherRp,
+            Tax: ppnRp + pb1Rp + adminFeeRp,
+            Net: grandTotal
+        };
+        ppFnbCart.forEach(item => {
+            syncData.data.push({ NamaItem: item.NamaItem, Qty: item.Qty, Harga: item.Harga });
+        });
+        syncCustomerDisplay(syncData);
+        validateForm();
+    }
+
+
+    function validateForm() {
+        var btn = document.getElementById('ppBtnConfirm');
+        var jenisPaket = document.getElementById('ppJenisPaket').value;
+        var paketId = document.getElementById('ppPaketId').value;
+        var kodePelanggan = document.getElementById('ppKodePelanggan').value;
+        var kodeSales = document.getElementById('ppKodeSales').value;
+
+        btn.disabled = true; // Auto-disable by default
+
+        if (!jenisPaket) return;
+        if (jenisPaket !== 'PAKETMEMBER' && !paketId) return;
+
+        if (jenisPaket === 'JAM' || jenisPaket === 'PAKETMEMBER') {
+            if (selectedSlots.length === 0) return;
+            for(var i=1; i<selectedSlots.length; i++) {
+                if (selectedSlots[i].idx !== selectedSlots[i-1].idx + 1) return; // Not consecutive
+            }
+        }
+
+        if (jenisPaket === 'PAKETMEMBER') {
+            var memberData = dataPelangganAll.find(m => m.KodePelanggan == kodePelanggan);
+            if (!memberData || memberData.isPaidMembership != 1) return;
+            var validMemberships = dataCustomerMemberships.filter(function(m) {
+                return m.KodePelanggan == kodePelanggan && (!m.KelompokLampu || m.KelompokLampu == selectedTitik.kelompoklampu);
+            });
+            if (validMemberships.length === 0) return;
+            var durasi = parseInt(document.getElementById('ppDurasi').value) || 0;
+            var maxTime = parseInt(validMemberships[0].maxTimePerPlay) || parseInt(memberData.maxTimePerPlay) || 0;
+            if (durasi !== maxTime) return;
+        }
+
+        var isLangsung = document.querySelector('input[name="OpsiBayar"]:checked').value === 'LANGSUNG';
+        if (isLangsung) {
+            var grandTotalText = document.getElementById('calcGrandTotal').textContent;
+            var grandTotal = parseFormattedRp(grandTotalText);
+            var nominalBayar = parseFormattedRp(document.getElementById('ppNominalBayar').value);
+            if (nominalBayar < grandTotal) return;
+        }
+
+        btn.disabled = false; // Checks passed
+    }
+
+    var voucherTypingTimer;
+    window.activeVoucherRp = 0;
+
+    function onVoucherInput() {
+        clearTimeout(voucherTypingTimer);
+        var kode = document.getElementById('ppKodeVoucher').value.trim();
+        var statusEl = document.getElementById('ppVoucherStatus');
+        
+        if (!kode) {
+            statusEl.innerHTML = '';
+            window.activeVoucherRp = 0;
+            calculateTotal();
+            return;
+        }
+
+        statusEl.innerHTML = '<span style="color:#78909c;">Mengecek voucher...</span>';
+        
+        voucherTypingTimer = setTimeout(function() {
+            var durasi = parseInt(document.getElementById('ppDurasi').value) || 1;
+            var hargaInp = document.getElementById('ppHargaNormal').value;
+            var harga = parseFormattedRp(hargaInp);
+            var subtotal = harga * durasi;
+
+            // Kurangi diskon member dulu sebagai basis check voucher
+            var discPer = 0;
+            var custId = document.getElementById('ppKodePelanggan').value;
+            if(custId) {
+                var cust = dataPelangganAll.find(m => m.KodePelanggan == custId);
+                if(cust && cust.GroupID) {
+                    var grp = dataGrupPelanggan.find(g => g.id == cust.GroupID);
+                    if(grp && grp.DiskonPersen) discPer = parseFloat(grp.DiskonPersen);
+                }
+            }
+            subtotal = subtotal - (subtotal * (discPer / 100));
+            
+            var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch('{{ route("billing-checkvoucher") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({ voucher_code: kode, subtotal: subtotal })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.success) {
+                    statusEl.innerHTML = '<span style="color:#43a047;"><i class="fas fa-check"></i> ' + res.message + '</span>';
+                    window.activeVoucherRp = res.discountRp || 0;
+                } else {
+                    statusEl.innerHTML = '<span style="color:#e53935;"><i class="fas fa-times"></i> ' + res.message + '</span>';
+                    window.activeVoucherRp = 0;
+                }
+                calculateTotal(); // update grand total
+            })
+            .catch(err => {
+                statusEl.innerHTML = '<span style="color:#e53935;"><i class="fas fa-exclamation-triangle"></i> Gagal memeriksa voucher.</span>';
+                window.activeVoucherRp = 0;
+                calculateTotal();
+            });
+        }, 800); // 800ms debounce
+    }
+
+    function onKonfirmasiPaket() {
+        if (!selectedTitik) {
+            swal("Perhatian", "Silakan pilih titik lampu terlebih dahulu.", "warning");
+            return;
+        }
+
+        const payload = {
+            tableid: selectedTitik.id,
+            TglTransaksi: document.getElementById('ppTglTransaksi').value,
+            JenisPaket: document.getElementById('ppJenisPaket').value,
+            paketid: document.getElementById('ppPaketId').value,
+            DurasiPaket: document.getElementById('ppDurasi').value,
+            JamMulai: document.getElementById('ppJamMulai').value,
+            JamSelesai: document.getElementById('ppJamSelesai').value,
+            KodePelanggan: document.getElementById('ppKodePelanggan').value,
+            KodeSales: document.getElementById('ppKodeSales').value,
+            OpsiBayar: document.querySelector('input[name="OpsiBayar"]:checked').value,
+            MetodePembayaran: document.getElementById('ppMetodePembayaran').value,
+            NominalBayar: parseFormattedRp(document.getElementById('ppNominalBayar').value),
+            KodeVoucher: document.getElementById('ppKodeVoucher').value.trim(),
+            ServiceType: document.querySelector('input[name="ppServiceType"]:checked').value,
+            NamaDokter: document.getElementById('ppNamaDokter') ? document.getElementById('ppNamaDokter').value : '',
+            NamaPasien: document.getElementById('ppNamaPasien') ? document.getElementById('ppNamaPasien').value : '',
+            NoResep: document.getElementById('ppNoResep') ? document.getElementById('ppNoResep').value : '',
+            fnbItems: ppFnbCart
+        };
+
+        // Basic validation
+        if (payload.JenisPaket !== 'PAKETMEMBER' && !payload.paketid) {
+            swal("Perhatian", "Silakan pilih paket.", "warning");
+            return;
+        }
+
+        swal({
+            title: "Konfirmasi",
+            text: "Apakah Anda yakin ingin menyimpan paket ini untuk " + selectedTitik.namatitiklampu + "?",
+            type: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#1a237e",
+            confirmButtonText: "Ya, Simpan",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.value) {
+                const btn = document.getElementById('ppBtnConfirm');
+                const oldHtml = btn.innerHTML;
+
+                // Show loading on button
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                
+                fetch('/billing/store-paket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Server error: ' + res.status);
+                    return res.json();
+                })
+                .then(res => {
+                    console.log(res);
+                    if (res.success) {
+                        
+                        // Cek apakah ada snap_token untuk pembayaran Midtrans
+                        if (res.snap_token) {
+                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menunggu Pembayaran...';
+                            
+                            const handlers = {
+                                onSuccess: function (result) {
+                                    // Panggil backend untuk finalize payment
+                                    fetch('{{ route("billing-midtrans-success") }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': token
+                                        },
+                                        body: JSON.stringify({ 
+                                            NoTransaksi: res.NoTransaksi,
+                                            payment_type: 'POS'
+                                        })
+                                    })
+                                    .then(r => r.json())
+                                    .then(r => {
+                                        showReceiptPreview(res.NoTransaksi);
+                                    })
+                                    .catch(err => {
+                                        swal("Perhatian", "Pembayaran berhasil, tapi sinkronisasi gagal. Harap lapor admin.", "warning").then(() => {
+                                            btn.disabled = false;
+                                            btn.innerHTML = oldHtml;
+                                            closePilihPaketModal();
+                                            refreshTableStatuses();
+                                        });
+                                    });
+                                },
+                                onPending: function (result) {
+                                    swal({
+                                        title: "Pembayaran Tertunda",
+                                        text: "Selesaikan instruksi pembayaran Anda.",
+                                        type: "info"
+                                    }).then(() => {
+                                        btn.disabled = false;
+                                        btn.innerHTML = oldHtml;
+                                        closePilihPaketModal();
+                                        refreshTableStatuses();
+                                    });
+                                },
+                                onError: function (result) {
+                                    btn.disabled = false;
+                                    btn.innerHTML = oldHtml;
+                                    swal("Gagal", "Pembayaran gagal diproses.", "error");
+                                },
+                                onClose: function () {
+                                    btn.disabled = false;
+                                    btn.innerHTML = oldHtml;
+                                    
+                                    fetch('{{ route("billing-midtrans-cancel") }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': token
+                                        },
+                                        body: JSON.stringify({ 
+                                            NoTransaksi: res.NoTransaksi,
+                                            payment_type: 'POS'
+                                        })
+                                    })
+                                    .then(() => {
+                                        swal("Perhatian", "Anda menutup halaman pembayaran sebelum selesai. Transaksi dibatalkan.", "warning").then(() => {
+                                            btn.disabled = false;
+                                            btn.innerHTML = oldHtml;
+                                            closePilihPaketModal();
+                                            refreshTableStatuses();
+                                        });
+                                    });
+                                }
+                            };
+
+                            // Show Snap directly on billing
+                            window.snap.pay(res.snap_token, handlers);
+                        } else {
+                            // Flow normal (Cash / Piutang / Metode Manual)
+                            var isLangsung = document.querySelector('input[name="OpsiBayar"]:checked').value === 'LANGSUNG';
+
+                             if (isLangsung) {
+                                btn.disabled = false;
+                                btn.innerHTML = oldHtml;
+                                closePilihPaketModal();
+                                showReceiptPreview(res.NoTransaksi);   
+                            }
+                            else{
+                                swal("Perhatian", "Order berhasil dibuat", "success").then(() => {
+                                    btn.disabled = false;
+                                    btn.innerHTML = oldHtml;
+                                    closePilihPaketModal();
+                                    refreshTableStatuses();
+                                });
+                            }
+                        }
+                    } else {
+                        // Restore button
+                        btn.disabled = false;
+                        btn.innerHTML = oldHtml;
+                        swal("Gagal", res.message || "Terjadi kesalahan saat menyimpan.", "error");
+                    }
+                })
+                .catch(err => {
+                    // Restore button
+                    btn.disabled = false;
+                    btn.innerHTML = oldHtml;
+                    console.error(err);
+                    swal("Error", "Gagal menghubungi server.", "error");
+                });
+            }
+        });
+    }
+    </script>
+    <!-- ===== MODAL JUAL FnB STANDALONE ===== -->
+    <div id="modalJualFnb" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9000; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; width:98%; max-width:1300px; height:92vh; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.3); overflow:hidden;">
+            <!-- Header -->
+            <div style="background:linear-gradient(135deg,#e65100,#ff8f00); color:#fff; padding:16px 24px; display:flex; justify-content:space-between; align-items:center;">
+                <h2 style="margin:0; font-size:1.2rem;"><i class="fas fa-utensils"></i> Jual FnB Langsung</h2>
+                <button onclick="closeJualFnbModal()" style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer; line-height:1;">&times;</button>
+            </div>
+            <!-- Body -->
+            <div style="flex:1; overflow:hidden; padding:20px; display:flex; gap:20px;">
+                <!-- Left: Item Search & Grid (Product Area) -->
+                <div style="flex:1; min-width:0; display:flex; flex-direction:column; border-right:1px solid #f0f0f0; padding-right:10px;">
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:0.8rem; color:#555; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Pilih Item / Produk</label>
+                        <div style="position:relative; margin-top:4px;">
+                            <div style="display:flex; gap:10px;">
+                    <select id="jualFnbCategoryFilter" onchange="filterFnbGrid($('#jualFnbSearchInput').val(), 'jualFnbMenuGrid', this.value)" style="display:none; padding:10px; border:2px solid #ffcc80; border-radius:10px; font-size:1rem; outline:none; font-weight:600; color:#444;">
+                        <option value="FNB">Menu FNB</option>
+                        <option value="TIKET">Tiket Masuk</option>
+                        <option value="JASA">Jasa / Sewa</option>
+                        <option value="ALL">Semua Kategori</option>
+                    </select>
+                    <input type="text" id="jualFnbSearchInput" placeholder="Cari Nama Menu atau Barcode..." onkeyup="filterFnbGrid(this.value, 'jualFnbMenuGrid', $('#jualFnbCategoryFilter').val())"
+                                style="flex:1; padding:12px 15px; border:2px solid #ffcc80; border-radius:10px; font-size:1rem; box-sizing:border-box; margin-bottom:15px; outline:none; transition:0.3s;"
+                                onfocus="this.style.borderColor='#e65100'">
+                </div>
+                        </div>
+                    </div>
+                    
+                    <div style="padding:15px; display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); grid-auto-rows: max-content; gap:15px; overflow-y:auto; align-content: start;" id="jualFnbMenuGrid">
+                        @foreach($itemmaster as $item)
+                            @php $isHabis = ($item->Stock ?? 0) <= 0; @endphp
+                            <div class="fnb-card" 
+                                 data-name="{{ strtolower($item->NamaItem) }}"
+                                 @php
+                                    $cat = $item->KategoriPOS ?? "FNB";
+                                 @endphp
+                                 data-category="{{ $cat }}" 
+                                 onclick="{{ $isHabis ? "swal('Stok Habis', 'Menu tidak tersedia.', 'warning')" : 'addJualFnbToCart(' . json_encode($item) . ')' }}" 
+                                 style="background:#fff; border:1px solid #eee; border-radius:12px; padding:12px; cursor:pointer; transition:all 0.2s; display:{{ $cat == 'FNB' ? 'flex' : 'none' }}; flex-direction:column; align-items:center; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.06); position:relative; {{ $isHabis ? 'opacity:0.6; filter:grayscale(0.9);' : '' }}">
+                                
+                                @if($isHabis)
+                                    <div style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%) rotate(-15deg); background:#d32f2f; color:#fff; padding:4px 8px; border-radius:4px; font-weight:800; font-size:0.75rem; z-index:10; border:1px solid #fff; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,0.3);">STOK HABIS</div>
+                                @endif
+
+                                <img src="{{ $item->Gambar ? (str_starts_with($item->Gambar, 'http') ? $item->Gambar : asset('assets/img/item/' . $item->Gambar)) : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjYWFhIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Gb29kPC90ZXh0Pjwvc3ZnPg==' }}" style="width:100px; height:100px; object-fit:cover; border-radius:10px; margin-bottom:10px; flex-shrink:0;">
+                                <div style="font-weight:700; font-size:0.9rem; color:#333; height:40px; overflow:hidden; line-height:1.2;">{{ $item->NamaItem }}</div>
+                                <div style="font-weight:800; color:#e65100; margin-top:5px; font-size:1rem;">Rp {{ number_format($item->HargaJual) }}</div>
+                                <div style="font-size:0.75rem; color:{{ $isHabis ? '#d32f2f' : '#888' }}; margin-top:2px;">Stok: {{ number_format($item->Stock ?? 0) }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Right: Cart & Summary & Payment -->
+                

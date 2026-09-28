@@ -507,6 +507,12 @@ function SimpanPembayaranJson(Request $request) {
 
         $data['success'] = true;
         $data['message'] = 'Data berhasil disimpan';
+        $data['data'] = [
+            'NoTransaksi' => $NoTransaksi,
+            'TglBooking' => $jsonData['TglBooking'],
+            'JamMulai' => $jsonData['JamMulai'],
+            'JamSelesai' => $jsonData['JamSelesai']
+        ];
         $isFinished = true;
         //return response()->json($data);
 
@@ -629,7 +635,8 @@ public function View(Request $request)
     $listBooking = BookingOnline::where('RecordOwnerID','=',Auth::user()->RecordOwnerID)->get();
     $encodedRecordOwnerID = base64_encode(Auth::user()->RecordOwnerID);
     $BookingURLString = url('booking/').'/'.$encodedRecordOwnerID;
-    return view('Transaksi.Penjualan.PoS.ListBookingOnlineV2', compact('listBooking', 'BookingURLString'));
+    $meja = DB::table('titiklampu')->where('RecordOwnerID', Auth::user()->RecordOwnerID)->get();
+    return view('Transaksi.Penjualan.PoS.ListBookingOnlineV2', compact('listBooking', 'BookingURLString', 'meja'));
 }
 
 public function ViewGenerateVoucher(Request $request)
@@ -901,5 +908,65 @@ public function insertTableOrder(Request $request)
 }
 
 
+
+
+    public function rescheduleBooking(Request $request) {
+        try {
+            $NoTransaksi = $request->input('NoTransaksi');
+            $mejaID = $request->input('mejaID');
+            $TglBooking = $request->input('TglBooking');
+            $JamMulai = $request->input('JamMulai');
+            $JamSelesai = $request->input('JamSelesai');
+            $roid = Auth::user()->RecordOwnerID;
+
+            $booking = BookingOnline::where('NoTransaksi', $NoTransaksi)->where('RecordOwnerID', $roid)->first();
+            if (!$booking) {
+                return response()->json(['success' => false, 'message' => 'Booking tidak ditemukan!']);
+            }
+            
+            // Collision detection
+            $fullStart = Carbon::parse($TglBooking . ' ' . $JamMulai)->format('Y-m-d H:i:s');
+            $fullEnd = Carbon::parse($TglBooking . ' ' . $JamSelesai);
+            if ($fullEnd->lt(Carbon::parse($fullStart))) {
+                $fullEnd->addDay();
+            }
+            $fullEndStr = $fullEnd->format('Y-m-d H:i:s');
+
+            // 1. Cek bentrok dengan booking online lain (yang bukan trx ini)
+            $clashBooking = BookingOnline::where('RecordOwnerID', $roid)
+                ->where('mejaID', $mejaID)
+                ->where('NoTransaksi', '!=', $NoTransaksi)
+                ->where('StatusTransaksi', 0)
+                ->where(function ($q) use ($fullStart, $fullEndStr) {
+                    $q->whereRaw("CAST(CONCAT(TglBooking, ' ', JamMulai) AS DATETIME) < ?", [$fullEndStr])
+                      ->whereRaw("CAST(CONCAT(TglBooking, ' ', JamSelesai) AS DATETIME) > ?", [$fullStart]);
+                })->exists();
+
+            // 2. Cek bentrok dengan tableorderheader (yang bukan trx ini)
+            $clashOrder = DB::table('tableorderheader')->where('RecordOwnerID', $roid)
+                ->where('tableid', $mejaID)
+                ->where('NoTransaksi', '!=', $NoTransaksi)
+                ->whereIn('DocumentStatus', ['O', 'D'])
+                ->where('JamMulai', '<', $fullEndStr)
+                ->where(function ($q) use ($fullStart) {
+                    $q->where('JamSelesai', '>', $fullStart)->orWhereNull('JamSelesai');
+                })->exists();
+
+            if ($clashBooking || $clashOrder) {
+                return response()->json(['success' => false, 'message' => 'Slot waktu / Meja tersebut sudah terisi oleh pelanggan lain!']);
+            }
+
+            // Update
+            $booking->mejaID = $mejaID;
+            $booking->TglBooking = $TglBooking;
+            $booking->JamMulai = $JamMulai;
+            $booking->JamSelesai = $JamSelesai;
+            $booking->save();
+
+            return response()->json(['success' => true, 'message' => 'Reschedule berhasil!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 
 }

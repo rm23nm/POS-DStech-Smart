@@ -122,6 +122,7 @@
 															</button>
 															<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdowneditButton1"  style="position: absolute; transform: translate3d(1001px, 111px, 0px); top: 0px; left: 0px; will-change: transform;">
 																<a class="dropdown-item" href="{{ url('user/form/' . $v['id']) }}">Edit</a>
+																<a class="dropdown-item" title="Delete User" href="{{ route('user-delete', $v['id']) }}" data-confirm-delete="true">Hapus User</a>
 																<a class="dropdown-item" title="Logout" href="{{ route('user-logout', $v['id']) }}" data-confirm-delete="true">Log Out</a>
 															</div>
 														</div>
