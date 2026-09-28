@@ -49,3 +49,11 @@ desktop.ini
 
 # SQLite local database (Gate Agent)
 /Rangkaian Mikrocontroller Gate/Gate Agent/database/*.db
+
+# File debug/test dari sesi AI
+test_*.js
+testss_out*.html
+test_output.html
+*.html.bak
+all_scripts*.js
+all_scripts_clean.js
