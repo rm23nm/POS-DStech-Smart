@@ -67,7 +67,7 @@ class FakturPenjualanController extends Controller
 	   	$KodePelanggan = $request->input('KodePelanggan');
 	   	$Status = $request->input('Status');
 
-	   	$sql = "DISTINCT fakturpenjualanheader.NoTransaksi, fakturpenjualanheader.NoAntrian, DATE_FORMAT(fakturpenjualanheader.TglTransaksi, '%d-%m-%Y %H:%i') TglTransaksi,fakturpenjualanheader.TglJatuhTempo, fakturpenjualanheader.NoReff, fakturpenjualanheader.KodePelanggan, pelanggan.NamaPelanggan, fakturpenjualanheader.Termin, COALESCE(terminpembayaran.NamaTermin, CASE WHEN fakturpenjualanheader.KodeTermin='1' THEN 'CASH' ELSE fakturpenjualanheader.KodeTermin END) as NamaTermin, fakturpenjualanheader.TotalPembelian, fakturpenjualanheader.TotalPembayaran, fakturpenjualanheader.TotalPembelian - COALESCE(fakturpenjualanheader.TotalPembayaran,0) - fakturpenjualanheader.TotalRetur TotalHutang, COALESCE(orderpenjualanheader.NoTransaksi, '') AS NoOrder, orderpenjualanheader.TglTransaksi TglOrder, fakturpenjualanheader.TotalRetur, fakturpenjualanheader.NoResep, fakturpenjualanheader.NamaDokter, fakturpenjualanheader.NamaPasien,
+	   	$sql = "DISTINCT fakturpenjualanheader.NoTransaksi, fakturpenjualanheader.NoAntrian, DATE_FORMAT(fakturpenjualanheader.TglTransaksi, '%d-%m-%Y %H:%i') TglTransaksi,fakturpenjualanheader.TglJatuhTempo, fakturpenjualanheader.NoReff, fakturpenjualanheader.KodePelanggan, COALESCE(pelanggan.NamaPelanggan, 'UMUM') AS NamaPelanggan, fakturpenjualanheader.Termin, COALESCE(terminpembayaran.NamaTermin, CASE WHEN fakturpenjualanheader.KodeTermin='1' THEN 'CASH' ELSE fakturpenjualanheader.KodeTermin END) as NamaTermin, fakturpenjualanheader.TotalPembelian, fakturpenjualanheader.TotalPembayaran, fakturpenjualanheader.TotalPembelian - COALESCE(fakturpenjualanheader.TotalPembayaran,0) - fakturpenjualanheader.TotalRetur TotalHutang, COALESCE(orderpenjualanheader.NoTransaksi, '') AS NoOrder, orderpenjualanheader.TglTransaksi TglOrder, fakturpenjualanheader.TotalRetur, fakturpenjualanheader.NoResep, fakturpenjualanheader.NamaDokter, fakturpenjualanheader.NamaPasien,
 	   			CASE WHEN fakturpenjualanheader.Status = 'O' THEN 'OPEN' ELSE 
 	   				CASE WHEN fakturpenjualanheader.Status = 'T' THEN 'DRAFT' ELSE 
 	   					CASE WHEN fakturpenjualanheader.Status = 'D' THEN 'CANCEL' ELSE
@@ -3659,7 +3659,7 @@ $updateData = [
    function CetakFaktur($NoTransaksi = null) {
 	$sql = "DISTINCT fakturpenjualanheader.NoTransaksi, fakturpenjualanheader.NoAntrian, DATE_FORMAT(fakturpenjualanheader.TglTransaksi, '%d-%m-%Y %H:%i') TglTransaksi,
 			fakturpenjualanheader.TglJatuhTempo, fakturpenjualanheader.NoReff, fakturpenjualanheader.NoResep, fakturpenjualanheader.NamaDokter, fakturpenjualanheader.NamaPasien, 
-			fakturpenjualanheader.KodePelanggan, pelanggan.NamaPelanggan, fakturpenjualanheader.Termin, 
+			fakturpenjualanheader.KodePelanggan, COALESCE(pelanggan.NamaPelanggan, 'UMUM') AS NamaPelanggan, fakturpenjualanheader.Termin, 
 			terminpembayaran.NamaTermin, fakturpenjualanheader.TotalPembelian, fakturpenjualanheader.Pajak,
 			fakturpenjualanheader.TotalPembayaran, fakturpenjualanheader.TotalPembelian - COALESCE(fakturpenjualanheader.TotalPembayaran,0) - fakturpenjualanheader.TotalRetur TotalHutang, 
 			fakturpenjualanheader.TotalRetur,fakturpenjualandetail.NoUrut, fakturpenjualandetail.KodeItem,
@@ -3708,7 +3708,7 @@ $updateData = [
    function PrintThermalReciept($NoTransaksi = null){
 	$sql = "DISTINCT fakturpenjualanheader.NoTransaksi, fakturpenjualanheader.NoAntrian, DATE_FORMAT(fakturpenjualanheader.TglTransaksi, '%d-%m-%Y %H:%i') TglTransaksi,
 		fakturpenjualanheader.TglJatuhTempo, fakturpenjualanheader.NoReff, fakturpenjualanheader.NoResep, fakturpenjualanheader.NamaDokter, fakturpenjualanheader.NamaPasien, 
-		fakturpenjualanheader.KodePelanggan, pelanggan.NamaPelanggan, fakturpenjualanheader.Termin, 
+		fakturpenjualanheader.KodePelanggan, COALESCE(pelanggan.NamaPelanggan, 'UMUM') AS NamaPelanggan, fakturpenjualanheader.Termin, 
 		terminpembayaran.NamaTermin, fakturpenjualanheader.TotalPembelian, fakturpenjualanheader.Pajak,
 		fakturpenjualanheader.TotalPembayaran, fakturpenjualanheader.TotalPembelian - COALESCE(fakturpenjualanheader.TotalPembayaran,0) - fakturpenjualanheader.TotalRetur TotalHutang, 
 		fakturpenjualanheader.TotalRetur,fakturpenjualandetail.NoUrut, fakturpenjualandetail.KodeItem,
