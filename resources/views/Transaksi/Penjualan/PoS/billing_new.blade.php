@@ -5066,7 +5066,7 @@
                         <label style="font-size:0.8rem; color:#555; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Pilih Item / Produk</label>
                         <div style="position:relative; margin-top:4px;">
                             <div style="display:flex; gap:10px;">
-                    <select id="jualFnbCategoryFilter" onchange="filterFnbGrid($('#jualFnbSearchInput').val(), 'jualFnbMenuGrid', this.value)" style="padding:10px; border:2px solid #ffcc80; border-radius:10px; font-size:1rem; outline:none; font-weight:600; color:#444;">
+                    <select id="jualFnbCategoryFilter" onchange="filterFnbGrid($('#jualFnbSearchInput').val(), 'jualFnbMenuGrid', this.value)" style="display:none; padding:10px; border:2px solid #ffcc80; border-radius:10px; font-size:1rem; outline:none; font-weight:600; color:#444;">
                         <option value="FNB">Menu FNB</option>
                         <option value="TIKET">Tiket Masuk</option>
                         <option value="JASA">Jasa / Sewa</option>
@@ -5253,7 +5253,7 @@
         jualFnbCart = [];
         updateJualFnbCartTable();
         $('#jualFnbSearchInput').val('');
-        $('#jualFnbCategoryFilter').val('ALL');
+        $('#jualFnbCategoryFilter').val('FNB');
         $('#jualFnbSearchResults').hide();
         filterFnbGrid('', 'jualFnbMenuGrid');
         calculateJualFnbTotal();
@@ -5317,7 +5317,7 @@
         if (existing) { existing.Qty += 1; }
         else { jualFnbCart.push({ KodeItem: item.KodeItem, NamaItem: item.NamaItem, Harga: item.HargaJual, Satuan: item.Satuan || 'PCS', Qty: 1 }); }
         $('#jualFnbSearchInput').val('');
-        $('#jualFnbCategoryFilter').val('ALL');
+        $('#jualFnbCategoryFilter').val('FNB');
         $('#jualFnbSearchResults').hide();
         filterFnbGrid('', 'jualFnbMenuGrid');
         updateJualFnbCartTable();
