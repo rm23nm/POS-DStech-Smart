@@ -5996,10 +5996,7 @@ public function getTableStatuses()
             ->where(function($q) use ($noTransaksi) {
                 $q->where('fakturpenjualanheader.NoTransaksi', $noTransaksi)
                   ->orWhere(function($sq) use ($noTransaksi) {
-                      $sq->where(function($q) use ($noTransaksi) {
-                $q->where('fakturpenjualandetail.BaseReff', $noTransaksi)
-                  ->orWhere('fakturpenjualanheader.NoTransaksi', $noTransaksi);
-            })
+                      $sq->where('fakturpenjualandetail.BaseReff', $noTransaksi)
                          ->where('itemmaster.TypeItem', 4);
                   });
             })
@@ -6121,10 +6118,7 @@ public function getTableStatuses()
                          ->on('fakturpenjualandetail.RecordOwnerID', '=', 'itemmaster.RecordOwnerID');
                 })
                 ->where(function($q) use ($noTransaksi, $header) {
-                    $q->where(function($q) use ($noTransaksi) {
-                $q->where('fakturpenjualandetail.BaseReff', $noTransaksi)
-                  ->orWhere('fakturpenjualanheader.NoTransaksi', $noTransaksi);
-            })
+                    $q->where('fakturpenjualandetail.BaseReff', $noTransaksi)
                       ->orWhere('fakturpenjualandetail.NoTransaksi', $header->NoTransaksi);
                 })
                 ->where('fakturpenjualandetail.RecordOwnerID', $recordOwnerID)
@@ -6146,6 +6140,5 @@ public function getTableStatuses()
         ]);
     }
 }
-
 
 
