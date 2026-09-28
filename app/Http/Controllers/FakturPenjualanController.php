@@ -76,7 +76,7 @@ class FakturPenjualanController extends Controller
 	   						END
 	   					END
 	   				END
-	   			END AS StatusDocument, fakturpenjualanheader.Transaksi, COUNT(*) TotalItems, '-' Keterangan ";
+	   			END AS StatusDocument, fakturpenjualanheader.Transaksi, COUNT(*) TotalItems, '-' Keterangan, COALESCE(metodepembayaran.NamaMetodePembayaran, fakturpenjualanheader.MetodeBayar) AS NamaMetodePembayaran ";
 	   	$model = FakturPenjualanHeader::selectRaw($sql)
     				->leftJoin('terminpembayaran', function ($value){
     					$value->on('fakturpenjualanheader.KodeTermin','=','terminpembayaran.id')
@@ -98,7 +98,8 @@ class FakturPenjualanController extends Controller
     					$value->on('orderpenjualanheader.NoTransaksi','=','orderpenjualandetail.NoTransaksi')
     					->on('orderpenjualanheader.RecordOwnerID','=','orderpenjualandetail.RecordOwnerID');
     				})
-    				->whereBetween(DB::raw('DATE(fakturpenjualanheader.TglTransaksi)'),[$TglAwal, $TglAkhir])
+    				->leftJoin('metodepembayaran', function ($value) { $value->on('fakturpenjualanheader.MetodeBayar', '=', 'metodepembayaran.id')->on('metodepembayaran.RecordOwnerID', '=', 'fakturpenjualanheader.RecordOwnerID'); })
+					->whereBetween(DB::raw('DATE(fakturpenjualanheader.TglTransaksi)'),[$TglAwal, $TglAkhir])
     				->where('fakturpenjualanheader.RecordOwnerID',Auth::user()->RecordOwnerID);
 		
 		$model->where("fakturpenjualanheader.Status", '<>', 'D');
