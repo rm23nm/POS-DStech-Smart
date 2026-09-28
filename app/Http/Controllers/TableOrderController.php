@@ -5625,7 +5625,8 @@ public function getTableStatuses()
 
         // Customer logic
         $isNewCustomer = $request->input('isNewCustomer', false);
-        $kodePelanggan = $request->input('KodePelanggan', $company->KodeCustomerUmum ?? 'UMUM');
+        $kodePelanggan = $request->input('KodePelanggan');
+        if (empty($kodePelanggan)) { $kodePelanggan = $company->KodeCustomerUmum ?? 'UMUM'; }
 
         if ($isNewCustomer) {
             $namaPelanggan = $request->input('NamaPelanggan');
@@ -6136,4 +6137,5 @@ public function getTableStatuses()
         ]);
     }
 }
+
 
