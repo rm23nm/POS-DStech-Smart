@@ -11,12 +11,16 @@ class AddIsSyncedToFpenjualanTable extends Migration
      *
      * @return void
      */
-    public function up()
+        public function up()
     {
-        Schema::table('fpenjualan', function (Blueprint $table) {
-            if (!Schema::hasColumn('fpenjualan', 'is_synced')) {
-                $table->tinyInteger('is_synced')->default(0)->after('Status');
-            }
+        if (Schema::hasTable('fpenjualan')) {
+            Schema::table('fpenjualan', function (Blueprint $table) {
+                if (!Schema::hasColumn('fpenjualan', 'is_synced')) {
+                    $table->tinyInteger('is_synced')->default(0)->after('Status');
+                }
+            });
+        }
+    }
         });
     }
 
@@ -25,12 +29,17 @@ class AddIsSyncedToFpenjualanTable extends Migration
      *
      * @return void
      */
-    public function down()
+        public function down()
     {
-        Schema::table('fpenjualan', function (Blueprint $table) {
-            if (Schema::hasColumn('fpenjualan', 'is_synced')) {
-                $table->dropColumn('is_synced');
-            }
+        if (Schema::hasTable('fpenjualan')) {
+            Schema::table('fpenjualan', function (Blueprint $table) {
+                if (Schema::hasColumn('fpenjualan', 'is_synced')) {
+                    $table->dropColumn('is_synced');
+                }
+            });
+        }
+    }
         });
     }
 }
+
