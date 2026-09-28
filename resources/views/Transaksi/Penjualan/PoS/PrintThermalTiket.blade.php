@@ -171,10 +171,14 @@
             </div>
         </div>
     @else
-        @php $ticketIndex = 0; @endphp
+        @php $ticketNumber = 1; @endphp
         @foreach($details as $detail)
-            @for($i = 0; $i < $detail->Qty; $i++)
-                @if(isset($tickets[$ticketIndex]))
+            @php
+                // Get tickets specifically for this KodeItem
+                $detailTickets = collect($tickets)->where('KodeItem', $detail->KodeItem)->values();
+            @endphp
+            @if($detailTickets->count() > 0)
+                @foreach($detailTickets as $ticket)
                 <div class="ticket">
                     @if(!empty($company->icon))
                         <img src="{{ str_starts_with($company->icon, 'http') ? $company->icon : asset('storage/' . $company->icon) }}" alt="Logo" class="company-logo">
@@ -190,12 +194,11 @@
                     <div class="ticket-name">{{ $detail->NamaItem }}</div>
 
                     <div class="barcode-container">
-                        <!-- SVG placeholder untuk dirender oleh JsBarcode -->
-                        <svg class="barcode-svg" jsbarcode-value="{{ $tickets[$ticketIndex]->BarcodeTiket }}" jsbarcode-displayvalue="true" jsbarcode-height="50" jsbarcode-margin="0"></svg>
+                        <svg class="barcode-svg" jsbarcode-value="{{ $ticket->BarcodeTiket }}" jsbarcode-displayvalue="true" jsbarcode-height="40" jsbarcode-width="1.5" jsbarcode-margin="0" style="width: 100%; height: auto;"></svg>
                     </div>
 
                     <div class="info">
-                        No. Trx : {{ $header->NoTransaksi }}-{{ $ticketIndex + 1 }}<br>
+                        No. Trx : {{ $header->NoTransaksi }}-{{ $ticketNumber }}<br>
                         Tgl     : {{ date('d-m-Y H:i', strtotime($header->TglTransaksi)) }}<br>
                         Harga   : Rp {{ number_format($detail->Harga ?? 0, 0, ',', '.') }}
                     </div>
@@ -205,9 +208,9 @@
                         Tiket hanya berlaku 1 kali scan.
                     </div>
                 </div>
-                @php $ticketIndex++; @endphp
-                @endif
-            @endfor
+                @php $ticketNumber++; @endphp
+                @endforeach
+            @endif
         @endforeach
     @endif
 
