@@ -6,12 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class AddIsSyncedToFpenjualanTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-        public function up()
+    public function up()
     {
         if (Schema::hasTable('fpenjualan')) {
             Schema::table('fpenjualan', function (Blueprint $table) {
@@ -21,15 +16,8 @@ class AddIsSyncedToFpenjualanTable extends Migration
             });
         }
     }
-        });
-    }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-        public function down()
+    public function down()
     {
         if (Schema::hasTable('fpenjualan')) {
             Schema::table('fpenjualan', function (Blueprint $table) {
@@ -39,7 +27,4 @@ class AddIsSyncedToFpenjualanTable extends Migration
             });
         }
     }
-        });
-    }
 }
-
