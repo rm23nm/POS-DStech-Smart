@@ -453,11 +453,15 @@ class DocumentOutputController extends Controller
 
         $format = "";
 
-        if($selectedFormat != null){
+        if($selectedFormat != null && $selectedFormat != ''){
             $format = $selectedFormat;
         }
         else{
             $format = $oCompany->DefaultSlip;
+        }
+        
+        if (empty($format)) {
+            $format = 'slip1';
         }
 
 
