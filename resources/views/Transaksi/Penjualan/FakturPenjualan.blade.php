@@ -129,6 +129,7 @@
                         <option value="slip3">Slip 3</option>
                         <option value="slip4">Slip 4</option>
                         <option value="slip5">Slip 5</option>
+                        <option value="slipthermal48">Struk Thermal</option>
                     </select>
                 </fieldset>
             </div>
@@ -548,7 +549,7 @@
                         var LinkAccess = "";
                         if (cellInfo.data.Transaksi == 'POS') {
                             // LinkAccess = "<a href = "+link+" class='btn btn-outline-primary font-weight-bold me-1 mb-1 disabled-link' id = 'btEdit' disabled>Edit</a>";
-                            LinkAccess += "<a href = "+link+" class='btn btn-outline-danger font-weight-bold me-1 mb-1' target='_blank'><i class='fas fa-print'></i></a>";
+                            LinkAccess += "<button class='btn btn-outline-success font-weight-bold me-1 mb-1' onclick=\"showCetakModal('" + cellInfo.data.NoTransaksi + "')\"><i class='fas fa-print'></i></button>";
                         }else{
                             // LinkAccess = "<a href = "+link+" class='btn btn-outline-primary font-weight-bold me-1 mb-1' id = 'btEdit'><i class='fas fa-edit'></i></a>";
                             LinkAccess += "<button class='btn btn-outline-success font-weight-bold me-1 mb-1' onclick=\"showCetakModal('" + cellInfo.data.NoTransaksi + "')\"><i class='fas fa-print'></i></button>";
