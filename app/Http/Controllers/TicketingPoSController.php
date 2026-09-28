@@ -147,7 +147,7 @@ class TicketingPoSController extends Controller
             $model->TglTransaksi = $currentDate->toDateString();
             $model->TglJatuhTempo = $currentDate->toDateString();
             $model->NoReff = '';
-            $model->KodePelanggan = $jsonData['KodePelanggan'] ?? 'CASH';
+            $model->KodePelanggan = empty($jsonData['KodePelanggan']) || $jsonData['KodePelanggan'] === 'CASH' ? 'UMUM' : $jsonData['KodePelanggan'];
             $model->KodeTermin = 'CASH';
             $model->Termin = 0;
             $model->TotalTransaksi = $jsonData['Subtotal'];

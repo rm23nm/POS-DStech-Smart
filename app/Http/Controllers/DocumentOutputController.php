@@ -110,7 +110,7 @@ class DocumentOutputController extends Controller
             case 'fakturpenjualan' :
                 $sql = "company.NamaPartner, company.AlamatTagihan, company.NPWP, company.NoTlp,
                     fakturpenjualanheader.NoTransaksi, fakturpenjualanheader.TglTransaksi, fakturpenjualanheader.TglJatuhTempo,
-                    pelanggan.NamaPelanggan, pelanggan.Alamat, itemmaster.NamaItem, fakturpenjualandetail.Satuan,
+                    COALESCE(pelanggan.NamaPelanggan, 'UMUM') AS NamaPelanggan, pelanggan.Alamat, itemmaster.NamaItem, fakturpenjualandetail.Satuan,
                     fakturpenjualandetail.Qty, fakturpenjualandetail.Harga, fakturpenjualandetail.HargaNet,
                     fakturpenjualandetail.Discount, fakturpenjualandetail.VatPercent,
                     fakturpenjualanheader.TotalTransaksi AS SubTotal, fakturpenjualanheader.Potongan AS Diskon,
@@ -398,7 +398,7 @@ class DocumentOutputController extends Controller
             case "PoS":
                 $sql = "company.NamaPartner, company.AlamatTagihan, company.NPWP, company.NoTlp,
                     fakturpenjualanheader.NoTransaksi, DATE_FORMAT(fakturpenjualanheader.TglTransaksi, '%d-%m-%Y %H:%i') TglTransaksi, fakturpenjualanheader.TglJatuhTempo,
-                    pelanggan.NamaPelanggan, pelanggan.Alamat, itemmaster.NamaItem, fakturpenjualandetail.Satuan,
+                    COALESCE(pelanggan.NamaPelanggan, 'UMUM') AS NamaPelanggan, pelanggan.Alamat, itemmaster.NamaItem, fakturpenjualandetail.Satuan,
                     fakturpenjualandetail.Qty, fakturpenjualandetail.Harga, fakturpenjualandetail.HargaNet,
                     fakturpenjualandetail.Discount, fakturpenjualandetail.VatPercent,
                     fakturpenjualanheader.TotalTransaksi AS SubTotal, fakturpenjualanheader.Potongan AS Diskon,
