@@ -516,6 +516,11 @@
                     allowEditing:false
                 },
                 {
+                    dataField: "NamaMetodePembayaran",
+                    caption: "Metode Pembayaran",
+                    allowEditing:false
+                },
+                {
                     dataField: "TotalPembelian",
                     caption: "Total",
                     allowEditing:false,
