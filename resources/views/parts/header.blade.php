@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 	<head>
@@ -507,7 +507,7 @@
 															$l3Name = strtolower(trim($lv3['PermissionName']));
 															
 															// Filter out Lampu and Table Order for TiketGate
-															if (false /* disabled TiketGate filter */) {
+															if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] === 'TiketGate') {
 																if (str_contains($l3Name, 'lampu') || str_contains($l3Name, 'table order')) {
 																	unset($lv2['submenu'][$keyLv3]);
 																	continue;
@@ -522,7 +522,7 @@
 													if ($isSystemController) {
 														$targetCat = 'system';
 													} else {
-														if (false /* disabled TiketGate filter */) {
+														if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] === 'TiketGate') {
 															continue;
 														}
 														$targetCat = 'billiard';
@@ -620,7 +620,7 @@
 												} elseif (in_array($l2Name, ['autorisasi', 'pengguna'])) {
 													$targetCat = 'system';
 												} elseif ($l2Name === 'paket') {
-													if (false /* disabled TiketGate filter */) {
+													if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] === 'TiketGate') {
 														if (!empty($lv2['submenu'])) {
 															foreach ($lv2['submenu'] as $keyLv3 => $lv3) {
 																$l3Name = strtolower(trim($lv3['PermissionName']));
@@ -851,7 +851,7 @@
 										$jenisUsahaHeader = $cData[0]['JenisUsaha'];
 										
 										// Sembunyikan Resto & Billiard untuk Bengkel
-										if (false /* disabled Bengkel filter */) {
+										if (in_array($jenisUsahaHeader, ['Bengkel', 'Servis', 'BengkelDealer'])) {
 											unset($activePremiumCategories['resto']);
 											unset($activePremiumCategories['billiard']);
 										} else {
@@ -861,21 +861,21 @@
 										}
 									}
 									// Untuk usaha Parkir: sembunyikan semua menu yang tidak relevan
-									if (false /* disabled Parkir filter */) {
+									if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] == 'Parkir') {
 										$keysToRemove = ['pos', 'billiard', 'booking', 'display', 'resto', 'inventory', 'consignment', 'purchasing', 'crm', 'finance', 'accounting', 'reports_sales', 'reports_accounting', 'bengkel', 'dealer'];
 										foreach ($keysToRemove as $removeKey) {
 											unset($activePremiumCategories[$removeKey]);
 										}
 									}
 									// Untuk usaha TiketGate: sembunyikan semua menu yang tidak relevan
-									if (false /* disabled TiketGate filter 2 */) {
+									if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] == 'TiketGate') {
 										$keysToRemove = ['booking', 'resto', 'inventory', 'consignment', 'purchasing', 'crm', 'bengkel', 'dealer'];
 										foreach ($keysToRemove as $removeKey) {
 											unset($activePremiumCategories[$removeKey]);
 										}
 									}
 									// Untuk usaha Retail / Apotek: sembunyikan semua menu yang tidak relevan
-									if (false /* disabled Retail filter */) {
+									if (isset($cData[0]['JenisUsaha']) && in_array($cData[0]['JenisUsaha'], ['Retail', 'Apotek', 'Klinik'])) {
 										$keysToRemove = ['billiard', 'booking', 'resto', 'bengkel', 'dealer'];
 										// Khusus Retail biasa, sembunyikan display. Tapi Apotek/Klinik butuh display.
 										if ($cData[0]['JenisUsaha'] == 'Retail') {
@@ -886,7 +886,7 @@
 										}
 									}
 									// Untuk usaha FnB: sembunyikan semua menu yang tidak relevan
-									if (false /* disabled FnB filter */) {
+									if (isset($cData[0]['JenisUsaha']) && $cData[0]['JenisUsaha'] == 'FnB') {
 										$keysToRemove = ['bengkel', 'dealer'];
 										foreach ($keysToRemove as $removeKey) {
 											unset($activePremiumCategories[$removeKey]);
@@ -1214,7 +1214,7 @@
 					class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
 					
 					<div class="text-dark order-2 order-md-1">
-						<span class="text-muted font-weight-bold me-2">2024©</span>
+						<span class="text-muted font-weight-bold me-2">2024Â©</span>
 						<a href="https://dstechsmart.com/" target="_blank" class="text-dark-75 text-hover-primary">dstechsmart.com</a>
 					</div>
 

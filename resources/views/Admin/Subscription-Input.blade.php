@@ -199,7 +199,7 @@
                                             // Bengkel
                                             $bengkelIds = [129, 131, 132, 134];
                                             // Hiburan & IoT
-                                            $hiburanIds = [88, 91, 121];
+                                            $hiburanIds = [88, 91, 121, 125];
                                             // Display / KDS
                                             $displayIds = [113, 115, 116, 117, 118, 119, 127, 142, 143, 144];
 
