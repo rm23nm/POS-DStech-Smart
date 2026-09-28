@@ -194,7 +194,7 @@
                     <div class="ticket-name">{{ $detail->NamaItem }}</div>
 
                     <div class="barcode-container">
-                        <svg class="barcode-svg" jsbarcode-value="{{ $ticket->BarcodeTiket }}" jsbarcode-displayvalue="true" jsbarcode-height="40" jsbarcode-width="1.5" jsbarcode-margin="0" style="width: 100%; height: auto;"></svg>
+                        <svg class="barcode-svg" jsbarcode-value="{{ $ticket->BarcodeTiket }}" jsbarcode-displayvalue="true" jsbarcode-height="40"  jsbarcode-margin="0" style="max-width: 100%; height: auto;"></svg>
                     </div>
 
                     <div class="info">
