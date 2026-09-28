@@ -95,6 +95,7 @@
         .btn-alpha { background: #f8fafc !important; border: 1.5px solid #e2e8f0 !important; border-radius: 8px !important; font-weight: 800 !important; font-size: 0.9rem !important; color: #334155 !important; height: 42px; display: flex; align-items: center; justify-content: center; padding: 0 !important; transition: all 0.15s; }
         .btn-alpha:hover { background: #fff !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(11, 87, 208, 0.1) !important; border-color: rgba(11, 87, 208, 0.3) !important; color: #0b57d0 !important; }
         .btn-alpha:active { transform: translateY(1px); box-shadow: none !important; background: #f1f5f9 !important; }
+    .swal2-container { z-index: 999999 !important; }
 </style>
 
 <header class="pos-header">
@@ -815,7 +816,7 @@
 </script>
 
 <!-- Checkout Modal -->
-<div class="modal fade" id="modalCheckout" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:99999;">
+<div class="modal fade" id="modalCheckout" tabindex="-1" role="dialog" aria-hidden="true" >
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content" style="border-radius:12px; border:none; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
             <div class="modal-header" style="background:#0ea5e9; color:white; border-radius:12px 12px 0 0;">
@@ -1594,7 +1595,7 @@ function savePelangganBaru() {
 }
 </script>
 <!-- Modal Tambah Pelanggan -->
-<div class="modal fade" id="modalAddPelanggan" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:99999;">
+<div class="modal fade" id="modalAddPelanggan" tabindex="-1" role="dialog" aria-hidden="true" >
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content" style="border-radius:12px; border:none; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
             <div class="modal-header" style="background:#0ea5e9; color:white; border-radius:12px 12px 0 0;">
@@ -1642,3 +1643,4 @@ function savePelangganBaru() {
 </div>
 </body>
 </html>
+
