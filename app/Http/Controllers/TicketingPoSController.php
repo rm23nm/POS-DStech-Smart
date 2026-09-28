@@ -28,7 +28,9 @@ class TicketingPoSController extends Controller
             ->where('RecordOwnerID', $user->RecordOwnerID)
             ->where('Active', 'Y')
             ->where(function($query) {
-                $query->where('KodeJenisItem', 'TIKET')
+                $query->where('KategoriPOS', 'TIKET')
+                      ->orWhere('KodeJenisItem', 'TIKET')
+                      ->orWhere('KodeJenisItem', '3002')
                       ->orWhere('KodeJenisItem', 'MEMBER')
                       ->orWhere('NamaItem', 'like', '%tiket%')
                       ->orWhere('NamaItem', 'like', '%ticket%')
@@ -41,7 +43,9 @@ class TicketingPoSController extends Controller
         $fnbItems = DB::table('itemmaster')
             ->where('RecordOwnerID', $user->RecordOwnerID)
             ->where('Active', 'Y')
-            ->where('KodeJenisItem', '!=', 'TIKET')
+            ->where(function($query) { $query->where('KategoriPOS', '!=', 'TIKET')->orWhereNull('KategoriPOS'); })
+              ->where('KodeJenisItem', '!=', 'TIKET')
+              ->where('KodeJenisItem', '!=', '3002')
             ->where('KodeJenisItem', '!=', 'MEMBER')
             ->where('NamaItem', 'not like', '%tiket%')
             ->where('NamaItem', 'not like', '%ticket%')
@@ -643,3 +647,4 @@ class TicketingPoSController extends Controller
         ]);
     }
 }
+
