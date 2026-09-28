@@ -5996,7 +5996,10 @@ public function getTableStatuses()
             ->where(function($q) use ($noTransaksi) {
                 $q->where('fakturpenjualanheader.NoTransaksi', $noTransaksi)
                   ->orWhere(function($sq) use ($noTransaksi) {
-                      $sq->where('fakturpenjualandetail.BaseReff', $noTransaksi)
+                      $sq->where(function($q) use ($noTransaksi) {
+                $q->where('fakturpenjualandetail.BaseReff', $noTransaksi)
+                  ->orWhere('fakturpenjualanheader.NoTransaksi', $noTransaksi);
+            })
                          ->where('itemmaster.TypeItem', 4);
                   });
             })
@@ -6058,7 +6061,10 @@ public function getTableStatuses()
                      ->on('fakturpenjualanheader.RecordOwnerID', '=', 'titiklampu.RecordOwnerID');
             })
             ->where('fakturpenjualanheader.RecordOwnerID', $recordOwnerID)
-            ->where('fakturpenjualandetail.BaseReff', $noTransaksi)
+            ->where(function($q) use ($noTransaksi) {
+                $q->where('fakturpenjualandetail.BaseReff', $noTransaksi)
+                  ->orWhere('fakturpenjualanheader.NoTransaksi', $noTransaksi);
+            })
             ->orderByRaw("CASE WHEN fakturpenjualanheader.NoReff = 'POS' THEN 0 ELSE 1 END") // Prioritize main POS faktur
             ->first();
 
@@ -6115,7 +6121,10 @@ public function getTableStatuses()
                          ->on('fakturpenjualandetail.RecordOwnerID', '=', 'itemmaster.RecordOwnerID');
                 })
                 ->where(function($q) use ($noTransaksi, $header) {
-                    $q->where('fakturpenjualandetail.BaseReff', $noTransaksi)
+                    $q->where(function($q) use ($noTransaksi) {
+                $q->where('fakturpenjualandetail.BaseReff', $noTransaksi)
+                  ->orWhere('fakturpenjualanheader.NoTransaksi', $noTransaksi);
+            })
                       ->orWhere('fakturpenjualandetail.NoTransaksi', $header->NoTransaksi);
                 })
                 ->where('fakturpenjualandetail.RecordOwnerID', $recordOwnerID)
@@ -6137,5 +6146,6 @@ public function getTableStatuses()
         ]);
     }
 }
+
 
 
