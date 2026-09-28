@@ -162,17 +162,6 @@
                             		</div>
 
                             		<div class="col-md-4">
-                            			<label  class="text-body">Kategori Tampil POS</label>
-                            			<fieldset class="form-group mb-3">
-                            				<select name="KategoriPOS" id="KategoriPOS" class="js-example-basic-single js-states form-control bg-transparent">
-												<option value="FNB" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'FNB') ? 'selected' : '' }}>Menu FNB</option>
-												<option value="TIKET" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'TIKET') ? 'selected' : '' }}>Tiket Masuk</option>
-												<option value="JASA" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'JASA') ? 'selected' : '' }}>Jasa / Sewa</option>
-                                                <option value="UMUM" {{ (count($itemmaster) > 0 && $itemmaster[0]['KategoriPOS'] == 'UMUM') ? 'selected' : '' }}>Lainnya / Umum</option>
-											</select>
-                            			</fieldset>
-                            		</div>
-
                             		<div class="col-md-4">
                             			<label  class="text-body">Merk</label>
                             			<fieldset class="form-group mb-3">
